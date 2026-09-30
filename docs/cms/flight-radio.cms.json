@@ -1,0 +1,4956 @@
+{
+ "course": {
+  "title": "Flight Radio Telephony",
+  "source_file": "FRTOLectureSlides_Professional.pdf",
+  "total_slides": 157,
+  "index": [
+   {
+    "module": "Flight Radio Telephony",
+    "source_slide": 1,
+    "lessons": [
+     {
+      "title": "Exam",
+      "source_slides": [
+       2
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S 40 Minutes 25 Multi-choice Questions",
+        "source_slide": 2
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Radio Principles",
+      "source_slides": [
+       3
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S",
+        "source_slide": 3
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Sound Waves",
+      "source_slides": [
+       4
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "The impulses are transmitted as small fluctuations of air pressure towards the listener’s ear.",
+        "source_slide": 4
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "A medium (e.g., air or water) is essential.",
+        "source_slide": 4
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Greater the density, greater the speed of sound. (temperature must change as well)",
+        "source_slide": 4
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Frequency",
+      "source_slides": [
+       5,
+       6
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Number of oscillations of a cycle per second",
+        "source_slide": 5
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1 Cycle per second = 1 Hertz (Hz)",
+        "source_slide": 5
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1,000,000 Hz = 1 (Megahertz) MHz",
+        "source_slide": 5
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Human ears respond to frequencies between approximately 20 and 20,000 Hz",
+        "source_slide": 5
+       },
+       {
+        "type": "diagram",
+        "asset": "c496b98ef7390d7baf8a30fa2e63581962647c3d.png",
+        "sha1": "c496b98ef7390d7baf8a30fa2e63581962647c3d",
+        "source_slide": 6
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "c496b98ef7390d7baf8a30fa2e63581962647c3d.png",
+        "sha1": "c496b98ef7390d7baf8a30fa2e63581962647c3d",
+        "source_slide": 6
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Wave Characteristics",
+      "source_slides": [
+       7
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Wave Characteristics",
+        "source_slide": 7
+       },
+       {
+        "type": "diagram",
+        "asset": "50970388a7cb3738a26195da2dcb34f76719e102.png",
+        "sha1": "50970388a7cb3738a26195da2dcb34f76719e102",
+        "source_slide": 7
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "50970388a7cb3738a26195da2dcb34f76719e102.png",
+        "sha1": "50970388a7cb3738a26195da2dcb34f76719e102",
+        "source_slide": 7
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Radio Waves",
+      "source_slides": [
+       8,
+       9
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Radio Waves",
+        "source_slide": 8
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Electromagnetic wave",
+        "source_slide": 8
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Produced by variations in the strength of electric and magnetic fields",
+        "source_slide": 8
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Do not require a medium",
+        "source_slide": 8
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Greater coverage compared to a sound wave",
+        "source_slide": 8
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Radio Waves",
+        "source_slide": 9
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Travel at the speed of light (300,000 km/s)",
+        "source_slide": 9
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Can be tuned by radio equipment to one particular frequency",
+        "source_slide": 9
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Voice is transferred into radio waves in the microphone",
+        "source_slide": 9
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Wave Terminology",
+      "source_slides": [
+       10,
+       11,
+       12,
+       13
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Wave Terminology",
+        "source_slide": 10
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Wavelength – Length of one single wave",
+        "source_slide": 10
+       },
+       {
+        "type": "diagram",
+        "asset": "ced3c86f97f1c5a85674434663b7b6a10af04613.png",
+        "sha1": "ced3c86f97f1c5a85674434663b7b6a10af04613",
+        "source_slide": 10
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Wave Terminology",
+        "source_slide": 11
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequency – Number of cycles passing a point in one second",
+        "source_slide": 11
+       },
+       {
+        "type": "diagram",
+        "asset": "c0f8bb82ddcd3cbe37f6155253090234fc368ca6.png",
+        "sha1": "c0f8bb82ddcd3cbe37f6155253090234fc368ca6",
+        "source_slide": 11
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Wave Terminology",
+        "source_slide": 12
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequency increases – Wavelength decreases",
+        "source_slide": 12
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Wave Terminology",
+        "source_slide": 13
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "The distance from the top or bottom of the wave to the mean value line of a wave",
+        "source_slide": 13
+       },
+       {
+        "type": "diagram",
+        "asset": "6de40435701b510f2c0937e06c6326402eb0ffaf.png",
+        "sha1": "6de40435701b510f2c0937e06c6326402eb0ffaf",
+        "source_slide": 13
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "ced3c86f97f1c5a85674434663b7b6a10af04613.png",
+        "sha1": "ced3c86f97f1c5a85674434663b7b6a10af04613",
+        "source_slide": 10
+       },
+       {
+        "type": "diagram",
+        "asset": "c0f8bb82ddcd3cbe37f6155253090234fc368ca6.png",
+        "sha1": "c0f8bb82ddcd3cbe37f6155253090234fc368ca6",
+        "source_slide": 11
+       },
+       {
+        "type": "diagram",
+        "asset": "6de40435701b510f2c0937e06c6326402eb0ffaf.png",
+        "sha1": "6de40435701b510f2c0937e06c6326402eb0ffaf",
+        "source_slide": 13
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Frequency Bands",
+      "source_slides": [
+       14,
+       15
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequency Bands",
+        "source_slide": 14
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "High Frequency (HF) – Between 3 MHz and 30 MHz (Long distance communication)",
+        "source_slide": 14
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Very High Frequency (VHF) – Between 30 MHz and 300 MHz (Preferred in Aviation)",
+        "source_slide": 14
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequency Bands",
+        "source_slide": 15
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "VHF Preferred because:",
+        "source_slide": 15
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Greater range of available frequencies",
+        "source_slide": 15
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Less prone to interference from various sources e.g., atmospheric disturbances",
+        "source_slide": 15
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "VHF Bands",
+      "source_slides": [
+       16,
+       17
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "VHF Bands",
+        "source_slide": 16
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Only in the line of sight",
+        "source_slide": 16
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Relay equipment installed on high ground",
+        "source_slide": 16
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Higher you fly, the further you can see, hence VHF range increases.",
+        "source_slide": 16
+       },
+       {
+        "type": "diagram",
+        "asset": "2b4b5b26ed0cb96d935f9221e21c294e52bce29f.png",
+        "sha1": "2b4b5b26ed0cb96d935f9221e21c294e52bce29f",
+        "source_slide": 17
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "2b4b5b26ed0cb96d935f9221e21c294e52bce29f.png",
+        "sha1": "2b4b5b26ed0cb96d935f9221e21c294e52bce29f",
+        "source_slide": 17
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Aircraft Radios",
+      "source_slides": [
+       18
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "a636b080ae1c69b952d792b0a465690acac4b280.jpg",
+        "sha1": "a636b080ae1c69b952d792b0a465690acac4b280",
+        "source_slide": 18
+       },
+       {
+        "type": "diagram",
+        "asset": "bc8af0ee848c049a0a7dd5d6bd565272577f36f5.jpg",
+        "sha1": "bc8af0ee848c049a0a7dd5d6bd565272577f36f5",
+        "source_slide": 18
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "a636b080ae1c69b952d792b0a465690acac4b280.jpg",
+        "sha1": "a636b080ae1c69b952d792b0a465690acac4b280",
+        "source_slide": 18
+       },
+       {
+        "type": "diagram",
+        "asset": "bc8af0ee848c049a0a7dd5d6bd565272577f36f5.jpg",
+        "sha1": "bc8af0ee848c049a0a7dd5d6bd565272577f36f5",
+        "source_slide": 18
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Associated Radio Equipment",
+      "source_slides": [
+       19
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Microphone",
+        "source_slide": 19
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Speaker / Headphones",
+        "source_slide": 19
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Electrical switch (Avionics or Masters)",
+        "source_slide": 19
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Audio Selector Panel",
+        "source_slide": 19
+       },
+       {
+        "type": "diagram",
+        "asset": "8d7c153305afd1fd43ba569f70cc209624a6062d.png",
+        "sha1": "8d7c153305afd1fd43ba569f70cc209624a6062d",
+        "source_slide": 19
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "8d7c153305afd1fd43ba569f70cc209624a6062d.png",
+        "sha1": "8d7c153305afd1fd43ba569f70cc209624a6062d",
+        "source_slide": 19
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Microphones",
+      "source_slides": [
+       20,
+       21,
+       22
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Boom-microphones Hand-Held microphones",
+        "source_slide": 20
+       },
+       {
+        "type": "diagram",
+        "asset": "e7366f6fb671aec4c0ad50c1d5d38b129d66a3cd.jpg",
+        "sha1": "e7366f6fb671aec4c0ad50c1d5d38b129d66a3cd",
+        "source_slide": 20
+       },
+       {
+        "type": "diagram",
+        "asset": "7b6f7bef1bd67f403fdfa933bbd7b8dd03ab6640.jpg",
+        "sha1": "7b6f7bef1bd67f403fdfa933bbd7b8dd03ab6640",
+        "source_slide": 20
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Transfer spoken words (Sound Pressure Waves) into electromagnetic radio waves",
+        "source_slide": 21
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Try to avoid speaking too loudly (cause distortion) or too quietly (Weak electromagnetic signals)",
+        "source_slide": 21
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Microphone button must be held to transmit message",
+        "source_slide": 22
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "It is not possible to receive while transmitting",
+        "source_slide": 22
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Whilst transmitting, no other transmissions are possible without interference",
+        "source_slide": 22
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When using handheld microphone, avoid placing on laps",
+        "source_slide": 22
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "e7366f6fb671aec4c0ad50c1d5d38b129d66a3cd.jpg",
+        "sha1": "e7366f6fb671aec4c0ad50c1d5d38b129d66a3cd",
+        "source_slide": 20
+       },
+       {
+        "type": "diagram",
+        "asset": "7b6f7bef1bd67f403fdfa933bbd7b8dd03ab6640.jpg",
+        "sha1": "7b6f7bef1bd67f403fdfa933bbd7b8dd03ab6640",
+        "source_slide": 20
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Tuning VHF Radio",
+      "source_slides": [
+       23
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check Avionics is ON",
+        "source_slide": 23
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check microphone is plugged in correctly",
+        "source_slide": 23
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Switch Radio ON",
+        "source_slide": 23
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Select desired frequency",
+        "source_slide": 23
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If audio panel is fitted, select the appropriate radio switch",
+        "source_slide": 23
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Turn the volume and adjust squelch",
+        "source_slide": 23
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Squelch",
+      "source_slides": [
+       24
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Eliminate unwanted signals such as static",
+        "source_slide": 24
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When far away from a station, squelch can be reduced to receive signal",
+        "source_slide": 24
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Turned Up (Clockwise), filter becomes less effective",
+        "source_slide": 24
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If you Turn Down too much, it will cut out the static and the signal",
+        "source_slide": 24
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Transmitting",
+      "source_slides": [
+       25
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If other station is calling, do not interrupt",
+        "source_slide": 25
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "In the case of Distress MAYDAY or Urgency PAN- PAN, do not interrupt",
+        "source_slide": 25
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Think what you will say BEFORE you start your transmission",
+        "source_slide": 25
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Radio Not Working",
+      "source_slides": [
+       26
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check Masters",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Turn Radio ON/OFF",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Correct Audio Panel Set",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Circuit Breakers",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Plug connections Checked",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Correct Frequency is in use (NZWU 120.2MHz)",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check Volume",
+        "source_slide": 26
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squelch is not full anti clockwise direction",
+        "source_slide": 26
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Additional Radios",
+      "source_slides": [
+       27
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Transponders (XPDR)",
+        "source_slide": 27
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Emergency Locator Transmitter (ELT)",
+        "source_slide": 27
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Transponders",
+      "source_slides": [
+       28,
+       29,
+       30,
+       31,
+       32,
+       33,
+       34,
+       35,
+       36
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Allow ground-based radar controller or other aircraft with ACAS to identify the position",
+        "source_slide": 28
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Emits coded signal to ground based radar unit after receiving interrogation",
+        "source_slide": 28
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Distance can be determined",
+        "source_slide": 28
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Documents outlining TM airspace:",
+        "source_slide": 29
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Visual Navigation Charts",
+        "source_slide": 29
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Aeronautical Information Publication (AIP)",
+        "source_slide": 29
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NZ AIP Aeronautical Information Publication (AIP)",
+        "source_slide": 30
+       },
+       {
+        "type": "diagram",
+        "asset": "67e2dd3028890e16d7fc2faa5713ee97153265ea.jpg",
+        "sha1": "67e2dd3028890e16d7fc2faa5713ee97153265ea",
+        "source_slide": 30
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Visual Navigation Charts",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "f6bbd02059f543b479b8d56d30ba64e4555d2e69.jpg",
+        "sha1": "f6bbd02059f543b479b8d56d30ba64e4555d2e69",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "9b01877ec69dcd710413799911d48bb7e489370d.png",
+        "sha1": "9b01877ec69dcd710413799911d48bb7e489370d",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "0217b3ee4e0b45308096a93f76be268c581fd75a.png",
+        "sha1": "0217b3ee4e0b45308096a93f76be268c581fd75a",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "3a8f8d6e1987d21068601a1ac49ee4c28a81a83c.png",
+        "sha1": "3a8f8d6e1987d21068601a1ac49ee4c28a81a83c",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "013376b902e5069085642ce5b31e06792a275a71.png",
+        "sha1": "013376b902e5069085642ce5b31e06792a275a71",
+        "source_slide": 31
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Visual Navigation Charts (VNC)",
+        "source_slide": 32
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "TM – Transponder Mandatory",
+        "source_slide": 32
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "C – Class C Airspace",
+        "source_slide": 32
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1500/SFC – between 1500ft and surface",
+        "source_slide": 32
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "PM 120.6 – Palmerston Tower Frequency",
+        "source_slide": 32
+       },
+       {
+        "type": "diagram",
+        "asset": "44535dab7a5dc735c0db6ff7674d24b3039b31d1.jpg",
+        "sha1": "44535dab7a5dc735c0db6ff7674d24b3039b31d1",
+        "source_slide": 32
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Mode A – 4 Digit Code",
+        "source_slide": 33
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Mode C – 4 Digit Code, Pressure Altitude",
+        "source_slide": 33
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Mode S – 4 Digit Code, Pressure Altitude, Aircraft Rego",
+        "source_slide": 33
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Off",
+        "source_slide": 34
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Stand-by (SBY) – On but no reply for interrogation",
+        "source_slide": 34
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ON – Mode A Only",
+        "source_slide": 34
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ALT – Mode A and Mode C",
+        "source_slide": 34
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Test (TST) Function",
+        "source_slide": 34
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk – Allows the controller to identify the aircraft on the radar",
+        "source_slide": 34
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1200 – VFR",
+        "source_slide": 35
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "2200 - VFR in the circuit of a controlled Aerodrome",
+        "source_slide": 35
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "7500 – Hijacking (Unlawful interference)",
+        "source_slide": 35
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "7600 – Communications Failure",
+        "source_slide": 35
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "7700 – Emergency",
+        "source_slide": 35
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If transponder is inoperative, entry into TM airspace may be permitted depending on ATC (Air Traffic Control)",
+        "source_slide": 36
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Must append “Negative Transponder” to the radio call",
+        "source_slide": 36
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "67e2dd3028890e16d7fc2faa5713ee97153265ea.jpg",
+        "sha1": "67e2dd3028890e16d7fc2faa5713ee97153265ea",
+        "source_slide": 30
+       },
+       {
+        "type": "diagram",
+        "asset": "f6bbd02059f543b479b8d56d30ba64e4555d2e69.jpg",
+        "sha1": "f6bbd02059f543b479b8d56d30ba64e4555d2e69",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "9b01877ec69dcd710413799911d48bb7e489370d.png",
+        "sha1": "9b01877ec69dcd710413799911d48bb7e489370d",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "0217b3ee4e0b45308096a93f76be268c581fd75a.png",
+        "sha1": "0217b3ee4e0b45308096a93f76be268c581fd75a",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "3a8f8d6e1987d21068601a1ac49ee4c28a81a83c.png",
+        "sha1": "3a8f8d6e1987d21068601a1ac49ee4c28a81a83c",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "013376b902e5069085642ce5b31e06792a275a71.png",
+        "sha1": "013376b902e5069085642ce5b31e06792a275a71",
+        "source_slide": 31
+       },
+       {
+        "type": "diagram",
+        "asset": "44535dab7a5dc735c0db6ff7674d24b3039b31d1.jpg",
+        "sha1": "44535dab7a5dc735c0db6ff7674d24b3039b31d1",
+        "source_slide": 32
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Long Range HF",
+      "source_slides": [
+       37,
+       38,
+       39,
+       40,
+       41
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Usually available for remote areas",
+        "source_slide": 37
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Aircraft leaving NZ for overseas",
+        "source_slide": 37
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Some transmissions are reflected back to earth by the ionosphere",
+        "source_slide": 38
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Reflected signals can reach much further e.g., lee of mountains",
+        "source_slide": 38
+       },
+       {
+        "type": "diagram",
+        "asset": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9.png",
+        "sha1": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9",
+        "source_slide": 39
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Less clear signals",
+        "source_slide": 40
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Susceptible to atmospheric interference",
+        "source_slide": 40
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Can bend around solid objects, such as mountains, big buildings",
+        "source_slide": 40
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Has longer range compared to VHF",
+        "source_slide": 40
+       },
+       {
+        "type": "diagram",
+        "asset": "721d80a848ef6d7e1aadf9811cf0acb5d8b9b66b.jpg",
+        "sha1": "721d80a848ef6d7e1aadf9811cf0acb5d8b9b66b",
+        "source_slide": 41
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9.png",
+        "sha1": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9",
+        "source_slide": 39
+       },
+       {
+        "type": "diagram",
+        "asset": "721d80a848ef6d7e1aadf9811cf0acb5d8b9b66b.jpg",
+        "sha1": "721d80a848ef6d7e1aadf9811cf0acb5d8b9b66b",
+        "source_slide": 41
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Propagation",
+      "source_slides": [
+       42
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S Radio Wave",
+        "source_slide": 42
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Nil Nil",
+      "source_slides": [
+       43
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequency Bands Frequency Band Frequency Range Surface Waves Sky Waves Direct Waves High Frequency (HF) 3-30 MHz Range +/- 200nm Multiple returns Range +/- 2000nm Nil Very High Frequency (VHF) 30-300 MHz Nil Nil Line of sight +10%. Reflects, does not bend. Nil Ionospheric reflection. Ultra High Frequency (UHF) 300-3,000 MHz",
+        "source_slide": 43
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "HF Disadvantages",
+      "source_slides": [
+       44
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Susceptibility of signal:",
+        "source_slide": 44
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Bending",
+        "source_slide": 44
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Reflection",
+        "source_slide": 44
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Atmospheric interference",
+        "source_slide": 44
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Artificial interference",
+        "source_slide": 44
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Constant presence of static",
+        "source_slide": 44
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "High Frequency",
+      "source_slides": [
+       45
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Waves reflect off Ionosphere and Earth’s surface",
+        "source_slide": 45
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Dead space where gap between surface wave and sky wave exists (i.e., no reception)",
+        "source_slide": 45
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Skip distance: distance between “hops” between surface and Ionosphere (no reception in these areas)",
+        "source_slide": 45
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Lower HF band (near 3 MHz) more useful in night, higher HF band useful in day due to Ionosphere height (night effect)",
+        "source_slide": 45
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Long Range HF",
+      "source_slides": [
+       46
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9.png",
+        "sha1": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9",
+        "source_slide": 46
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9.png",
+        "sha1": "6a66c1988190b50f99c894cb72cd6a1eae8c5ce9",
+        "source_slide": 46
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "VHF and UHF",
+      "source_slides": [
+       47
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Generally clear signals are clear of interference",
+        "source_slide": 47
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Range is line of sight +10%",
+        "source_slide": 47
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Higher the transmitter (Tx) and receiver (Rx), the greater the range:",
+        "source_slide": 47
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1.25 x √(Tx) + 1.25 x √(Rx) = VHF signal range",
+        "source_slide": 47
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Words and Phrases",
+      "source_slides": [
+       48
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S",
+        "source_slide": 48
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Pronunciation of Letters",
+      "source_slides": [
+       49,
+       50
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Letter Code Word Pronounced as A Alpha AL fah B Bravo BRAH voh C Charlie CHAR lee or SHAR lee D Delta DELL tah E Echo ECK oh F Foxtrot FOKS trot G Golf golf H Hotel hoh TEL I India IN dee ah J Juliet JEW lee ETT K Kilo KEY loh L Lima LEE mah M Mike mike",
+        "source_slide": 49
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Letter Code Word Pronounced as N November no VEM ber O Oscar OSS car P Papa pah PAH Q Quebec keh BECK R Romeo ROW me oh",
+        "source_slide": 50
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Sierra see AIR rah T Tango TANG go U Uniform YOU nee form or OO nee form V Victor VIK tah W Whiskey WISS key X Xray ECKS ray Y Yankee YANG key Z Zulu ZOO loo",
+        "source_slide": 50
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Pronunciation of Numbers",
+      "source_slides": [
+       51,
+       52
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Number Pronounced as Number Pronounced as 0 ZE-RO 7 SEV en 1 WUN 8 AIT 2 TOO 9 NIN er 3 TREE 10 WUN ZE-RO 4 FOW er Decimal DAY SEE MAL 5 FIFE Hundred HUN dred 6 SIX Thousand TOU SAND",
+        "source_slide": 51
+       },
+       {
+        "type": "diagram",
+        "asset": "a92a60578c061834d0b4808fcac39c52b6b59938.jpg",
+        "sha1": "a92a60578c061834d0b4808fcac39c52b6b59938",
+        "source_slide": 52
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "a92a60578c061834d0b4808fcac39c52b6b59938.jpg",
+        "sha1": "a92a60578c061834d0b4808fcac39c52b6b59938",
+        "source_slide": 52
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Time",
+      "source_slides": [
+       53,
+       54
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "In aviation, the 24-hour clock is used.",
+        "source_slide": 53
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "The beginning of the day is 0000 hours and ending 2400 hours which coincides with 0000 hours for the next day",
+        "source_slide": 53
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Universal Time Coordinate (UTC) is used for all times",
+        "source_slide": 53
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NZST – New Zealand Standard Time (+12 UTC)",
+        "source_slide": 53
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NZDT – New Zealand Daylight Time (+13 UTC)",
+        "source_slide": 53
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "In NZST: 3.30pm on the 10th = 1530 NZST = 0330 UTC on the 10th",
+        "source_slide": 54
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Standard Words and Phrases",
+      "source_slides": [
+       55
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Page 2-3, 2-4",
+        "source_slide": 55
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Immediate – Only when immediate action is required for safety",
+        "source_slide": 55
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Expedite – When you are required to proceed as quickly and SAFELY as possible",
+        "source_slide": 55
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Radio Procedures",
+      "source_slides": [
+       56
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S",
+        "source_slide": 56
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Callsigns",
+      "source_slides": [
+       57,
+       58,
+       59,
+       60
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "All stations have callsigns",
+        "source_slide": 57
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Some are permanently allocated (e.g., ZK-NFO)",
+        "source_slide": 57
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Some alter from flight to flight Mount Cook 5070 – Palmerston Nth –> Auckland Mount Cook 5071 – Auckland –> Palmerston Nth",
+        "source_slide": 57
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "3 “types” of callsign:",
+        "source_slide": 58
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1. Aircraft Registration Letters (e.g., ZK-NFO as “November Foxtrot Oscar”)",
+        "source_slide": 58
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "2. Telephony Designator and Registration Letters (e.g., ZK- ABC as “Fast Air Alpha Bravo Charlie)",
+        "source_slide": 58
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "3. Telephony Designator and Flight Identification (e.g., Air New Zealand ZK-OKC as “New Zealand 315”)",
+        "source_slide": 58
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "All NZ aircraft have “ZK-” following 3 letters.",
+        "source_slide": 59
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ZK is not appended to radio calls.",
+        "source_slide": 59
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "In the initial call, aircraft type should be included. For example: “Cessna 152, November Foxtrot Oscar” or may often “November Foxtrot Oscar, is a Cessna 152”",
+        "source_slide": 59
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Calls after can be abbreviated to November Foxtrot Oscar",
+        "source_slide": 59
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Designator and Rego Letters e.g., KAT-AIR Charlie Delta Echo",
+        "source_slide": 60
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Designator and Flight ID (Must have an Air Operator Certificate) e.g., RUSHAIR WUN FIFE MASSEY SIX ZERO ONE",
+        "source_slide": 60
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Ground Station Callsigns",
+      "source_slides": [
+       61,
+       62
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Control – Control Area and Approach Radar",
+        "source_slide": 61
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Approach – Approach Control",
+        "source_slide": 61
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Arrival – Radar Arrivals",
+        "source_slide": 61
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Departure – Radar Departures",
+        "source_slide": 61
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Tower – Aerodrome Control or/and Approach/Area Control provided by the Tower",
+        "source_slide": 61
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Ground – Surface Movement Control (SMC)",
+        "source_slide": 61
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Ground Station Callsigns",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Radar – Area or Approach Control Radar",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Flight Service – Aerodrome Flight Information Service (NZPP)",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Information – Area flight information service",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Delivery – Clearance Delivery",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Radio – Air ground service",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ATIS – Automatic Terminal Information Service",
+        "source_slide": 62
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "UNICOM – Universal Communication (Non-ATC) e.g. Ardmore",
+        "source_slide": 62
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Frequencies",
+      "source_slides": [
+       63
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 63
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "A/D charts",
+        "source_slide": 63
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Communication Listing GEN 3.7",
+        "source_slide": 63
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "FISCOM GEN 3.4",
+        "source_slide": 63
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "IFR Charts VOL 2 and 3",
+        "source_slide": 63
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Visual Navigation Charts (VNC) or Visual Planning Charts (VPC)",
+        "source_slide": 63
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "FrequenciesAIPNZ Aerodrome Charts",
+      "source_slides": [
+       64
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "67e2dd3028890e16d7fc2faa5713ee97153265ea.jpg",
+        "sha1": "67e2dd3028890e16d7fc2faa5713ee97153265ea",
+        "source_slide": 64
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "67e2dd3028890e16d7fc2faa5713ee97153265ea.jpg",
+        "sha1": "67e2dd3028890e16d7fc2faa5713ee97153265ea",
+        "source_slide": 64
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Aerodrome Charts Vol 4",
+      "source_slides": [
+       65,
+       66
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "02f908749c1b06c1d4bb6f2c7604ec1525f1cf3d.jpg",
+        "sha1": "02f908749c1b06c1d4bb6f2c7604ec1525f1cf3d",
+        "source_slide": 65
+       },
+       {
+        "type": "diagram",
+        "asset": "2070e3af95b87f183c239bedc829311788b49bae.jpg",
+        "sha1": "2070e3af95b87f183c239bedc829311788b49bae",
+        "source_slide": 66
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "02f908749c1b06c1d4bb6f2c7604ec1525f1cf3d.jpg",
+        "sha1": "02f908749c1b06c1d4bb6f2c7604ec1525f1cf3d",
+        "source_slide": 65
+       },
+       {
+        "type": "diagram",
+        "asset": "2070e3af95b87f183c239bedc829311788b49bae.jpg",
+        "sha1": "2070e3af95b87f183c239bedc829311788b49bae",
+        "source_slide": 66
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "FrequenciesCommunication Listings",
+      "source_slides": [
+       67
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "67e2dd3028890e16d7fc2faa5713ee97153265ea.jpg",
+        "sha1": "67e2dd3028890e16d7fc2faa5713ee97153265ea",
+        "source_slide": 67
+       },
+       {
+        "type": "diagram",
+        "asset": "0912a3b831bdcffc0b7a3232d2d8f0667629ba51.png",
+        "sha1": "0912a3b831bdcffc0b7a3232d2d8f0667629ba51",
+        "source_slide": 67
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "67e2dd3028890e16d7fc2faa5713ee97153265ea.jpg",
+        "sha1": "67e2dd3028890e16d7fc2faa5713ee97153265ea",
+        "source_slide": 67
+       },
+       {
+        "type": "diagram",
+        "asset": "0912a3b831bdcffc0b7a3232d2d8f0667629ba51.png",
+        "sha1": "0912a3b831bdcffc0b7a3232d2d8f0667629ba51",
+        "source_slide": 67
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "FrequenciesAerodrome Chart Symbols",
+      "source_slides": [
+       68
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780.png",
+        "sha1": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780",
+        "source_slide": 68
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780.png",
+        "sha1": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780",
+        "source_slide": 68
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Symbols",
+      "source_slides": [
+       69,
+       70,
+       71
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780.png",
+        "sha1": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780",
+        "source_slide": 69
+       },
+       {
+        "type": "diagram",
+        "asset": "d898a3b86a64d61631071c216bdad8398c2037dc.png",
+        "sha1": "d898a3b86a64d61631071c216bdad8398c2037dc",
+        "source_slide": 70
+       },
+       {
+        "type": "diagram",
+        "asset": "0c13c11972f61c6452af869ed88fa58425dd5137.png",
+        "sha1": "0c13c11972f61c6452af869ed88fa58425dd5137",
+        "source_slide": 71
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780.png",
+        "sha1": "a46f4fd4fe4a1f9d4ac4d9690e09d1fcafc53780",
+        "source_slide": 69
+       },
+       {
+        "type": "diagram",
+        "asset": "d898a3b86a64d61631071c216bdad8398c2037dc.png",
+        "sha1": "d898a3b86a64d61631071c216bdad8398c2037dc",
+        "source_slide": 70
+       },
+       {
+        "type": "diagram",
+        "asset": "0c13c11972f61c6452af869ed88fa58425dd5137.png",
+        "sha1": "0c13c11972f61c6452af869ed88fa58425dd5137",
+        "source_slide": 71
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Radio Calls",
+      "source_slides": [
+       72
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 72
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "The initial call",
+        "source_slide": 72
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Reply to the initial call",
+        "source_slide": 72
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "The subsequent call",
+        "source_slide": 72
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Acknowledgement of Receipt of Message",
+        "source_slide": 72
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Corrections/Say again",
+        "source_slide": 72
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Read-Back",
+      "source_slides": [
+       73,
+       74,
+       75
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 73
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "To ensure correct information received and understood.",
+        "source_slide": 73
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If unsure, read-back.",
+        "source_slide": 73
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Items requiring read-back.",
+        "source_slide": 73
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Read back the instructions, followed by your callsign.",
+        "source_slide": 73
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 74
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ATC Departure and Route Clearances.",
+        "source_slide": 74
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Controlled VFR, Level Instructions, SSR Codes and QNH.",
+        "source_slide": 74
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Runway operations.",
+        "source_slide": 74
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Conditional Clearances.",
+        "source_slide": 74
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequency Change Instructions.",
+        "source_slide": 74
+       },
+       {
+        "type": "diagram",
+        "asset": "fe657f5a3efeb963bb4597420c0e9207ed2cc1eb.jpg",
+        "sha1": "fe657f5a3efeb963bb4597420c0e9207ed2cc1eb",
+        "source_slide": 75
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "fe657f5a3efeb963bb4597420c0e9207ed2cc1eb.jpg",
+        "sha1": "fe657f5a3efeb963bb4597420c0e9207ed2cc1eb",
+        "source_slide": 75
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Loss of Radio Communication",
+      "source_slides": [
+       76,
+       77,
+       78
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies Actions to take:",
+        "source_slide": 76
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "FLY THE AIRCRAFT",
+        "source_slide": 76
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Maintain visual separation: Cloud, Terrain, Other aircraft “Lookout”",
+        "source_slide": 76
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Trouble checks",
+        "source_slide": 76
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies Trouble checks:",
+        "source_slide": 77
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Electrical master / Avionics master",
+        "source_slide": 77
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squelch and volume",
+        "source_slide": 77
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Breakers and fuses",
+        "source_slide": 77
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Microphone / Headset plugs",
+        "source_slide": 77
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Terrain shielding",
+        "source_slide": 77
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies If none of these actions are successful, then:",
+        "source_slide": 78
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Change frequency",
+        "source_slide": 78
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Use alternate mic / speaker",
+        "source_slide": 78
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Try another VHF signal (e.g., ATIS)",
+        "source_slide": 78
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Attempt to communicate with other aircraft, use them as a relay",
+        "source_slide": 78
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Transmit blind: prefix calls with “TRANSMITTING BLIND”",
+        "source_slide": 78
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Climb to increase reception range",
+        "source_slide": 78
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Long Range Communications",
+      "source_slides": [
+       79
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 79
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Mountainous terrain, requirement for repeaters.",
+        "source_slide": 79
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Repeater system cannot generally be relied upon below 4000’.",
+        "source_slide": 79
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "FISCOM",
+      "source_slides": [
+       80,
+       81
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "acd246403ad7b17db4a2165e1b8d12bf36b8397d.jpg",
+        "sha1": "acd246403ad7b17db4a2165e1b8d12bf36b8397d",
+        "source_slide": 80
+       },
+       {
+        "type": "diagram",
+        "asset": "e78a76c1ef791ea971daff05fff5657975340dbe.png",
+        "sha1": "e78a76c1ef791ea971daff05fff5657975340dbe",
+        "source_slide": 81
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "acd246403ad7b17db4a2165e1b8d12bf36b8397d.jpg",
+        "sha1": "acd246403ad7b17db4a2165e1b8d12bf36b8397d",
+        "source_slide": 80
+       },
+       {
+        "type": "diagram",
+        "asset": "e78a76c1ef791ea971daff05fff5657975340dbe.png",
+        "sha1": "e78a76c1ef791ea971daff05fff5657975340dbe",
+        "source_slide": 81
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Speechless Technique",
+      "source_slides": [
+       82
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies “Clicks” on microphone:",
+        "source_slide": 82
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "1. “YES” or “ROGER”:",
+        "source_slide": 82
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "2. “NO”:",
+        "source_slide": 82
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "3. “SAY AGAIN”:",
+        "source_slide": 82
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "4. “AT NOMINATED POSITION”:",
+        "source_slide": 82
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Light Signals",
+      "source_slides": [
+       83
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 83
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Used during comms failure.",
+        "source_slide": 83
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Must be memorised, not just for the exam.",
+        "source_slide": 83
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Light signals come from the tower.",
+        "source_slide": 83
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "RED PYROTECHNIC Do not land for time being",
+      "source_slides": [
+       84
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "FrequenciesLight Signals Colour and type Flight procedure Ground procedure SOLID Cleared to land Cleared to takeoff SOLID Give way and continue circling Stop FLASHING Return for landing Cleared to taxi FLASHING Aerodrome unsafe – do not land Taxi clear of landing area in use WHITE FLASHES Land and proceed to apron Return to starting point on aerodrome ALTERNATING RED/GREEN FLASHES Danger – be on alert Danger – be on alert",
+        "source_slide": 84
+       },
+       {
+        "type": "diagram",
+        "asset": "000a9f2f06010bb97f2cc8f725486cbf7cbfff11.jpg",
+        "sha1": "000a9f2f06010bb97f2cc8f725486cbf7cbfff11",
+        "source_slide": 84
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "000a9f2f06010bb97f2cc8f725486cbf7cbfff11.jpg",
+        "sha1": "000a9f2f06010bb97f2cc8f725486cbf7cbfff11",
+        "source_slide": 84
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Radio Test Procedures",
+      "source_slides": [
+       85
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 85
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Preflight check: Listen to radio, check transmissions can be received. If applicable, tune ATIS",
+        "source_slide": 85
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Signal check When airborne and radio check is required",
+        "source_slide": 85
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Maintenance check For maintenance ground checks",
+        "source_slide": 85
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Readability Scale",
+      "source_slides": [
+       86
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 86
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Readability 1 = Unreadable",
+        "source_slide": 86
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Readability 2 = Readable now and then",
+        "source_slide": 86
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Readability 3 = Readable, but with difficulty",
+        "source_slide": 86
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Readability 4 = Readable",
+        "source_slide": 86
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Readability 5 = Perfectly readable",
+        "source_slide": 86
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Listening Watch",
+      "source_slides": [
+       87
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 87
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Dependant on airspace if legal requirement (e.g., MBZ’s, CTA/CTR)",
+        "source_slide": 87
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Is where you “listen out” (i.e., tune into frequency and listen to broadcasts)",
+        "source_slide": 87
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Good airmanship, helps with situational awareness (3-D mental picture) and in case you are contacted",
+        "source_slide": 87
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "TIBA",
+      "source_slides": [
+       88,
+       89,
+       90
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 88
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "TIBA = Traffic Information Broadcasts by Aircraft",
+        "source_slide": 88
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Introduced if a significant disruption to ATS occurs (e.g., fire or earthquake and tower must evacuate)",
+        "source_slide": 88
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "During TIBA, pilot provide own separation",
+        "source_slide": 88
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "For known disruptions (e.g., maintenance of ATS) NOTAM will advise pilots",
+        "source_slide": 88
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 89
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Pink pages in AIP outline TIBA procedures",
+        "source_slide": 89
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies can be found in AIP Vol. 4, use primary airspace frequency",
+        "source_slide": 89
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Maintain listening watch 10min prior to airspace till exit",
+        "source_slide": 89
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies Time of broadcasts:",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "10 minutes prior to controlled airspace entry",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "As soon as possible following takeoff",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "10 minutes prior to crossing reporting point",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "2 to 5 minutes prior to altitude change",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When changing altitude",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Upon reaching required altitude",
+        "source_slide": 90
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Any other time the pilot deems it necessary",
+        "source_slide": 90
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Position Reporting",
+      "source_slides": [
+       91
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S",
+        "source_slide": 91
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Requirement to Broadcast",
+      "source_slides": [
+       92
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 92
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When requesting clearance to enter controlled airspace.",
+        "source_slide": 92
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When requested by ATC when operating in controlled airspace.",
+        "source_slide": 92
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Entry, at specific locations and time periods in an MBZ.",
+        "source_slide": 92
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Prior to entering Restricted or Military Airspace if controlled by ATC.",
+        "source_slide": 92
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Contents of a Position Report",
+      "source_slides": [
+       93
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Identification",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Your position",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Time at position",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Altitude/Level",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Intended Route",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Next position and ETA",
+        "source_slide": 93
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Request Clearance",
+        "source_slide": 93
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Enroute VFR",
+      "source_slides": [
+       94
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 94
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Unattended aerodromes.",
+        "source_slide": 94
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Flight Service Aerodrome.",
+        "source_slide": 94
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Controlled Aerodrome.",
+        "source_slide": 94
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Flight Information",
+      "source_slides": [
+       95
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 95
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Traffic information.",
+        "source_slide": 95
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NOTAM information.",
+        "source_slide": 95
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Some Meteorological information.",
+        "source_slide": 95
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Other significant information.",
+        "source_slide": 95
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "On request, advice relating to questions you may have.",
+        "source_slide": 95
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Alerting Service.",
+        "source_slide": 95
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Broadcast (FISB)",
+      "source_slides": [
+       96
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "FrequenciesFlight Information Service",
+        "source_slide": 96
+       },
+       {
+        "type": "diagram",
+        "asset": "890663e7128376ba6b8f1e16abe91f1bab32397b.jpg",
+        "sha1": "890663e7128376ba6b8f1e16abe91f1bab32397b",
+        "source_slide": 96
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "890663e7128376ba6b8f1e16abe91f1bab32397b.jpg",
+        "sha1": "890663e7128376ba6b8f1e16abe91f1bab32397b",
+        "source_slide": 96
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "VNC",
+      "source_slides": [
+       97,
+       98
+      ],
+      "content": [
+       {
+        "type": "diagram",
+        "asset": "7f9f926d476455d3198c63dbc71063fa6ada7670.jpg",
+        "sha1": "7f9f926d476455d3198c63dbc71063fa6ada7670",
+        "source_slide": 97
+       },
+       {
+        "type": "diagram",
+        "asset": "0de5bc822c46c4b903850298c8d07d9047a5c5c0.jpg",
+        "sha1": "0de5bc822c46c4b903850298c8d07d9047a5c5c0",
+        "source_slide": 98
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "7f9f926d476455d3198c63dbc71063fa6ada7670.jpg",
+        "sha1": "7f9f926d476455d3198c63dbc71063fa6ada7670",
+        "source_slide": 97
+       },
+       {
+        "type": "diagram",
+        "asset": "0de5bc822c46c4b903850298c8d07d9047a5c5c0.jpg",
+        "sha1": "0de5bc822c46c4b903850298c8d07d9047a5c5c0",
+        "source_slide": 98
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Transponder Operations",
+      "source_slides": [
+       99
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 99
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Regardless of position, XPDR should be set to either ON or ALT",
+        "source_slide": 99
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(note ON denotes mode A, ALT denotes mode C)",
+        "source_slide": 99
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "For entrance into controlled airspace with inoperative transponder, “NEGATIVE TRANSPONDER” must be prefixed to their request",
+        "source_slide": 99
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Note codes: 1200 VFR fixed wing, 2200 VFR controlled aerodrome circuit operations",
+        "source_slide": 99
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Aerodromes",
+      "source_slides": [
+       100
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S Radio Procedures –",
+        "source_slide": 100
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Controlled aerodromes",
+      "source_slides": [
+       101,
+       102,
+       103
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 101
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Aerodromes typically controlled due to large amounts of traffic, particularly scheduled IFR operations",
+        "source_slide": 101
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Can determine if an aerodrome has a TWR if listed in AIP chart",
+        "source_slide": 101
+       },
+       {
+        "type": "diagram",
+        "asset": "341a70e901d1680d441afe563e00f8dda43bfbc8.png",
+        "sha1": "341a70e901d1680d441afe563e00f8dda43bfbc8",
+        "source_slide": 101
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 102
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If multiple TWR frequencies listed, the first is the primary, followed by the second etc.",
+        "source_slide": 102
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "TWR hours on watch found in AIP supplement and amendments issued where applicable via NOTAM",
+        "source_slide": 102
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When flying in vicinity of a controlled aerodrome, maintain listening watch (or watch for light signals where comms have failed).",
+        "source_slide": 102
+       },
+       {
+        "type": "diagram",
+        "asset": "fcc13f24943aee92bb8b7ab08afd608d3ce93993.jpg",
+        "sha1": "fcc13f24943aee92bb8b7ab08afd608d3ce93993",
+        "source_slide": 103
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "341a70e901d1680d441afe563e00f8dda43bfbc8.png",
+        "sha1": "341a70e901d1680d441afe563e00f8dda43bfbc8",
+        "source_slide": 101
+       },
+       {
+        "type": "diagram",
+        "asset": "fcc13f24943aee92bb8b7ab08afd608d3ce93993.jpg",
+        "sha1": "fcc13f24943aee92bb8b7ab08afd608d3ce93993",
+        "source_slide": 103
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "•The statement: “ON FIRST CONTACT WITH […] NOTIFY RECEIPT OF […]",
+      "source_slides": [
+       104
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "FrequenciesAutomatic Terminal Information Service (ATIS) •Aerodrome •Issue receipt code letter •Issue time •Approach type to be expected •Active runway •Surface conditions •Other operational information •Surface wind (in degrees magnetic) •Visibility •Present weather •Cloud •Temperature and dew point •QNH •2,000-foot wind",
+        "source_slide": 104
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "FrequenciesAutomatic Terminal",
+      "source_slides": [
+       105
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Information Service (ATIS) •E.g. PALMERSTON INFORMATION DELTA ISSUED AT 0115, EXPECT RNAV APPROACH RUNWAY 07, SURFACE CONDITIONS WET, GROUND NOT OPERATING, GRASS RUNWAY CLOSED, SURFACE WIND 060 DEGREES 20 GUSTING 30, VISIBILITY 5 KILOMETERS REDUCING 1000 METERS IN RAIN, PRESENT WEATHER THUNDERSTORMS IN THE VICINITY, CLOUD FEW AT 500 FEET, SCATTERED AT 2000 FEET TCU, TEMPERATURE 5 DEW POINT 4, QNH 996, FORECAST 2000 FOOT WIND 060 DEGREES 40 GUSTING 60, ON FIRST CONTACT WITH PALMERSTON TOWER OR OHAKEA APPROACH NOTIFY RECEIPT OF DELTA.",
+        "source_slide": 105
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Controlled aerodromes",
+      "source_slides": [
+       106,
+       107,
+       108
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies Initial call (after establishing communications)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Station being addressed (e.g., Palmerston Tower)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Station calling (e.g., Foxtrot Tango Mike)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Position (e.g., at Northern Hangars)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Request (e.g., request taxi for 27 departure)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Time (e.g., time 32 – note time in minutes past the hour)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Persons On Board (e.g., POB 3)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Receipt of ATIS (e.g., Delta, QNH996)",
+        "source_slide": 106
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 107
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NOTE: with readbacks for clearances, instructions are to be read back prior to your call sign",
+        "source_slide": 107
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "e.g., 1. Runway 25 cleared for takeoff, Foxtrot Tango Mike",
+        "source_slide": 107
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "e.g., 2. Taxi hold point bravo 3, Foxtrot Tango Mike",
+        "source_slide": 107
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 108
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "For a clearance: Listen → Understand → Readback → Execute instruction",
+        "source_slide": 108
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If you do not understand the instruction, ask for clarification e.g., “Palmerston tower Foxtrot Tango Mike, say again”",
+        "source_slide": 108
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "FIS aerodromes",
+      "source_slides": [
+       109,
+       110
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 109
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Aerodrome Flight Information Service (AFIS) exists where there is a Flight Service Station (FSS) at the aerodrome",
+        "source_slide": 109
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Note the aerodrome is still uncontrolled, but attended giving rise to a term “uncontrolled attended aerodrome”",
+        "source_slide": 109
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "… “a service provided for the purpose of giving advice and information useful for the safe and efficient conduct of flights in the vicinity of an aerodrome”",
+        "source_slide": 109
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Hours of service will be in AIP supplement with amendments in NOTAMS",
+        "source_slide": 109
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 110
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "AFIS will not give you clearances but will give you useful information pertaining to flight.",
+        "source_slide": 110
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Ensure that you advise your intentions to AFIS, as they can give this information to other aircraft as well as other aircraft on a listening watch receiving this information.",
+        "source_slide": 110
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Unattended aerodromes",
+      "source_slides": [
+       111,
+       112
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 111
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "For unattended aerodromes: will say “UNATTENDED” at top of AIP chart",
+        "source_slide": 111
+       },
+       {
+        "type": "diagram",
+        "asset": "bfd6f1db9b7150bd671eb70a7911f2cce85ddd9f.jpg",
+        "sha1": "bfd6f1db9b7150bd671eb70a7911f2cce85ddd9f",
+        "source_slide": 111
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 112
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Advise other traffic of your intentions:",
+        "source_slide": 112
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Use “PAI”: Position, Altitude, Intentions for radio calls.",
+        "source_slide": 112
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "bfd6f1db9b7150bd671eb70a7911f2cce85ddd9f.jpg",
+        "sha1": "bfd6f1db9b7150bd671eb70a7911f2cce85ddd9f",
+        "source_slide": 111
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "(MBZ)",
+      "source_slides": [
+       113
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 113
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Established around uncontrolled aerodromes with high intensity traffic. Must transmit position and intentions on specified frequency:",
+        "source_slide": 113
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "On entry",
+        "source_slide": 113
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Joining circuit",
+        "source_slide": 113
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Entering runway for takeoff",
+        "source_slide": 113
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "At the specified time intervals Mandatory Broadcast Zones",
+        "source_slide": 113
+       },
+       {
+        "type": "diagram",
+        "asset": "8341acd2a68e1356769337bf6d2ecfab6354041c.jpg",
+        "sha1": "8341acd2a68e1356769337bf6d2ecfab6354041c",
+        "source_slide": 113
+       },
+       {
+        "type": "diagram",
+        "asset": "07075b6481b61bbf8f77fb2cace88686387fb088.jpg",
+        "sha1": "07075b6481b61bbf8f77fb2cace88686387fb088",
+        "source_slide": 113
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "8341acd2a68e1356769337bf6d2ecfab6354041c.jpg",
+        "sha1": "8341acd2a68e1356769337bf6d2ecfab6354041c",
+        "source_slide": 113
+       },
+       {
+        "type": "diagram",
+        "asset": "07075b6481b61bbf8f77fb2cace88686387fb088.jpg",
+        "sha1": "07075b6481b61bbf8f77fb2cace88686387fb088",
+        "source_slide": 113
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "(UNICOM)",
+      "source_slides": [
+       114
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 114
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "A base radio staffed by qualified personnel (note not ATS personnel)",
+        "source_slide": 114
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "May be augmented with an AWIB [see next slide]",
+        "source_slide": 114
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "UNICOM can only give information, not clearances",
+        "source_slide": 114
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Occasionally an Aerodrome Frequency Response Unit (AFRU) known as a “beep back” unit will beep either after calls or at a specified time period to acknowledge your call on that frequency Universal Communication",
+        "source_slide": 114
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Information Broadcast (AWIB)",
+      "source_slides": [
+       115
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 115
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Used at uncontrolled aerodromes, and is similar to an ATIS",
+        "source_slide": 115
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Information given varies, as well as how to obtain information varies – refer to aerodrome plates in AIP Aerodrome and Weather",
+        "source_slide": 115
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "(CFZ)",
+      "source_slides": [
+       116
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 116
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Not a legal requirement to transmit on this frequency, but established so aircraft in area can communicate and maintain a listening watch on a dedicated frequency Common Frequency Zone",
+        "source_slide": 116
+       },
+       {
+        "type": "diagram",
+        "asset": "9c02fb6e894ad33e2dc1c71a0b857482695cda80.jpg",
+        "sha1": "9c02fb6e894ad33e2dc1c71a0b857482695cda80",
+        "source_slide": 116
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "9c02fb6e894ad33e2dc1c71a0b857482695cda80.jpg",
+        "sha1": "9c02fb6e894ad33e2dc1c71a0b857482695cda80",
+        "source_slide": 116
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Controlled Airspace",
+      "source_slides": [
+       117
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S Radio Procedures –",
+        "source_slide": 117
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Zealand",
+      "source_slides": [
+       118
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 118
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "In the New Zealand FIR (Flight Information Region), 2 classes of controlled airspace exist: Class C and Class D",
+        "source_slide": 118
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Any airspace that touches the surface is known as a Controlled Zone (CTR)",
+        "source_slide": 118
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Airspace that does not contact the surface is known as a Controlled Area (CTA) Controlled airspace in New",
+        "source_slide": 118
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Clearance Requirements",
+      "source_slides": [
+       119
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies Items required in clearance request for a CTA/CTR:",
+        "source_slide": 119
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Call sign (with discrete SSR code if applicable)",
+        "source_slide": 119
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Position",
+        "source_slide": 119
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Level (altitude)",
+        "source_slide": 119
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Intended route",
+        "source_slide": 119
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Destination",
+        "source_slide": 119
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Clearance request",
+        "source_slide": 119
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "requirements",
+      "source_slides": [
+       120
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 120
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Procedural airspace – airspace where ATC does not have radar coverage",
+        "source_slide": 120
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ATC must be informed when arriving overhead points cleared to by ATC (e.g., if cleared to transit via. Havelock north, report overhead Havelock North)",
+        "source_slide": 120
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ATC must be informed when reaching and leaving assigned altitudes Procedural airspace",
+        "source_slide": 120
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "ATC Phraseology",
+      "source_slides": [
+       121
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Cleared on track…",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Cleared at [ALT]…",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Cleared at or below [ALT]…",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Descent to [ALT]/ Climb to [ALT]",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "When ready…",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Report your level",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Identified",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Fly heading",
+        "source_slide": 121
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Resume own navigation",
+        "source_slide": 121
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "XPDR Phraseology",
+      "source_slides": [
+       122
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk [CODE]",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Reset Squawk [CODE]",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Confirm Squawk [CODE]",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk Charlie",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk [CODE] and IDENT",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Confirm [level]",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check altimeter setting and confirm",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Stop Squawk / Stop Squawk Charlie wrong indication",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk normal",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk Standby",
+        "source_slide": 122
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk Mayday",
+        "source_slide": 122
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Procedures",
+      "source_slides": [
+       123
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S Emergency Radio",
+        "source_slide": 123
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "safety of the aircraft",
+      "source_slides": [
+       124
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S The pilot in command is ultimately responsible for the",
+        "source_slide": 124
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Declaring an emergency",
+      "source_slides": [
+       125
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 125
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Distress call: “MAYDAY”",
+        "source_slide": 125
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Urgency call: “PAN-PAN”",
+        "source_slide": 125
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "XPDR code for emergency 7700",
+        "source_slide": 125
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "In an emergency or in case of impending emergency, activate the 406 MHz ELT",
+        "source_slide": 125
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "You can upgrade a PAN-PAN to MAYDAY or downgrade a MAYDAY to PAN-PAN",
+        "source_slide": 125
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "The MAYDAY call",
+      "source_slides": [
+       126,
+       127,
+       128
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 126
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Should be transmitted when in grave or imminent danger and require immediate assistance",
+        "source_slide": 126
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Should be transmitted over the air-ground frequency you are currently using. Note CFZ and MBZ frequencies may not be monitored by ATS, consideration can be given to changing to a monitored frequency",
+        "source_slide": 126
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "International emergency frequency 121.5 MHz",
+        "source_slide": 126
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Squawk 7700",
+        "source_slide": 126
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Switch ELT on",
+        "source_slide": 126
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "MAYDAY MAYDAY MAYDAY",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "[Station to be addressed]",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "[Your call sign]",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Nature of condition",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Intentions",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Position, altitude and heading.",
+        "source_slide": 127
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NOTE: you can abbreviate the call depending on the emergency severity, but ensure MAYDAY, callsign and position are mentioned",
+        "source_slide": 127
+       },
+       {
+        "type": "diagram",
+        "asset": "d625783a4a6099518c5d0baae3442a9f276caad2.jpg",
+        "sha1": "d625783a4a6099518c5d0baae3442a9f276caad2",
+        "source_slide": 128
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "d625783a4a6099518c5d0baae3442a9f276caad2.jpg",
+        "sha1": "d625783a4a6099518c5d0baae3442a9f276caad2",
+        "source_slide": 128
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Imposition of radio silence",
+      "source_slides": [
+       129
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If another aircraft makes a MAYDAY call, ensure there are no other transmissions on frequency",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ATC and other aircraft can make the call “All stations, [name of transmitter], stop transmitting, MAYDAY” to alert aircraft when necessary",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Stations uninvolved with the distress may resume communications when:",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Distress is cancelled or distress traffic terminated [DISTRESS TRAFFIC ENDED]",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Distress traffic has been transferred to another frequency",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Station controlling comms has given permission",
+        "source_slide": 129
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "It must render assistance itself",
+        "source_slide": 129
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "The PAN-PAN call",
+      "source_slides": [
+       130,
+       131,
+       132
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 130
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Should be transmitted to alert services to a potential threat to aircraft, where immediate assistance is not required",
+        "source_slide": 130
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Should be transmitted over the air-ground frequency you are currently using. Note CFZ and MBZ frequencies may not be monitored by ATS, consideration can be given to changing to a monitored frequency",
+        "source_slide": 130
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "International emergency frequency 121.5 MHz",
+        "source_slide": 130
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If necessary, PAN-PAN can be upgraded to MAYDAY; in which case the MAYDAY procedures can be followed.",
+        "source_slide": 130
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "PAN-PAN, PAN-PAN, PAN-PAN",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "[Station to be addressed]",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "[Your call sign]",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Nature of condition",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Intentions",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Position, altitude and heading",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Other useful information",
+        "source_slide": 131
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "NOTE: you can abbreviate the call depending on the emergency severity, but ensure PAN-PAN, callsign and position are mentioned",
+        "source_slide": 131
+       },
+       {
+        "type": "diagram",
+        "asset": "a03613499bb788e83bf6fc55f489d4bd9197abc6.png",
+        "sha1": "a03613499bb788e83bf6fc55f489d4bd9197abc6",
+        "source_slide": 132
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "a03613499bb788e83bf6fc55f489d4bd9197abc6.png",
+        "sha1": "a03613499bb788e83bf6fc55f489d4bd9197abc6",
+        "source_slide": 132
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Transmitter (ELT)",
+      "source_slides": [
+       133,
+       134
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 133
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ELT (AF) fixed in aircraft and will activate automatically under strong deceleration",
+        "source_slide": 133
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Have independent battery source that must be tested every 12 months",
+        "source_slide": 133
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Transmits on international emergency frequencies:",
+        "source_slide": 133
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "121.5 MHz continuously and 406.0 MHz (UHF Band) once every 50 seconds",
+        "source_slide": 133
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "The 406MHz transmissions are received by the Cospas- Sarsat satellite constellation, with data sent to the Rescue Coordination Centre (RCCNZ) The Emergency Locator",
+        "source_slide": 133
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 134
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Have ARM and ON positions → due to automatic activation under deceleration, unit is permanently armed",
+        "source_slide": 134
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Some may have RESET or TEST functions",
+        "source_slide": 134
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If necessary, ELT can be switched “ON” in flight and RCCNZ will be alerted with Search and Rescue services commenced",
+        "source_slide": 134
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Should the situation be rectified, the ELT transmissions can be switched off by returning the switch to “ARM”, however ensure to contact ATC and RCCNZ as SAR efforts will continue until you do so The Emergency Locator",
+        "source_slide": 134
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Inadvertent ELT activation",
+      "source_slides": [
+       135
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 135
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check status light for flashing (if applicable)",
+        "source_slide": 135
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Check 121.5 MHz for ELT signal",
+        "source_slide": 135
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "If reset required, turn switch “ON” for no longer than 5 seconds, then return to “ARM”. Signal and light should then stop",
+        "source_slide": 135
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Notify ATC and RCCNZ of inadvertent activation as soon as possible",
+        "source_slide": 135
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "ELT self test",
+      "source_slides": [
+       136,
+       137
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 136
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Restricted to first 5 minutes of the hour",
+        "source_slide": 136
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Ensure switch set to “ARM”",
+        "source_slide": 136
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Select 121.5 MHz on COMM",
+        "source_slide": 136
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Switch ELT to “ON”, listen for 3 “sweeps” of the siren, then switch ELT back to “ARM”",
+        "source_slide": 136
+       },
+       {
+        "type": "diagram",
+        "asset": "2345d710ba2a0a93241b5f57f792ef7fcf87d575.jpg",
+        "sha1": "2345d710ba2a0a93241b5f57f792ef7fcf87d575",
+        "source_slide": 137
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "2345d710ba2a0a93241b5f57f792ef7fcf87d575.jpg",
+        "sha1": "2345d710ba2a0a93241b5f57f792ef7fcf87d575",
+        "source_slide": 137
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Pilot Responsibilities",
+      "source_slides": [
+       138
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "S",
+        "source_slide": 138
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Regulatory requirements",
+      "source_slides": [
+       139
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 139
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Non- crew cannot operate radio equipment unless they have passed the FRTO exam or are being trained in how to use the radio",
+        "source_slide": 139
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "6 levels of English language proficiency: 6 being the highest standard of proficiency.",
+        "source_slide": 139
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ICAO ELP level 4 is the minimum standard acceptable to hold a NZ PPL.",
+        "source_slide": 139
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "communications",
+      "source_slides": [
+       140
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 140
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Pilot in command has responsibility for radio communications The following transmissions are unauthorised and prohibited:",
+        "source_slide": 140
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Profane/Obscene language",
+        "source_slide": 140
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Deceptive/false transmissions",
+        "source_slide": 140
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Improper use of callsign of another aircraft or station",
+        "source_slide": 140
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Non-pertinent to operational requirements",
+        "source_slide": 140
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Personal communications Responsibility of",
+        "source_slide": 140
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Secrecy of communications",
+      "source_slides": [
+       141
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Frequencies",
+        "source_slide": 141
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "You are not allowed to share the contents of any radio message you have received unless given authorisation to do so",
+        "source_slide": 141
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "It is unlawful for the pilot to divulge any detail pertaining to radio communications; bear this in mind if around an accident or incident",
+        "source_slide": 141
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Note: this applies to talking to friends and family about radio communications",
+        "source_slide": 141
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     }
+    ]
+   },
+   {
+    "module": "Civil Aviation Rules",
+    "source_slide": 142,
+    "lessons": [
+     {
+      "title": "intended to be used;",
+      "source_slides": [
+       143
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Part 91.217 (5);",
+        "source_slide": 143
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "91.217 Pre-flight action",
+        "source_slide": 143
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Before commencing a flight, a pilot-in-command of an aircraft must obtain and become familiar with all information concerning that flight including—",
+        "source_slide": 143
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(5) the status of the communication and navigation facilities",
+        "source_slide": 143
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Part 91.243;",
+      "source_slides": [
+       144
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "ATC light signals Each pilot of an aircraft shall comply with the clearance or instruction specified for ATC light signals in Table 1. Table 1. ATC light signals.",
+        "source_slide": 144
+       },
+       {
+        "type": "diagram",
+        "asset": "d107af2cd9f38c8be7e329c9635196fe41d4f5e6.png",
+        "sha1": "d107af2cd9f38c8be7e329c9635196fe41d4f5e6",
+        "source_slide": 144
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "d107af2cd9f38c8be7e329c9635196fe41d4f5e6.png",
+        "sha1": "d107af2cd9f38c8be7e329c9635196fe41d4f5e6",
+        "source_slide": 144
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Part 91.245 (b), (c), & (d)",
+      "source_slides": [
+       145,
+       146
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Operations in controlled airspace",
+        "source_slide": 145
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(a) Except as provided in paragraphs (e) and (f), a pilot-in-command of an aircraft must not enter a control area or control zone designated under Part 71 unless the pilot-in-command obtains an ATC clearance to enter the control area or control zone.",
+        "source_slide": 145
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(b) A pilot-in-command of an aircraft operating in Class A airspace must—",
+        "source_slide": 145
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) operate the aircraft under IFR; and",
+        "source_slide": 145
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) unless otherwise authorised by the ATC unit responsible for the class A airspace, maintain two-way communications with that ATC unit on the appropriate frequency.",
+        "source_slide": 145
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(c) A pilot-in-command of an aircraft that operates in the following classes of airspace must maintain two-way radio communications with the Civil Aviation Rules Part 91 CAA Consolidation 30 October 2017 56 CAA of NZ ATC unit responsible for the airspace concerned on the appropriate frequency unless otherwise authorised by the ATC unit:",
+        "source_slide": 146
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) Class B, C, or D airspace:",
+        "source_slide": 146
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) Class E airspace under IFR.",
+        "source_slide": 146
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(d) If different classes of airspace adjoin one above the other, a pilot operating at the common level may comply with the requirements of the less restrictive class of airspace.",
+        "source_slide": 146
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(e) A pilot of an aircraft operating under VFR does not require an ATC clearance to enter a control area that is classified under Part 71 as class E airspace.",
+        "source_slide": 146
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(f) Airspace within a control area and a control zone becomes uncontrolled class G airspace during those times when an air traffic control service is not being provided within that control area or control zone.",
+        "source_slide": 146
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Part 91.247;",
+      "source_slides": [
+       147,
+       148,
+       149
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Use of SSR transponder and altitude reporting equipment",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(a) Except as provided in paragraph (e), a pilot-in-command of an aircraft operating in transponder-mandatory airspace designated under Part 71 must, unless otherwise authorised or instructed by ATC—",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) operate the transponder—",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(i) in Mode A and Mode C; or",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(ii) in Mode S if the aircraft is equipped with Mode S equipment and allocated a unique Mode S code referred to in paragraph (b); and",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) except if paragraph (3) applies or if operating Mode S equipment, set the transponder SSR code—",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(i) to the code assigned by ATC for the flight; or",
+        "source_slide": 147
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(ii) if not assigned a code by ATC, in accordance with Table 2; and",
+        "source_slide": 148
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(3) in the event of an in-flight emergency, loss of radio communications, or an act of unlawful interference, set the transponder to the appropriate code in accordance with Table 3.",
+        "source_slide": 148
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(b) A person must not operate an aircraft with Mode S transponder equipment installed unless the State of registry has assigned the aircraft a unique Mode S address code.",
+        "source_slide": 148
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(c) A pilot-in-command of an aircraft intending to operate the aircraft without an operable transponder in transponder mandatory airspace that is within controlled airspace must obtain specific authorisation from the ATC unit having jurisdiction over the relevant airspace as part of the ATC clearance to enter that airspace.",
+        "source_slide": 148
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(d) A pilot-in-command of an aircraft operating in transponder mandatory airspace must immediately advise the ATC unit having jurisdiction over the relevant airspace of any failure or partial failure of the transponder equipment.",
+        "source_slide": 148
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(e) Unless otherwise required by ATC, only 1 of the aircraft in a formation flight is required to operate a transponder in accordance with paragraph (a).",
+        "source_slide": 148
+       },
+       {
+        "type": "diagram",
+        "asset": "c262ba980396ba5c3947fe476162e012ac368ab1.png",
+        "sha1": "c262ba980396ba5c3947fe476162e012ac368ab1",
+        "source_slide": 149
+       },
+       {
+        "type": "diagram",
+        "asset": "5a2d5e0c7747b1fc91bd708d0175c48efb9e244b.png",
+        "sha1": "5a2d5e0c7747b1fc91bd708d0175c48efb9e244b",
+        "source_slide": 149
+       }
+      ],
+      "diagrams": [
+       {
+        "type": "diagram",
+        "asset": "c262ba980396ba5c3947fe476162e012ac368ab1.png",
+        "sha1": "c262ba980396ba5c3947fe476162e012ac368ab1",
+        "source_slide": 149
+       },
+       {
+        "type": "diagram",
+        "asset": "5a2d5e0c7747b1fc91bd708d0175c48efb9e244b.png",
+        "sha1": "5a2d5e0c7747b1fc91bd708d0175c48efb9e244b",
+        "source_slide": 149
+       }
+      ],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "letters of the aircraft registration marking .e.g. Cessna 152 NFO",
+      "source_slides": [
+       150,
+       151
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Part 91.249 (a) & (b);",
+        "source_slide": 150
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Aircraft callsigns",
+        "source_slide": 150
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(a) If required to communicate by radiotelephony under the Civil Aviation Rules, a pilot-in-command of a New Zealand registered aircraft must use 1 of the following radiotelephony callsigns—",
+        "source_slide": 150
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) the telephony designator of the aircraft operating agency as approved by the Director, followed by the flight identification; e.g. Chatams 713 or",
+        "source_slide": 150
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) the telephony designator of the aircraft operating agency as approved by the Director followed by the last 3 letters of the aircraft registration marking; e.g. Chatams NFO or",
+        "source_slide": 150
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(3) the name of the aircraft manufacturer, or the aircraft model, and the last 3",
+        "source_slide": 150
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(b) Notwithstanding paragraph (a)(2), the pilot-in-command may, after establishing two-way communication with an appropriate ATS unit, use an abbreviated callsign consisting of the last 3 letters of the aircraft registration marking.",
+        "source_slide": 151
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(c) The Director may only approve the callsigns prescribed in paragraphs (a)(1) and (2) for the use of—",
+        "source_slide": 151
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) the holder of an air operator certificate issued under Part 119 or Part 129 conducting— (i) a regular air transport service; or (ii) a search and rescue flight; or Civil Aviation Rules Part 91 CAA Consolidation 30 October 2017 63 CAA of NZ (iii) a medical transfer or medical emergency flight; and",
+        "source_slide": 151
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) aircraft being flown on a police operation that is authorised by the Commissioner of Police. (d) An applicant for the approval of a telephony designator must submit to the Director in writing the name of the aircraft operating agency and a payment of the appropriate application fee prescribed by regulations made under the Act.",
+        "source_slide": 151
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Part 91.513;",
+      "source_slides": [
+       152
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "VFR communication equipment",
+        "source_slide": 152
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(a) Unless authorised by ATC to operate under VFR without radio communication, an aircraft operating under VFR in controlled airspace classified under Part 71 as Class B, C, D, or in Class E airspace at night, must be equipped with radio communications equipment that—",
+        "source_slide": 152
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) meets level 1 or 2 standards specified in Appendix A, A.9; and (2) is capable of providing continuous two-way communications with an appropriate ATC unit.",
+        "source_slide": 152
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(b) An aircraft operating under VFR outside controlled airspace must be equipped with radio communications equipment that meets level 1 or 2 standards specified in Appendix A, A.9 if the equipment is to be used for communication with any ATS unit.",
+        "source_slide": 152
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Part 91.515;",
+      "source_slides": [
+       153
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Communication and navigation equipment",
+        "source_slide": 153
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "VFR over water An aircraft operating under VFR over water, at a distance that is more than 30 minutes flying time from the nearest shore, must be equipped with—",
+        "source_slide": 153
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) communication equipment that—",
+        "source_slide": 153
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(i) meets level 1 or 2 standards specified in Appendix A, A.9; and",
+        "source_slide": 153
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(ii) is capable of providing continuous two-way communications with an appropriate ATS unit or aeronautical telecommunications facility; and",
+        "source_slide": 153
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) navigation equipment that is capable of being used to navigate the aircraft in accordance with the flight plan.",
+        "source_slide": 153
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     },
+     {
+      "title": "Part 91.529;",
+      "source_slides": [
+       154,
+       155,
+       156,
+       157
+      ],
+      "content": [
+       {
+        "type": "text",
+        "level": 0,
+        "content": "Emergency locator transmitter",
+        "source_slide": 154
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(a) A person must not operate an aircraft without an ELT(AF) installed in the aircraft except as provided in paragraphs (b), (d), and (e), rule 121.353(b), and rule 129.109. (b) An aircraft may be operated without an ELT(AF) installed if—",
+        "source_slide": 154
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) the operation is to ferry the aircraft from the place where the operator takes possession of the aircraft to a place where an ELT(AF) is to be installed; and",
+        "source_slide": 154
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) the aircraft does not carry any passenger.",
+        "source_slide": 154
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(c) Despite rule 91.501(4), an aircraft may be operated with an inoperative ELT(AF) if— (3) the operation is to ferry the aircraft from a place where repairs or replacement of the ELT cannot be made to a place where the repairs or replacement can be made; and",
+        "source_slide": 154
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(4) the aircraft does not carry any passenger.",
+        "source_slide": 154
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(d) Despite rule 91.501(4) and paragraph (a), an aircraft may be operated without an operable ELT(AF) for a period of not more than 7 days if the aircraft is equipped with an ELT(S) or PLB that is accessible to any person on board the aircraft. (e) Paragraph (a) does not apply to the following aircraft:",
+        "source_slide": 155
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) an aircraft that is equipped with no more than 1 seat if the pilot is equipped with an ELT(S) or PLB:",
+        "source_slide": 155
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) a glider or microlight aircraft if at least 1 person carried in the glider or microlight aircraft is equipped with an ELT(S) or PLB:",
+        "source_slide": 155
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(3) a glider, or powered aircraft, including a microlight aircraft, that is equipped with no more than 2 seats, if the glider or powered aircraft is operated not more than 10 nm from the aerodrome from which the glider or powered aircraft took off: (4) a manned free balloon.",
+        "source_slide": 155
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(f) A holder of a certificate of registration for a New Zealand registered aircraft that is equipped with an ELT(AF), or carries an ELT(S), EPIRB, or PLB that operates on 406 MHz must not operate the aircraft unless—",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) for an ELT(AF) or ELT(S), the ELT is coded with the International Telecommunication Union (ITU) country code for New Zealand, and any of the following: Civil Aviation Rules Part 91 CAA Consolidation 30 October 2017 104 CAA of NZ (i) the ELT serial number:",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(ii) the 24-bit aircraft address:",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(iii) the ICAO aircraft operating agency designator and a serial number allocated by the operator:",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(iv) the aircraft nationality and registration marks; and",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(2) for an EPIRB or PLB, the EPIRB or PLB is coded with—",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(i) the International Telecommunication Union (ITU) country code for New Zealand; and",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(ii) a unique code to identify the EPIRB or PLB; and",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(3) the holder of the certificate of registration has notified the Rescue Coordination Centre New Zealand of—",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(i) the code, in accordance with paragraph (f)(1) or (f)(2), for each ELT, EPIRB, or PLB that is installed or carried in the aircraft; and (ii) the name and emergency contact details of the aircraft operator..",
+        "source_slide": 156
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(g) A person must not operate a foreign aircraft in New Zealand that is equipped with or carries an ELT that operates on 406 MHz unless the ELT is coded with—",
+        "source_slide": 157
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(1) the International Telecommunication Union (ITU) country code of the State of registry; and (2) any of the following:",
+        "source_slide": 157
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(i) the ELT serial number:",
+        "source_slide": 157
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(ii) the 24-bit aircraft address:",
+        "source_slide": 157
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(iii) the ICAO aircraft operating agency designator and a serial number allocated by the operator: Civil Aviation Rules Part 91 CAA Consolidation 30 October 2017 105 CAA of NZ",
+        "source_slide": 157
+       },
+       {
+        "type": "text",
+        "level": 0,
+        "content": "(iv) the aircraft nationality and registration marks",
+        "source_slide": 157
+       }
+      ],
+      "diagrams": [],
+      "tables": [],
+      "media": []
+     }
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,21 @@
+import { defineConfig } from "vitest/config";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "."),
+      // `server-only` throws by design outside a server bundle. The modules
+      // under test are pure functions, so stub the guard out for unit runs.
+      "server-only": path.resolve(__dirname, "tests/unit/stubs/server-only.ts"),
+    },
+  },
+  test: {
+    include: ["tests/unit/**/*.test.ts"],
+    environment: "node",
+    globals: false,
+  },
+});

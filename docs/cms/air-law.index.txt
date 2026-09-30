@@ -1,0 +1,327 @@
+Course Name: PPL Air Law
+Source File: PPLLawPowerPointNew_Professional.pptx
+Total Slides/Pages: 381
+
+01. Course Information
+    01.1 PPL Air Law   [slides 1]
+    01.2 70 Minutes   [slides 2]
+
+02. Aviation Legislation
+    02.1 Organisations   [slides 4-5]
+    02.2 National Briefing Office   [slides 6]
+    02.3 Promulgation of Orders   [slides 7]
+    02.4 Civil Aviation Act 2023   [slides 8]
+    02.5 Civil Aviation Rules (CA Rules)   [slides 9-10]
+    02.6 Advisory Circulars (ACs)   [slides 11-12]
+    02.7 NZ Aeronautical Information Publication (NZAIP)   [slides 13-15]
+    02.8 NOTAMs   [slides 16-18]
+    02.9 Aeronautical Information Circulars (AIC)   [slides 19-20]
+    02.10 Currency of Documents   [slides 21]
+    02.11 Definitions   [slides 22]
+    02.12 Abbreviations   [slides 23]
+    02.13 Units of Measurement   [slides 24-25]
+    02.14 Time System   [slides 26]
+    02.15 Aircraft Operation and CA Rules   [slides 27]
+    02.16 CAA Act 2023 
+ Offences & Penalties   [slides 28]
+
+03. Licences and Ratings
+    03.1 Definitions   [slides 30-32]
+    03.2 Licences   [slides 33-34]
+    03.3 Ratings   [slides 35]
+    03.4 Written Examinations   [slides 36]
+    03.5 Pilot logbooks   [slides 37-39]
+    03.6 Student Pilots   [slides 40-42]
+    03.7 Private Pilot Licence (PPL)   [slides 43-48]
+    03.8 Aircraft Type Ratings   [slides 49-50]
+    03.9 Aerobatics Rating   [slides 51-52]
+    03.10 Aerobatics Privileges and Limitations Exercise   [slides 53]
+    03.11 Examination for proficiency   [slides 54]
+    03.12 Cost Sharing   [slides 55]
+
+04. Competency & Currency
+    04.1 Recent Flight Experience   [slides 57-58]
+    04.2 Maintenance of Pilot Skills   [slides 59-60]
+    04.3 Use of lower licence or rating   [slides 61]
+    04.4 Lapsed Licences   [slides 62]
+
+05. Medical Requirements
+    05.1 Medical Requirements   [slides 64]
+    05.2 Class 1 Medical   [slides 65]
+    05.3 Class 2 Medical   [slides 66]
+    05.4 Class 3 Medical   [slides 67-68]
+
+06. Definitions and Documentation
+    06.1 Definitions   [slides 70-73]
+    06.2 Documents to be Carried   [slides 74]
+    06.3 Certificate of Registration   [slides 75-76]
+    06.4 The Airworthiness Certificate   [slides 77]
+    06.5 Aircraft airworthiness   [slides 78-79]
+    06.6 Standard Category   [slides 80]
+    06.7 Restricted Category   [slides 81-82]
+    06.8 Special Category   [slides 83]
+    06.9 Special Flight Permit   [slides 84-86]
+    06.10 Technical Log   [slides 87-88]
+    06.11 The Flight Manual   [slides 89]
+    06.12 Aircraft Markings   [slides 90]
+    06.13 Aircraft Callsigns   [slides 91]
+    06.14 Type C   [slides 92]
+    06.15 Type B   [slides 93]
+    06.16 Type A   [slides 94]
+    06.17 Type Certificate 
+& Type Acceptance Certificate   [slides 95]
+    06.18 Type Certificate & Type Acceptance Certificate   [slides 96]
+
+07. Aircraft Maintenance
+    07.1 Aircraft Maintenance   [slides 98-99]
+    07.2 Pilot Maintenance   [slides 100-101]
+    07.3 Release to Service   [slides 102]
+    07.4 Operation After Maintenance   [slides 103]
+    07.5 Aircraft Certification & Documents   [slides 104]
+    07.6 Altimeter Tests and Inspections   [slides 105]
+    07.7 Transponders   [slides 106]
+    07.8 ELT Tests and Inspections   [slides 107]
+    07.9 Testing of the ELT   [slides 108]
+
+08. Instruments and Avionics
+    08.1 Instruments and Avionics   [slides 110-111]
+    08.2 Night VFR Instruments 
+& Equipment   [slides 112]
+    08.3 Radio Equipment   [slides 113]
+    08.4 Communication and Navigation Equipment – VFR over water   [slides 114]
+
+09. Equipment
+    09.1 Safety Equipment – VFR over water   [slides 116-117]
+    09.2 Part 91 Flight over water   [slides 118]
+    09.3 Emergency Equipment   [slides 119-121]
+    09.4 Emergency Locator Transmitter   [slides 122]
+    09.5 Fuel and Oil Markings   [slides 123]
+    09.6 Instruments and Equipment   [slides 124]
+    09.7 Inoperative Instruments & Equipment   [slides 125]
+
+10. General Operating Requirements
+    10.1 Crew Members   [slides 127]
+    10.2 Simulated Instrument Flight Safeguards   [slides 128]
+    10.3 PIC – Safety of Aircraft   [slides 129]
+    10.4 Authority of the PIC   [slides 130]
+    10.5 Responsibilities of PIC   [slides 131-133]
+    10.6 Nomination of PIC   [slides 134]
+    10.7 Seats and Safety belts   [slides 135-136]
+    10.8 Oxygen   [slides 137]
+    10.9 Oxygen for Non-Pressurised   [slides 138]
+    10.10 Passenger Brief   [slides 139-140]
+    10.11 Operating Limitations   [slides 141]
+    10.12 Emergency Equipment   [slides 142]
+    10.13 Pre-Flight Responsibilities   [slides 143-144]
+
+11. Operations at Aerodromes
+    11.1 Use of Aerodromes   [slides 146]
+    11.2 Aerodrome Traffic Rules   [slides 147]
+    11.3 Operations at Controlled Aerodromes   [slides 148]
+    11.4 Operations at Flight Service Aerodromes   [slides 149-150]
+    11.5 Aerodrome Operations – General   [slides 151-152]
+    11.6 The Circuit   [slides 153]
+    11.7 Circuit Joining   [slides 154-155]
+    11.8 Standard Overhead Circuit Joining Procedure.   [slides 156-158]
+    11.9 Aviation Events   [slides 159]
+
+12. Right of Way Rules
+    12.1 Right of Way   [slides 161]
+    12.2 Head On   [slides 162]
+    12.3 Converging   [slides 163]
+    12.4 Overtaking   [slides 164]
+    12.5 Landing   [slides 165]
+    12.6 Emergency Landing   [slides 166]
+    12.7 Takeoff   [slides 167]
+    12.8 Taxiing   [slides 168]
+    12.9 Operating Near Other Aircraft   [slides 169]
+    12.10 Aircraft lighting. CAR 91   [slides 170-171]
+    12.11 Identity documentation   [slides 172]
+    12.12 Airport Security   [slides 173]
+
+13. General Operating Restrictions
+    13.1 Interference with Aircraft   [slides 175]
+    13.2 Smoking, Drugs and Alcohol   [slides 176]
+    13.3 Electronic Devices   [slides 177]
+    13.4 Carriage of Firearms   [slides 178-179]
+    13.5 Discharge of Firearms   [slides 180]
+    13.6 Carry-on Baggage   [slides 181]
+    13.7 Carriage of Cargo and Baggage   [slides 182]
+    13.8 Passenger Safety   [slides 183]
+    13.9 Near Other Aircraft   [slides 184]
+    13.10 Dropping Objects   [slides 185]
+    13.11 Speed Restrictions   [slides 186]
+    13.12 Passengers not to be Carried   [slides 187]
+    13.13 Minimum Safe Heights   [slides 188-189]
+    13.14 Exceptions   [slides 190-191]
+    13.15 Icing Conditions   [slides 192]
+    13.16 Aerobatic Flight   [slides 193]
+    13.17 Parachute Drop Operations   [slides 194-195]
+    13.18 Towing Gliders   [slides 196]
+    13.19 Towing Objects other than Gliders   [slides 197]
+
+14. VFR Meteorological Minima
+    14.1 Visual Meteorological Conditions (VMC)   [slides 199-201]
+    14.2 Flight Visibility and Ceiling   [slides 202]
+    14.3 Special VFR Met. Minima   [slides 203]
+    14.4 Aerodrome VFR Meteorological Minima   [slides 204]
+
+15. Carriage of Dangerous Goods
+    15.1 Carriage of Dangerous Goods   [slides 206-207]
+    15.2 Requirements   [slides 208-211]
+    15.3 Carriage by Passengers or Crew Members   [slides 212]
+    15.4 Packaging, Labelling and Marking   [slides 213]
+    15.5 Offer of Non-Dangerous Goods   [slides 214]
+    15.6 Offer of Dangerous Goods   [slides 215]
+    15.7 Aircraft Loading Restriction   [slides 216]
+    15.8 Removal of Damage or Leakage   [slides 217]
+    15.9 Information to the PIC   [slides 218]
+    15.10 Information to Passengers 
+and in Cargo Acceptance Areas   [slides 219]
+
+16. Flight Preparation
+    16.1 Planning of Flights   [slides 221-222]
+
+17. Fuel Requirements
+    17.1 Fuel Requirements   [slides 224]
+    17.2 Aircraft Fuelling   [slides 225-226]
+
+18. Flight Plans
+    18.1 Flight Plans   [slides 228]
+    18.2 Filing of VFR Flight Plans   [slides 229]
+    18.3 Alerting Service   [slides 230]
+    18.4 Content of a VFR Flight Plan   [slides 231-232]
+
+19. Communications
+    19.1 Definitions   [slides 234-236]
+    19.2 Position Reports   [slides 237-238]
+    19.3 Light Signals   [slides 239-240]
+    19.4 TIBA   [slides 241]
+
+20. Clearances
+    20.1 Compliance with ATC Clearances and Instructions   [slides 243]
+    20.2 Aerodrome Flight Information Service   [slides 244]
+    20.3 Flight Information   [slides 245]
+    20.4 Clearance Requirements   [slides 246]
+
+21. Separation
+    21.1 12 Hour Clock Reference   [slides 248]
+    21.2 ATC Separation   [slides 249]
+    21.3 Visual Separation   [slides 250]
+    21.4 Vertical Separation   [slides 251]
+    21.5 Horizontal Separation   [slides 252]
+    21.6 Wake Turbulence   [slides 253]
+
+22. Radar Services
+    22.1 VFR Flights   [slides 255]
+    22.2 Control Centres   [slides 256]
+    22.3 Radar   [slides 257]
+    22.4 Primary Surveillance Radar   [slides 258]
+    22.5 Secondary Surveillance Radar   [slides 259]
+    22.6 Radar Coverage   [slides 260]
+    22.7 Secondary Surveillance Radar   [slides 261]
+    22.8 The ATC Radar System   [slides 262]
+    22.9 Radar Services   [slides 263]
+
+23. Altimetry
+    23.1 Definitions   [slides 265-266]
+    23.2 Altimeter Settings   [slides 267]
+    23.3 Aerodrome QNH   [slides 268]
+    23.4 Area QNH Zones   [slides 269-270]
+    23.5 Aerodrome QFE   [slides 271]
+    23.6 High Level Flight   [slides 272]
+    23.7 Transition Altitude   [slides 273]
+    23.8 Transition Level   [slides 274]
+    23.9 Transition Layer   [slides 275]
+
+24. Cruising Levels
+    24.1 VFR Magnetic Track Altitude Requirements   [slides 277-282]
+    24.2 Non-Standard   [slides 283]
+
+25. Transponders
+    25.1 Transponders   [slides 285-286]
+    25.2 Transponder Codes   [slides 287-288]
+
+26. Airspace
+    26.1 Classes of Airspace   [slides 290-293]
+    26.2 Flight Information Regions (FIRs)   [slides 294-295]
+    26.3 Air Traffic Control Service   [slides 296]
+    26.4 Radios   [slides 297]
+    26.5 Control Zones (CTRs)   [slides 298-299]
+    26.6 Control Areas (CTAs)   [slides 300-302]
+    26.7 Airspace Boundaries   [slides 303]
+    26.8 VFR Transit Lanes   [slides 304]
+    26.9 General Aviation Areas   [slides 305-306]
+    26.10 Position Reports   [slides 307-308]
+    26.11 ATC Hours of Service   [slides 309]
+    26.12 Restricted Areas   [slides 310]
+    26.13 Military Operational Areas   [slides 311]
+    26.14 Mandatory Broadcast Zone (MBZ)   [slides 312-313]
+    26.15 Volcanic Hazard Zones   [slides 314]
+    26.16 Danger Areas   [slides 315]
+    26.17 Low Flying Zones (LFZ)   [slides 316]
+    26.18 VFR Common Frequency Zone (CFZ)   [slides 317-318]
+    26.19 Temporary Airspace   [slides 319-320]
+    26.20 Airspace Changes   [slides 321]
+
+27. Aerodromes
+    27.1 Definitions   [slides 323-326]
+    27.2 Aerodrome Info   [slides 327]
+    27.3 Runway Designation   [slides 328]
+    27.4 Obstruction Markers   [slides 329]
+    27.5 Ground Signals   [slides 330]
+    27.6 Classification of Aerodromes   [slides 331]
+    27.7 Certificated Aerodromes   [slides 332]
+    27.8 Non–Certificated Public Aerodromes   [slides 333]
+    27.9 Non–Certificated Private Aerodromes   [slides 334]
+    27.10 Military Aerodromes   [slides 335]
+    27.11 Aerodrome Control   [slides 336]
+    27.12 Priorities   [slides 337]
+    27.13 Other Aerodrome Terms   [slides 338]
+    27.14 Notes on Aerodromes   [slides 339]
+    27.15 Advise of Intended Movement   [slides 340]
+    27.16 Persons on Board (POB)   [slides 341]
+    27.17 ATIS and AWIB   [slides 342]
+    27.18 Controlled Aerodromes   [slides 343]
+    27.19 Group Rating   [slides 344]
+
+28. Aerodrome Lighting
+    28.1 Runway Edge Lighting (REDL)   [slides 346]
+    28.2 Runway Threshold Lighting (RTHL)   [slides 347]
+    28.3 Runway End Lighting (RENL)   [slides 348]
+    28.4 Runway Centreline Lighting (RCLL)   [slides 349-350]
+    28.5 Runway End Identifier Lighting(REIL)   [slides 351]
+    28.6 Circling Guidance Lights (CGL)   [slides 352]
+    28.7 Runway Lead In Lighting (RLLS)   [slides 353]
+    28.8 Pilot Activated Lighting (PAL)   [slides 354-355]
+    28.9 Aerodrome Beacon (ABN)   [slides 356]
+    28.10 Approach Light Systems (ALS)   [slides 357]
+    28.11 Low Intensity Approach Light System 
+(LIL ALS/2 bar)
+
+Precision Approach Runways   [slides 358]
+    28.12 Low Intensity Approach Light System (LIL ALS/1 bar)
+
+ Non-Precision Approach Runways   [slides 359]
+    28.13 Visual Landing Aids   [slides 360-361]
+    28.14 T-Visual Approach Slope Indicator System(T-VASIS)
+Glideslope of 3°, visible from 4nm (daylight)   [slides 362]
+    28.15 Visual Approach Slope Indicator System (VASIS)   [slides 363]
+    28.16 Obstruction Beacons   [slides 364]
+
+29. Incidents and Accidents
+    29.1 Definitions   [slides 366]
+    29.2 Accident:   [slides 367-370]
+    29.3 Notification of Accident   [slides 371]
+    29.4 Notification of Incident   [slides 372]
+    29.5 Deviation From the Rules   [slides 373]
+    29.6 Access to Aircraft 
+involved in an Accident   [slides 374]
+    29.7 Preservation of Records   [slides 375]
+
+30. Communications and Equipment
+    30.1 ATC Verification   [slides 377]
+    30.2 Speechless Technique   [slides 378]
+    30.3 Ground Air Visual Signals   [slides 379]
+    30.4 Directing Surface Craft   [slides 380]
+    30.5 ELT Procedures   [slides 381]

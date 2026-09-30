@@ -1,0 +1,165 @@
+/* ==========================================================================
+   STUDENT DASHBOARD
+
+   The dashboard answers one question before any other: what should I study
+   next? So Continue Studying is the largest thing on the page and everything
+   else is quieter than it. Deliberately shaped differently from the Study
+   Reader — this is an overview, that is a reading environment.
+   ========================================================================== */
+
+/* ---- Continue studying: the one loud element ---------------------------- */
+
+.resume-card {
+  display: flex; align-items: stretch; gap: 26px;
+  margin-top: 28px; padding: 26px 28px;
+  border-radius: 16px; text-decoration: none;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--blue) 13%, var(--card)) 0%,
+      var(--card) 62%);
+  border: 1px solid color-mix(in srgb, var(--blue) 30%, transparent);
+  box-shadow: var(--sh-2);
+  transition: border-color .18s, transform .18s, box-shadow .18s;
+}
+.resume-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-1px);
+  box-shadow: var(--sh-3);
+}
+.resume-body { flex: 1; min-width: 0; }
+
+.resume-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--blue);
+}
+.resume-course {
+  margin-top: 12px; font-size: 13px; color: var(--muted);
+}
+.resume-code {
+  margin-top: 4px;
+  font-family: var(--mono); font-size: 15px; font-weight: 600;
+  color: var(--blue); font-variant-numeric: tabular-nums;
+}
+.resume-card h2 {
+  margin: 6px 0 0;
+  font-size: clamp(21px, 2.9vw, 28px); line-height: 1.24;
+  letter-spacing: -.02em; font-weight: 650; color: var(--ink);
+  text-wrap: balance;
+}
+.resume-meter {
+  display: flex; align-items: center; gap: 13px; margin-top: 18px;
+}
+.resume-meter .bar { flex: 1; max-width: 320px; }
+.resume-meter .num {
+  font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.resume-go {
+  display: flex; align-items: center; align-self: center; gap: 9px;
+  flex: none; padding: 13px 22px; border-radius: 11px;
+  background: var(--blue); color: var(--on-accent);
+  font-size: 14.5px; font-weight: 600; white-space: nowrap;
+}
+.resume-go svg { width: 17px; height: 17px; }
+
+/* ---- Quick actions ------------------------------------------------------- */
+
+.quick-actions {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  gap: 10px; margin-top: 22px;
+}
+.quick-act {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 15px 17px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card);
+  text-decoration: none; transition: border-color .16s, background .16s;
+}
+.quick-act:hover { border-color: var(--blue); background: var(--mist); }
+.quick-act span { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.quick-act small { font-size: 12.5px; color: var(--muted); }
+
+/* ---- Where you are: per-subject progress -------------------------------- */
+
+.subject-progress {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+}
+.subject-row {
+  display: flex; flex-direction: column; gap: 9px;
+  padding: 16px 18px; border-radius: 12px;
+  border: 1px solid var(--line); background: var(--card);
+  text-decoration: none; transition: border-color .16s;
+}
+.subject-row:hover { border-color: var(--blue); }
+.subject-row-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+}
+.subject-row-title {
+  font-size: 14.5px; font-weight: 600; color: var(--ink); line-height: 1.35;
+}
+.subject-row .num {
+  font-size: 13px; font-weight: 600; color: var(--blue);
+  font-variant-numeric: tabular-nums;
+}
+.subject-row .xs { color: var(--muted); }
+
+/* ---- Areas to review ----------------------------------------------------- */
+
+.weak-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px;
+}
+.weak-item {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 15px 17px; border-radius: 12px;
+  background: var(--card); border: 1px solid var(--line);
+  border-left: 3px solid var(--line-2);
+}
+.weak-item.is-review { border-left-color: var(--red); }
+.weak-item.is-improving { border-left-color: var(--warn); }
+.weak-item.is-strong { border-left-color: var(--ok); }
+.weak-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.weak-head .num {
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.weak-band {
+  padding: 2px 9px; border-radius: 20px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+}
+.weak-band.is-review { background: var(--red-l); color: var(--red); }
+.weak-band.is-improving { background: var(--warn-l); color: var(--warn); }
+.weak-band.is-strong { background: var(--ok-l); color: var(--ok); }
+.weak-item b { font-size: 14.5px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+.weak-item .xs { color: var(--muted); }
+
+/* ---- Recent activity ----------------------------------------------------- */
+
+.activity { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.activity a {
+  display: grid; grid-template-columns: 18px auto minmax(0, 1fr) auto;
+  align-items: baseline; gap: 11px;
+  padding: 11px 14px; border-radius: 9px;
+  text-decoration: none; transition: background .15s;
+}
+.activity a:hover { background: var(--mist); }
+.activity-mark { color: var(--ok); font-size: 12px; }
+.activity .num {
+  font-family: var(--mono); font-size: 12.5px; font-weight: 600;
+  color: var(--blue); font-variant-numeric: tabular-nums;
+}
+.activity-title {
+  font-size: 14px; color: var(--body); line-height: 1.45;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.activity .xs { color: var(--muted); white-space: nowrap; }
+
+/* ---- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .resume-card { flex-direction: column; gap: 18px; padding: 22px; }
+  .resume-go { align-self: stretch; justify-content: center; }
+  .resume-meter .bar { max-width: none; }
+  .activity a { grid-template-columns: 18px auto minmax(0, 1fr); }
+  .activity a .xs { grid-column: 3; }
+}

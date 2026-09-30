@@ -1,0 +1,86 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — every real one is ignored; the template is not, because a
+# checkout with no .env.example leaves the next person guessing.
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Phase 2 local dev
+.env
+.dev/
+/media
+
+# ── Added for GitHub push: keep secrets, data, and bulk source out ──────────
+
+# Local dev infrastructure — portable Postgres, the live database, uploaded
+# media (personal data), and database dumps. NEVER commit these.
+/.dev/
+/.cache/
+
+# Any stray .env backups (belt-and-braces; .env* above already covers them)
+.env.backup-*
+
+# Raw course/exam source material (large, copyrighted, build-time inputs only).
+# The app runs from the seeded database and the curriculum code in content/.
+/PPL CONTENT/
+/PPL Groundwork/
+/PPL SYLLABUS/
+/cpl course material/
+/cpl syllabus/
+/cpl_books/
+/ir course material/
+
+# Design mockups / reference — not production code
+/_design-reference/
+
+# Content-extraction scratch (huge, copyrighted source figures/PDFs)
+/.work/
+
+# Documents that are source material or business paperwork — never publish.
+# (The app generates its own PDFs at runtime via pdfkit; none are committed.)
+*.pdf
+*.docx
+*.xlsx
+*.zip
+*.sqlite
+*.db
+
+# stray root image
+/ph1.jpg

@@ -1,0 +1,88 @@
+Course Name: PPL Air Navigation and Flight Planning
+Source File: PPLNavigation-Updated_Professional.pptx
+Total Slides/Pages: 239
+
+01. Introduction
+    01.1 PPL Air Navigation and Flight Planning   [slides 1]
+    01.2 Exam:   [slides 2]
+
+02. Back to Basics
+    02.1 Back to Basics   [slides 4]
+    02.2 Rotation of the Earth   [slides 5-7]
+    02.3 Imaginary Lines   [slides 8]
+    02.4 Great Circles   [slides 9]
+    02.5 Small Circles   [slides 10]
+    02.6 Meridians of Longitude   [slides 11-14]
+    02.7 Rhumb Lines   [slides 15]
+
+03. Direction on the Earth
+    03.1 Direction   [slides 17-18]
+    03.2 True Direction   [slides 19]
+    03.3 Magnetic Direction   [slides 20-23]
+    03.4 Magnetic Variation   [slides 24-25]
+    03.5 Converting Between True, Magnetic And Compass Directions   [slides 26-29]
+    03.6 Bearings   [slides 30-33]
+    03.7 Heading and Drift   [slides 34-35]
+    03.8 Drift   [slides 36-37]
+    03.9 Distance   [slides 38-42]
+
+04. Speed
+    04.1 Types of Speed   [slides 44-45]
+    04.2 Indicated/True Airspeed Relationship:   [slides 46-49]
+    04.3 Vectors   [slides 50]
+    04.4 Triangle of Velocities   [slides 51]
+    04.5 Wind Velocity   [slides 52-53]
+    04.6 Terminology   [slides 54]
+
+05. Altimetry
+    05.1 Altimetry   [slides 56-57]
+    05.2 Definitions   [slides 58]
+    05.3 The Effect of Change in Air Temperature to Altimeter Readings
+True Altitude   [slides 59-64]
+    05.4 Altimeter Setting   [slides 65-71]
+
+06. Time
+    06.1 Definitions   [slides 73]
+    06.2 Sensible vs Visible Horizon   [slides 74-75]
+    06.3 Sunrise and Sunset   [slides 76]
+    06.4 Daylight/Twilight   [slides 77]
+    06.5 Time Zones   [slides 78]
+    06.6 New Zealand Time   [slides 79-82]
+    06.7 Date and Time Groups   [slides 83-86]
+    06.8 Other Factors Affecting Twilight   [slides 87-89]
+    06.9 Deriving MCT and ECT   [slides 90]
+
+07. Aeronautical Charts
+    07.1 Aeronautical Charts   [slides 91-101]
+
+08. Computations
+    08.1 Computations   [slides 103-119]
+    08.2 Important!
+
+Fuel Pounds is not a unit!   [slides 120-123]
+    08.3 E6-B Flight Computer
+https://mediafiles.aero.und.edu/aero.und.edu/aviation/trainers/e6b/?q=sliderule   [slides 124]
+    08.4 Wind Calculations   [slides 125-129]
+
+09. Visual Navigation Procedures
+    09.1 Visual Navigation Procedures   [slides 130]
+    09.2 Definitions   [slides 131-132]
+    09.3 Pre-flight Planning   [slides 133]
+    09.4 Lost Procedure   [slides 134-177]
+
+10. Flight Planning
+    10.1 Flight Planning   [slides 178-183]
+
+11. Plan Preparation
+    11.1 Plan Preparation   [slides 184-199]
+
+12. Fuel Planning
+    12.1 Fuel Planning   [slides 200-201]
+
+13. Cruise Performance
+    13.1 Cruise Performance   [slides 202-206]
+
+14. Radio Aids in Support of VFR Operations
+    14.1 Radio Aids in Support of VFR Operations   [slides 207-234]
+    14.2 Secondary   [slides 235-238]
+    14.3 Exam Techniques   [slides 239]

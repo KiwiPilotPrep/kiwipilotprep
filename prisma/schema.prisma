@@ -1,0 +1,1697 @@
+// KiwiPilotPrep — Phase 2 schema
+//
+// Design notes:
+//  * The academic hierarchy (Course > Subject > Chapter > Content > Questions)
+//    is pure data. Nothing about "6 PPL subjects" lives in code — see PRD 3.
+//  * Academic rows are ARCHIVED, never hard deleted, so historical student
+//    progress and attempts keep resolving (phase 2.2 §16).
+//  * Course/subject progress is DERIVED from ChapterProgress rather than
+//    stored, so it can never drift from the source records (§23).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+/// Publication state for every academic entity.
+/// DRAFT     - visible to admins only
+/// PUBLISHED - visible to entitled students
+/// ARCHIVED  - hidden from active navigation, history preserved
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MediaKind {
+  IMAGE
+  PDF
+  VIDEO
+}
+
+enum Currency {
+  NZD
+  INR
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  CREATED
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+}
+
+/// How a student came to hold an entitlement - purchase, an explicit admin
+/// grant, the free trial, or local seed data. Kept for auditability (s27).
+enum EntitlementSource {
+  PURCHASE
+  ADMIN
+  TRIAL
+  SEED
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum RefundStatus {
+  REQUESTED
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+/// Whether an account may be used at all. Separate from email verification:
+/// a verified address on a disabled account still buys nothing.
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(STUDENT)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  /// Set the moment the address is confirmed. Null means unconfirmed, which
+  /// gates the free trial and checkout but nothing else.
+  emailVerifiedAt      DateTime?
+  /// Only the hash is stored. The raw token exists in one place — the email
+  /// that was sent — so a leaked database cannot be used to verify accounts.
+  verifyTokenHash      String?   @unique
+  verifyTokenExpiresAt DateTime?
+  /// Throttles resends without a separate table.
+  verifySentAt         DateTime?
+
+  /// An account can be switched off without deleting it, so that its orders,
+  /// attempts and claims survive for the record.
+  status       UserStatus @default(ACTIVE)
+  disabledAt   DateTime?
+  disabledNote String?
+
+  /// Password reset. Same shape as verification above and for the same reason:
+  /// only the hash is stored, one token is live at a time, and issuing a new
+  /// one silently retires the last. Because it lives on the row rather than in
+  /// a table, expired tokens cannot accumulate — there is nothing to sweep.
+  resetTokenHash      String?   @unique
+  resetTokenExpiresAt DateTime?
+  resetSentAt         DateTime?
+
+  /// Sessions issued before this instant are refused. Our sessions are signed
+  /// tokens with no server-side store, so this is how "sign out everywhere"
+  /// is expressed — it moves forward when the password changes.
+  sessionsValidFrom DateTime?
+
+  entitlements    Entitlement[]
+  orders          Order[]
+  trials          TrialAccess[]
+  mockAttempts    MockAttempt[]
+  kdrResults      KdrResult[]
+  mockReports     MockReport[]
+  emails          EmailLog[]
+  freeTrialUse    FreeTrialUse?
+  contactMessages ContactMessage[]
+
+  guaranteeClaims   GuaranteeClaim[]
+  reviewedClaims    GuaranteeClaim[]         @relation("ClaimReviewer")
+  guaranteeDocs     GuaranteeDocument[]
+  claimAudit        ClaimAuditLog[]
+  processedRefunds  Refund[]                 @relation("RefundProcessor")
+  orgMemberships    OrganizationMember[]
+  orgEnrolments     OrganizationStudent[]
+  sentInvitations   OrganizationInvitation[]
+  rebateClaims      RebateClaim[]
+  couponsCreated    Coupon[]
+  couponRedemptions CouponRedemption[]
+  chapterProgress   ChapterProgress[]
+  syllabusProgress  SyllabusItemProgress[]
+  lessonProgress    LessonProgress[]
+  reviewedMappings  LessonSyllabusItem[]     @relation("MappingReviewer")
+  attempts          QuestionAttempt[]
+  uploads           MediaAsset[]
+  progress          StudentProgress?
+
+  @@index([role])
+  @@index([status])
+}
+
+/// One row per student, ever: the record that their free mock is spent.
+///
+/// `userId` is unique, and the row is written inside the same transaction
+/// that creates the attempt. That is what makes "one free mock per account"
+/// a guarantee rather than a check — two simultaneous requests cannot both
+/// succeed, because the second insert violates the constraint and rolls its
+/// whole transaction back.
+///
+/// The subject and attempt are kept for support and analytics: they answer
+/// "which one did they use, and when" without another join through the
+/// mock exam table.
+model FreeTrialUse {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  subjectId String?
+  attemptId String?  @unique
+  createdAt DateTime @default(now())
+
+  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject Subject?     @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  attempt MockAttempt? @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+
+  @@index([subjectId])
+}
+
+/// What a contact form submission is about.
+///
+/// The value the student chose, kept rather than flattened to a boolean,
+/// because the admin console splits on it: GUARANTEE goes to the guarantee
+/// claims queue and everything else to general queries.
+enum ContactTopic {
+  GENERAL
+  ENTERPRISE
+  QUESTION_ERROR
+  GUARANTEE
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+}
+
+/// A message sent through the public contact form.
+///
+/// Stored rather than emailed into the void: the form used to validate,
+/// congratulate the sender and discard what they wrote. Everything a reply
+/// needs is here — who, what about, what they said, when — and nothing that
+/// is not needed is, which is why attachments are counted but not kept.
+model ContactMessage {
+  id          String        @id @default(cuid())
+  name        String
+  email       String
+  topic       ContactTopic
+  message     String
+  /// How many files the sender attached and were stored. Kept in step with
+  /// the `files` rows below by the action that writes them, so a count can
+  /// be read without a join.
+  attachments Int           @default(0)
+  status      ContactStatus @default(NEW)
+  /// Set when the sender was signed in, so a reply can be tied to an
+  /// account. Null for anyone writing in from the public site.
+  userId      String?
+  /// Admin working note. Never shown to the sender.
+  note        String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user  User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  files ContactAttachment[]
+
+  @@index([topic, status, createdAt])
+  @@index([createdAt])
+}
+
+/// A file sent with a contact message — in practice the result sheet on a
+/// pass-guarantee enquiry.
+///
+/// The same shape as GuaranteeDocument and written through the same storage
+/// layer: the bytes live outside the web root under a generated key, and
+/// only the metadata is in Postgres. It is a separate table because a
+/// contact message has no claim and may have no account behind it, which
+/// GuaranteeDocument requires both of.
+model ContactAttachment {
+  id        String   @id @default(cuid())
+  messageId String
+  /// Generated, never derived from what the sender called the file, so
+  /// nothing user-controlled ever reaches the filesystem.
+  storageKey String  @unique
+  /// The sender's own filename, for display only.
+  filename  String
+  mimeType  String
+  sizeBytes Int
+  createdAt DateTime @default(now())
+
+  message ContactMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+}
+
+model Course {
+  id               String        @id @default(cuid())
+  slug             String        @unique
+  title            String
+  description      String?
+  thumbnailId      String?
+  order            Int           @default(0)
+  status           ContentStatus @default(DRAFT)
+  /// May this course's subjects be chosen for the free 10-question mock?
+  ///
+  /// Off by default, and off for the flight test groundwork courses: those
+  /// are oral preparation, not multi-choice subjects, and offering them a
+  /// mock that cannot exist is worse than not listing them. A flag rather
+  /// than a slug test, so the decision is data and a new course has to opt
+  /// in rather than appear by accident.
+  freeTrialEnabled Boolean       @default(false)
+  /// Default access window in months. Products may override it per purchase.
+  accessMonths     Int           @default(3)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  thumbnail    MediaAsset?   @relation("CourseThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
+  subjects     Subject[]
+  entitlements Entitlement[]
+  productItems ProductItem[]
+  mockExams    MockExam[]
+
+  @@index([status, order])
+}
+
+model Subject {
+  id            String        @id @default(cuid())
+  courseId      String
+  slug          String
+  title         String
+  description   String?
+  thumbnailId   String?
+  order         Int           @default(0)
+  /// Deprecated. Held only so no data is dropped.
+  ///
+  /// This was the prefix that got prepended to a chapter's number, which is
+  /// what produced "1.27" for Air Law chapter 27. Chapters now carry their
+  /// own `chapterNumber` inside their subject and nothing reads this.
+  sectionPrefix Int?
+  status        ContentStatus @default(DRAFT)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  course         Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  thumbnail      MediaAsset?     @relation("SubjectThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
+  chapters       Chapter[]
+  questions      Question[]
+  entitlements   Entitlement[]
+  productItems   ProductItem[]
+  trials         TrialAccess[]
+  mockExams      MockExam[]
+  syllabusTopics SyllabusTopic[]
+  modules        CourseModule[]
+  freeTrialUses  FreeTrialUse[]
+
+  @@unique([courseId, slug])
+  @@index([courseId, status, order])
+}
+
+/// A numbered topic within an official CAA subject syllabus — "12.6 Basic
+/// Aerodynamic Theory".
+///
+/// `code` is the academic reference, not a label: the CAA states these numbers
+/// are what appear on knowledge deficiency reports, so it is stored as its own
+/// field and never derived from the title. Titles get edited; codes must not.
+model SyllabusTopic {
+  id            String        @id @default(cuid())
+  subjectId     String
+  /// "12.6". Unique within its subject.
+  code          String
+  /// Official topic title, copied from the source syllabus.
+  title         String
+  description   String?
+  /// "Section 1 General Technical Knowledge" — how the CAA groups topics.
+  sectionNumber String?
+  sectionTitle  String?
+  displayOrder  Int           @default(0)
+  status        ContentStatus @default(DRAFT)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  /// The module of the imported course material that covers this topic.
+  ///
+  /// Set by the matcher, which aligns deck sections to syllabus topics by
+  /// title. It is a topic-level pointer and nothing more: it says "this part
+  /// of the course covers this part of the syllabus", which is true and
+  /// useful, without claiming that any particular lesson answers any
+  /// particular item — that claim needs a confirmed link.
+  moduleId String?
+
+  subject Subject        @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  items   SyllabusItem[]
+  content StudyContent?
+  module  CourseModule?  @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+
+  @@unique([subjectId, code])
+  @@index([moduleId])
+  @@index([subjectId, status, displayOrder])
+}
+
+/// One numbered requirement — "12.6.24 With respect to lift: (a) …".
+///
+/// `requirement` holds the official CAA wording verbatim and is deliberately
+/// kept apart from the study content that explains it: editing the explanation
+/// must never edit the requirement.
+model SyllabusItem {
+  id              String        @id @default(cuid())
+  syllabusTopicId String
+  /// "12.6.24". Unique across the platform, because it is the academic key.
+  code            String        @unique
+  /// Official wording, exactly as published. Line breaks separate the
+  /// lettered sub-clauses and are part of how the requirement reads.
+  requirement     String
+  /// Optional short label for navigation, where the requirement is long.
+  title           String?
+  displayOrder    Int           @default(0)
+  status          ContentStatus @default(DRAFT)
+  /// Where this item is covered in the source material. Traceability only —
+  /// the code remains the primary reference, never the page number.
+  sourcePageFrom  Int?
+  sourcePageTo    Int?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  topic    SyllabusTopic          @relation(fields: [syllabusTopicId], references: [id], onDelete: Cascade)
+  content  StudyContent?
+  progress SyllabusItemProgress[]
+  lessons  Lesson[]
+  mappings LessonSyllabusItem[]
+
+  @@index([syllabusTopicId, status, displayOrder])
+  @@index([status])
+}
+
+/// The student-facing explanation for one syllabus item.
+///
+/// Uses the same `blocks` shape as ChapterContent so the existing renderer,
+/// editor and validation all apply unchanged — this is a new place to put
+/// content, not a second content system.
+model StudyContent {
+  id             String        @id @default(cuid())
+  /// Content attaches to an item OR to a topic — exactly one of the two.
+  ///
+  /// Item level is the precise case, used where the source prints that item's
+  /// own code. Topic level exists because the source material is organised in
+  /// chapters that map to topics, not to individual items: attaching a
+  /// chapter's material to its topic keeps the full depth available to the
+  /// student instead of discarding it for want of an item-level anchor.
+  syllabusItemId String?       @unique
+  blocks         Json          @default("[]")
+  draftBlocks    Json?
+  /// Free-text source citation, e.g. "AC61-3 Rev 31, Subject 12".
+  references     String?
+  status         ContentStatus @default(DRAFT)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  syllabusTopicId String? @unique
+  /// Third anchor: a lesson of the imported lecture material. Deck lessons
+  /// follow the order the material was taught in, which is not the order of
+  /// the official syllabus, so they need an anchor of their own rather than
+  /// being forced onto a syllabus code they may not match.
+  lessonId        String? @unique
+
+  item   SyllabusItem?  @relation(fields: [syllabusItemId], references: [id], onDelete: Cascade)
+  topic  SyllabusTopic? @relation(fields: [syllabusTopicId], references: [id], onDelete: Cascade)
+  lesson Lesson?        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+/// Completion at syllabus-item level.
+///
+/// Deliberately a sibling of ChapterProgress rather than a replacement: the
+/// two describe different units of study, and existing chapter progress must
+/// keep working untouched. Both feed the same aggregation in lib/progress.
+model SyllabusItemProgress {
+  id             String    @id @default(cuid())
+  userId         String
+  syllabusItemId String
+  completedAt    DateTime?
+  updatedAt      DateTime  @updatedAt
+
+  user User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item SyllabusItem @relation(fields: [syllabusItemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, syllabusItemId])
+  @@index([userId])
+}
+
+model Chapter {
+  id          String        @id @default(cuid())
+  subjectId   String
+  slug        String
+  title       String
+  description String?
+  order       Int           @default(0)
+  status      ContentStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  subject   Subject           @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  content   ChapterContent?
+  questions Question[]
+  progress  ChapterProgress[]
+
+  @@unique([subjectId, slug])
+  @@index([subjectId, status, order])
+}
+
+/// Rich learning material as an ordered array of typed blocks (§13).
+/// `blocks` is what students read; `draftBlocks` is the admin's unpublished
+/// working copy, which is why Save Draft and Publish are separate actions.
+model ChapterContent {
+  id          String   @id @default(cuid())
+  chapterId   String   @unique
+  blocks      Json     @default("[]")
+  draftBlocks Json?
+  updatedAt   DateTime @updatedAt
+
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+}
+
+/// File metadata only — the bytes live in object storage under `storageKey`.
+/// Private assets are served through a signed, expiring route (§14).
+model MediaAsset {
+  id           String    @id @default(cuid())
+  storageKey   String    @unique
+  filename     String
+  mimeType     String
+  kind         MediaKind
+  sizeBytes    Int
+  isPublic     Boolean   @default(false)
+  uploadedById String?
+  createdAt    DateTime  @default(now())
+
+  uploadedBy       User?      @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  courseThumbnails Course[]   @relation("CourseThumbnail")
+  subjectThumbs    Subject[]  @relation("SubjectThumbnail")
+  questionImages   Question[] @relation("QuestionImage")
+  productThumbs    Product[]  @relation("ProductThumbnail")
+
+  @@index([kind])
+}
+
+/// One question model shared by practice now and mock exams / KDR later (§15).
+model Question {
+  id                String        @id @default(cuid())
+  subjectId         String?
+  chapterId         String?
+  prompt            String
+  explanation       String?
+  type              QuestionType  @default(SINGLE_CHOICE)
+  /// Legacy free-text topic from Phase 2. Superseded by `moduleId`.
+  topic             String?
+  /// Set on a question that came from a seed file, naming the entry it came
+  /// from — "free-trial:ppl-theory/air-law#3".
+  ///
+  /// It exists so a seed script can recognise a row it created earlier
+  /// without matching on the wording. Matching on wording is what made the
+  /// builder dangerous: an admin who improves a question's phrasing would
+  /// otherwise become invisible to the script, and the next run would seed a
+  /// second copy alongside the edited one.
+  ///
+  /// Unique, so one seed entry can only ever own one row.
+  seedKey           String?       @unique
+  /// The KiwiPilotPrep syllabus section this question belongs to.
+  ///
+  /// This is the single source of truth for how a result is grouped: the
+  /// section code and title a student reads on their scorecard, in their
+  /// result email and in their report are read from this module and from
+  /// nowhere else. It is set explicitly by an author, never guessed from an
+  /// external reference and never derived from where a question happens to
+  /// sit in a list.
+  moduleId          String?
+  /// The point inside that chapter, when the author has placed the question
+  /// that precisely — the "27.3" rather than merely the "27".
+  ///
+  /// Optional on purpose. A question mapped to its chapter is correctly
+  /// mapped; the point is extra precision, and making it compulsory would
+  /// have invalidated every question already authored against a chapter.
+  /// The lesson must belong to the module above it, which the server checks.
+  lessonId          String?
+  /// Denormalised copy of the assigned module's section code, written only
+  /// by the code that sets `moduleId`. Kept so a grouping can be queried
+  /// without a join; never authored by hand.
+  kdrCode           String?
+  /// Denormalised copy of the assigned module's title. Same rule as above.
+  kdrTopic          String?
+  /// May this question appear in the free 10-question trial?
+  ///
+  /// Off by default: the bank is paid material, and a question joins the
+  /// shop window only when someone decides it should. The trial selector
+  /// reads nothing else, so clearing this flag withdraws a question from the
+  /// trial without touching the paid mocks it still serves.
+  freeTrialEligible Boolean       @default(false)
+  caanzRef          String?
+  ac61Ref           String?
+  /// 1 (easiest) to 5. Null when the author has not graded it.
+  difficulty        Int?
+  imageId           String?
+  order             Int           @default(0)
+  status            ContentStatus @default(DRAFT)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  subject  Subject?          @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  chapter  Chapter?          @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  module   CourseModule?     @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+  lesson   Lesson?           @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  image    MediaAsset?       @relation("QuestionImage", fields: [imageId], references: [id], onDelete: SetNull)
+  options  QuestionOption[]
+  attempts QuestionAttempt[]
+
+  attemptQuestions MockAttemptQuestion[]
+  mockPicks        MockExamQuestion[]
+
+  @@index([chapterId, status, order])
+  @@index([subjectId, status])
+  @@index([moduleId])
+  @@index([lessonId])
+  @@index([topic])
+  @@index([kdrCode])
+  @@index([kdrTopic])
+  @@index([subjectId, freeTrialEligible, status])
+}
+
+model QuestionOption {
+  id         String  @id @default(cuid())
+  questionId String
+  text       String
+  isCorrect  Boolean @default(false)
+  order      Int     @default(0)
+
+  question Question          @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  attempts QuestionAttempt[]
+
+  @@index([questionId, order])
+}
+
+model QuestionAttempt {
+  id               String   @id @default(cuid())
+  userId           String
+  questionId       String
+  selectedOptionId String?
+  isCorrect        Boolean
+  createdAt        DateTime @default(now())
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question       Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOption QuestionOption? @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, questionId])
+  @@index([userId, createdAt])
+}
+
+/**
+ * ==========================================================================
+ * Phase 3 — products, orders, payments, entitlements
+ * ==========================================================================
+ */
+
+/// Something a customer buys. Deliberately separate from Course: a product is
+/// commercial, a course is academic, and an entitlement is permission.
+model Product {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  title        String
+  description  String?
+  thumbnailId  String?
+  order        Int           @default(0)
+  status       ContentStatus @default(DRAFT)
+  /// Access window granted on purchase. Null means lifetime access.
+  accessMonths Int?          @default(3)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  thumbnail    MediaAsset?         @relation("ProductThumbnail", fields: [thumbnailId], references: [id], onDelete: SetNull)
+  prices       ProductPrice[]
+  items        ProductItem[]
+  orders       Order[]
+  entitlements Entitlement[]
+  qualifiesFor QuaifyingProduct[]
+  licenses     EnterpriseLicense[]
+  coupons      Coupon[]
+
+  @@index([status, order])
+}
+
+/// Price per currency, held in minor units (cents / paise) so no arithmetic
+/// ever happens in floating point.
+model ProductPrice {
+  id          String   @id @default(cuid())
+  productId   String
+  currency    Currency
+  amountMinor Int
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, currency])
+}
+
+/// What a product grants. A row points at a whole course or a single subject,
+/// so packages, bundles and individual-subject products all use one mechanism
+/// and none of it is hardcoded.
+model ProductItem {
+  id        String  @id @default(cuid())
+  productId String
+  courseId  String?
+  subjectId String?
+
+  product Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  subject Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, courseId])
+  @@unique([productId, subjectId])
+  @@index([productId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  /// Human-quotable reference shown on the success page and in admin.
+  reference       String      @unique
+  userId          String
+  productId       String
+  currency        Currency
+  /// What the customer is charged, after any discount.
+  amountMinor     Int
+  /// The product's list price before a coupon, kept for reporting.
+  listAmountMinor Int?
+  discountMinor   Int         @default(0)
+  couponCode      String?
+  status          OrderStatus @default(PENDING)
+  /// Razorpay's order id. Unique so a retry cannot fork into two orders.
+  gatewayOrderId  String?     @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product          Product             @relation(fields: [productId], references: [id])
+  payments         Payment[]
+  entitlements     Entitlement[]
+  refunds          Refund[]
+  claims           GuaranteeClaim[]
+  licenses         EnterpriseLicense[]
+  rebateClaims     RebateClaim[]
+  couponRedemption CouponRedemption?
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  orderId           String
+  /// Gateway payment id. Unique, which is what makes webhook replay safe.
+  gatewayPaymentId  String?       @unique
+  gatewayOrderId    String?
+  status            PaymentStatus @default(CREATED)
+  amountMinor       Int
+  currency          Currency
+  method            String?
+  /// True only once the HMAC signature has been checked server-side.
+  signatureVerified Boolean       @default(false)
+  /// Gateway payload, retained for reconciliation. Never rendered to a user.
+  raw               Json?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+/// Permission to read specific academic content.
+///
+/// `scopeKey` is "course:<id>" or "subject:<id>". Making (userId, scopeKey)
+/// unique is what prevents a duplicated webhook from granting access twice —
+/// the database refuses it rather than the application remembering to.
+model Entitlement {
+  id        String            @id @default(cuid())
+  userId    String
+  scopeKey  String
+  courseId  String?
+  subjectId String?
+  productId String?
+  orderId   String?
+  source    EntitlementSource @default(PURCHASE)
+  status    EntitlementStatus @default(ACTIVE)
+  grantedAt DateTime          @default(now())
+  expiresAt DateTime?
+  /// Set when an admin grants or revokes by hand, so access is auditable.
+  note      String?
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course  Course?  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  subject Subject? @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  order   Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, scopeKey])
+  @@index([userId, status])
+  @@index([orderId])
+}
+
+/// A refund against a paid order. Phase 5 drives these from guarantee claims;
+/// the amount always comes from the order, never from the browser (§10, §12).
+model Refund {
+  id          String       @id @default(cuid())
+  orderId     String
+  claimId     String?
+  status      RefundStatus @default(REQUESTED)
+  method      RefundMethod @default(RAZORPAY)
+  amountMinor Int
+  currency    Currency     @default(NZD)
+  reason      String?
+
+  /// Razorpay's refund id, unique so a retried webhook cannot double-record.
+  gatewayRefundId String? @unique
+  /// Bank transfer or manual payout reference.
+  reference       String?
+
+  initiatedAt   DateTime?
+  processedAt   DateTime?
+  /// The admin who actioned it — financial changes are never anonymous.
+  processedById String?
+  notes         String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  claim       GuaranteeClaim? @relation(fields: [claimId], references: [id], onDelete: SetNull)
+  processedBy User?           @relation("RefundProcessor", fields: [processedById], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([status])
+  @@index([claimId])
+}
+
+/// The PRD's 10-question free trial: tied to one subject, capped, and
+/// deliberately unable to reach chapter content or the full question bank.
+model TrialAccess {
+  id            String   @id @default(cuid())
+  userId        String
+  subjectId     String
+  questionLimit Int      @default(10)
+  startedAt     DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, subjectId])
+}
+
+model ChapterProgress {
+  id           String    @id @default(cuid())
+  userId       String
+  chapterId    String
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+  lastViewedAt DateTime  @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId])
+  @@index([userId, completedAt])
+}
+
+/// "Continue learning" pointer only. Percentages are always computed from
+/// ChapterProgress so they cannot drift (§23: no fake progress).
+model StudentProgress {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  lastCourseId       String?
+  lastSubjectId      String?
+  lastChapterId      String?
+  /// The syllabus item last opened in the Study Reader. Sits alongside
+  /// lastChapterId rather than replacing it: the two are different reading
+  /// surfaces and a student may use either.
+  lastSyllabusItemId String?
+  lastActivity       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/**
+ * ==========================================================================
+ * Phase 4 — mock exam engine, KDR tracking, scorecards
+ * ==========================================================================
+ */
+
+enum QuestionType {
+  SINGLE_CHOICE
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EXPIRED
+}
+
+enum EmailStatus {
+  QUEUED
+  SENT
+  FAILED
+  LOGGED
+}
+
+/// How far a finished attempt has got towards the student having their report.
+enum ReportStatus {
+  /// The attempt is marked; the report has not been built yet.
+  PENDING
+  /// The PDF was produced successfully.
+  GENERATED
+  /// The PDF was produced and the email carrying it was accepted or logged.
+  SENT
+  /// Generation or delivery failed. The result itself is unaffected.
+  FAILED
+}
+
+/// A configurable timed examination. What it draws from (course or subject),
+/// how many questions, and for how long are all admin settings — nothing about
+/// PPL/CPL/IR is in code.
+model MockExam {
+  id               String        @id @default(cuid())
+  slug             String        @unique
+  title            String
+  description      String?
+  courseId         String?
+  subjectId        String?
+  questionCount    Int           @default(20)
+  durationMinutes  Int           @default(40)
+  /// Null means the mock is practice-graded with no pass mark.
+  passingPercent   Int?
+  randomize        Boolean       @default(true)
+  /// The free 10-question trial for this subject.
+  ///
+  /// Provisioned by the application rather than built by hand, so a new
+  /// subject needs no admin work to offer a trial. A trial draws only from
+  /// questions marked `freeTrialEligible`, needs no entitlement to sit, and
+  /// is limited to one attempt per student per subject.
+  isFreeTrial      Boolean       @default(false)
+  /// KDR banding thresholds, configurable rather than hardcoded (§14).
+  kdrStrongPercent Int           @default(80)
+  kdrWeakPercent   Int           @default(50)
+  status           ContentStatus @default(DRAFT)
+  order            Int           @default(0)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  course   Course?            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  subject  Subject?           @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  attempts MockAttempt[]
+  /// Questions chosen by hand for this mock. Empty means the mock draws
+  /// from its scope, which is how every mock behaved before this existed.
+  picks    MockExamQuestion[]
+
+  @@index([status, order])
+  @@index([courseId])
+  @@index([subjectId])
+  @@index([isFreeTrial, subjectId])
+}
+
+/// One sitting of a mock exam.
+///
+/// `expiresAt` is written once at start and is the only authority on time
+/// remaining. The browser's countdown is presentation; the server compares
+/// against this column on every answer and submission (§5).
+/// A question an admin picked for a specific mock.
+///
+/// Optional by design. A mock with no picks draws from its course or
+/// subject exactly as it always has; a mock with picks uses those and
+/// nothing else. Adding the table changed no existing mock's behaviour,
+/// which is why it is a join rather than a column on Question.
+///
+/// Only the choice lives here. What the student is actually shown is still
+/// snapshotted onto `MockAttemptQuestion` when the attempt starts, so
+/// removing a pick afterwards cannot alter a finished paper.
+model MockExamQuestion {
+  id         String @id @default(cuid())
+  mockExamId String
+  questionId String
+  order      Int    @default(0)
+
+  mockExam MockExam @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([mockExamId, questionId])
+  @@index([mockExamId, order])
+}
+
+model MockAttempt {
+  id            String        @id @default(cuid())
+  userId        String
+  mockExamId    String
+  attemptNumber Int           @default(1)
+  status        AttemptStatus @default(IN_PROGRESS)
+  startedAt     DateTime      @default(now())
+  expiresAt     DateTime
+  submittedAt   DateTime?
+  /// Set when the attempt was finalised by expiry rather than by the student.
+  autoSubmitted Boolean       @default(false)
+
+  totalQuestions  Int      @default(0)
+  correctCount    Int      @default(0)
+  incorrectCount  Int      @default(0)
+  unansweredCount Int      @default(0)
+  /// Whole percent, computed server-side from the stored answers.
+  scorePercent    Int      @default(0)
+  passed          Boolean?
+
+  /// Denormalised for history listing without joining through the exam, which
+  /// also keeps the label stable if the mock is later renamed.
+  examTitle    String
+  subjectTitle String?
+
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mockExam   MockExam              @relation(fields: [mockExamId], references: [id], onDelete: Cascade)
+  questions  MockAttemptQuestion[]
+  kdrResults KdrResult[]
+  freeTrial  FreeTrialUse?
+  emails     EmailLog[]
+  report     MockReport?
+
+  @@unique([userId, mockExamId, attemptNumber])
+  @@index([userId, status])
+  @@index([userId, submittedAt])
+  @@index([mockExamId])
+  @@index([status, expiresAt])
+}
+
+/// The exact question as it was put to the student, plus their answer.
+///
+/// Everything needed to render and mark the question is snapshotted here, so a
+/// later edit to the question bank — reworded prompt, changed answer, new KDR
+/// code, archived question — cannot retroactively change a finished attempt
+/// (§26). `questionId` stays as a soft link for analytics only.
+model MockAttemptQuestion {
+  id         String  @id @default(cuid())
+  attemptId  String
+  /// Nullable: the source question may be archived later.
+  questionId String?
+  order      Int
+
+  promptSnapshot      String
+  explanationSnapshot String?
+  kdrCodeSnapshot     String?
+  kdrTopicSnapshot    String?
+  /// The chapter a point-mapped question sits in, written as it was read at
+  /// the time — "27 — Emergency Communications and Signals".
+  ///
+  /// Only set when the question was mapped to a point. A question mapped to
+  /// its chapter and no further leaves this null and reports as the chapter
+  /// itself, which is the whole of what its author said about it.
+  kdrChapterSnapshot  String?
+  caanzRefSnapshot    String?
+  ac61RefSnapshot     String?
+  /// [{ id, text, isCorrect, order }] as presented. Never sent to the browser
+  /// with isCorrect intact while the attempt is live (§22).
+  optionsSnapshot     Json
+
+  selectedOptionId String?
+  isCorrect        Boolean?
+  answeredAt       DateTime?
+
+  attempt  MockAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question?   @relation(fields: [questionId], references: [id], onDelete: SetNull)
+
+  @@unique([attemptId, order])
+  @@index([attemptId])
+  @@index([questionId])
+}
+
+/// Per-attempt KDR aggregation, stored so historical breakdowns stay stable
+/// and trends across attempts can be read without recomputing (§15).
+model KdrResult {
+  id        String   @id @default(cuid())
+  userId    String
+  attemptId String
+  kdrCode   String?
+  kdrTopic  String?
+  /// The chapter above `kdrTopic` when this row is a point. Null for a row
+  /// that is already a chapter.
+  kdrChapter String?
+  attempted Int
+  correct   Int
+  incorrect Int
+  /// Whole percent.
+  accuracy  Int
+  createdAt DateTime @default(now())
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  attempt MockAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@index([userId, kdrCode])
+  @@index([userId, createdAt])
+  @@index([attemptId])
+}
+
+/// Record of transactional email. In development, with no provider configured,
+/// messages are recorded here with status LOGGED rather than being sent (§16).
+/// Delivery state for one attempt's Knowledge Deficiency Report.
+///
+/// Deliberately separate from the attempt: a mock result is a fact about what
+/// the student scored and must survive a mailer outage, so nothing here is
+/// allowed to roll the result back. The row records how far delivery got and
+/// what went wrong, which is what a retry needs.
+///
+/// The report itself is not stored. It is rendered on demand from
+/// MockAttemptQuestion, whose snapshots are immutable, so a download a year
+/// later reproduces exactly what the student was sent even if the question,
+/// its explanation or its topic has been edited since.
+model MockReport {
+  id        String       @id @default(cuid())
+  /// One report per attempt. The unique constraint is the idempotency
+  /// guarantee: a double submit, a retry or a race cannot create a second.
+  attemptId String       @unique
+  userId    String
+  status    ReportStatus @default(PENDING)
+
+  /// Whole percent, copied at generation so a listing needs no join.
+  scorePercent Int
+  /// How many questions the report has a revision area for.
+  missedCount  Int  @default(0)
+  /// Bytes of the PDF last produced, for the listing and for sanity checks.
+  pdfBytes     Int?
+
+  generatedAt DateTime?
+  sentAt      DateTime?
+  /// Truncated; provider errors can name the account and the domain.
+  error       String?
+  /// How many times delivery has been attempted, so a retry loop is visible.
+  attempts    Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  attempt MockAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model EmailLog {
+  id        String      @id @default(cuid())
+  userId    String?
+  attemptId String?
+  to        String
+  subject   String
+  template  String
+  body      String
+  status    EmailStatus @default(QUEUED)
+  provider  String?
+  error     String?
+  createdAt DateTime    @default(now())
+
+  user    User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  attempt MockAttempt? @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+/**
+ * ==========================================================================
+ * Phase 5 — guarantee, refunds, flight school enterprise
+ * ==========================================================================
+ */
+
+enum ClaimStatus {
+  DRAFT
+  SUBMITTED
+  NEEDS_INFORMATION
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  REFUND_PROCESSING
+  REFUNDED
+  CLOSED
+}
+
+enum RefundMethod {
+  RAZORPAY
+  BANK_TRANSFER
+  MANUAL
+}
+
+enum OrgRole {
+  OWNER
+  ADMIN
+  INSTRUCTOR
+}
+
+enum OrgStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum MembershipStatus {
+  ACTIVE
+  REMOVED
+}
+
+enum SeatStatus {
+  AVAILABLE
+  ASSIGNED
+  REVOKED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+/// The guarantee terms in force. Versioned, because a policy change must never
+/// retroactively alter a claim that was made under the old terms (§5).
+///
+/// Every threshold is configuration. Nothing about "100% of modules" is in
+/// code, and no condition is invented here that the client did not state.
+model GuaranteePolicy {
+  id      String @id @default(cuid())
+  version String @unique
+  title   String
+  /// The guarantee wording shown to students and pinned onto each claim.
+  terms   String
+
+  /// Study completion required across the qualifying course, as a percentage.
+  requiredStudyPercent    Int  @default(100)
+  /// How many mock exams must be completed for the qualifying course.
+  requiredMockCount       Int  @default(1)
+  /// Optional: mocks must also be passed, not merely sat. Null = sitting is enough.
+  requiredMockPassPercent Int?
+  /// Days after the qualifying purchase within which a claim must be made.
+  /// Null means no window.
+  claimWindowDays         Int?
+
+  active    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products QuaifyingProduct[]
+  claims   GuaranteeClaim[]
+
+  @@index([active])
+}
+
+/// Which products a policy covers. A join table rather than a list, so an
+/// admin can add products without a migration.
+model QuaifyingProduct {
+  id        String @id @default(cuid())
+  policyId  String
+  productId String
+
+  policy  GuaranteePolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([policyId, productId])
+}
+
+/// One student's guarantee claim against one qualifying order.
+model GuaranteeClaim {
+  id        String      @id @default(cuid())
+  reference String      @unique
+  userId    String
+  /// The purchase the claim is made against. Refunds are computed from this,
+  /// never from anything the browser sends (§12).
+  orderId   String
+  policyId  String
+  status    ClaimStatus @default(DRAFT)
+
+  /// Snapshot of the eligibility calculation at submission, so a later change
+  /// to progress or policy cannot rewrite what was assessed.
+  studyPercentAtClaim   Int?
+  mocksCompletedAtClaim Int?
+  policyVersionAtClaim  String?
+
+  /// Student-declared official exam details. Evidence is the uploaded document;
+  /// none of this is taken as proof on its own.
+  examName        String?
+  examSittingDate DateTime?
+  examResult      String?
+  studentNote     String?
+
+  submittedAt     DateTime?
+  reviewedAt      DateTime?
+  reviewedById    String?
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  rejectionReason String?
+  /// Never shown to the student (§3).
+  internalNotes   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order      Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  policy     GuaranteePolicy     @relation(fields: [policyId], references: [id])
+  reviewedBy User?               @relation("ClaimReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  documents  GuaranteeDocument[]
+  refunds    Refund[]
+  audit      ClaimAuditLog[]
+
+  /// One live claim per qualifying order. Prevents double-claiming the same
+  /// purchase (§31).
+  @@unique([userId, orderId])
+  @@index([status])
+  @@index([userId, createdAt])
+}
+
+/// An uploaded Aspeq result sheet. The bytes live in private storage; this row
+/// holds only metadata and the storage key (§6, §7).
+model GuaranteeDocument {
+  id           String   @id @default(cuid())
+  claimId      String
+  storageKey   String   @unique
+  filename     String
+  mimeType     String
+  sizeBytes    Int
+  uploadedById String
+  createdAt    DateTime @default(now())
+
+  claim      GuaranteeClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  uploadedBy User           @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+/// Append-only record of every state change on a claim or refund (§13, §32).
+model ClaimAuditLog {
+  id         String   @id @default(cuid())
+  claimId    String
+  actorId    String?
+  action     String
+  fromStatus String?
+  toStatus   String?
+  note       String?
+  createdAt  DateTime @default(now())
+
+  claim GuaranteeClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  actor User?          @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([claimId, createdAt])
+}
+
+/**
+ * ------------------------------------------------------ flight school ----
+ */
+
+model Organization {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  contactName  String?
+  contactEmail String?
+  status       OrgStatus @default(ACTIVE)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  members     OrganizationMember[]
+  students    OrganizationStudent[]
+  licenses    EnterpriseLicense[]
+  invitations OrganizationInvitation[]
+
+  @@index([status])
+}
+
+/// Staff of a flight school. Separate from User.role: a person can be a
+/// platform student and an instructor at a school at the same time.
+model OrganizationMember {
+  id             String           @id @default(cuid())
+  organizationId String
+  userId         String
+  role           OrgRole          @default(INSTRUCTOR)
+  status         MembershipStatus @default(ACTIVE)
+  createdAt      DateTime         @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId])
+  @@index([userId])
+}
+
+/// A student enrolled with a school. Removing them sets status REMOVED — the
+/// row and all their learning history stay (§19, §23).
+model OrganizationStudent {
+  id             String           @id @default(cuid())
+  organizationId String
+  userId         String
+  status         MembershipStatus @default(ACTIVE)
+  assignedAt     DateTime         @default(now())
+  removedAt      DateTime?
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  seats        EnterpriseSeat[]
+
+  @@unique([organizationId, userId])
+  @@index([organizationId, status])
+}
+
+/// A bulk purchase of seats for one product. Seat count comes from the
+/// purchase, never a hardcoded number (§17).
+model EnterpriseLicense {
+  id             String    @id @default(cuid())
+  organizationId String
+  productId      String
+  orderId        String?
+  seatsTotal     Int
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  product      Product          @relation(fields: [productId], references: [id])
+  order        Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  seats        EnterpriseSeat[]
+
+  @@index([organizationId])
+}
+
+/// One seat of a licence. Assigning a seat is what grants the student their
+/// Phase 3 entitlement — enterprise access reuses that system rather than
+/// introducing a parallel one (§19).
+model EnterpriseSeat {
+  id                    String     @id @default(cuid())
+  licenseId             String
+  organizationStudentId String?
+  status                SeatStatus @default(AVAILABLE)
+  assignedAt            DateTime?
+  revokedAt             DateTime?
+
+  license             EnterpriseLicense    @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  organizationStudent OrganizationStudent? @relation(fields: [organizationStudentId], references: [id], onDelete: SetNull)
+
+  /// A student holds at most one live seat per licence.
+  @@unique([licenseId, organizationStudentId])
+  @@index([licenseId, status])
+}
+
+model OrganizationInvitation {
+  id             String           @id @default(cuid())
+  organizationId String
+  email          String
+  /// SHA-256 of the token. The raw token exists only in the invitation link,
+  /// so a database leak does not hand over working invitations (§28).
+  tokenHash      String           @unique
+  licenseId      String?
+  status         InvitationStatus @default(PENDING)
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  invitedById    String?
+  createdAt      DateTime         @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invitedBy    User?        @relation(fields: [invitedById], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, status])
+  @@index([email])
+}
+
+/**
+ * ------------------------------------------------------------- rebate ----
+ */
+
+/// 100/100 perfection rebate. The PRD names it but does not define the rules,
+/// so this stores configuration and claims only — eligibility is deliberately
+/// NOT calculated until the client defines it (§25).
+model RebatePolicy {
+  id                String   @id @default(cuid())
+  version           String   @unique
+  title             String
+  terms             String
+  /// Left null until the client confirms the rule. Nothing computes against it.
+  requiredExamScore Int?
+  active            Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  claims RebateClaim[]
+}
+
+model RebateClaim {
+  id        String      @id @default(cuid())
+  userId    String
+  policyId  String
+  orderId   String?
+  status    ClaimStatus @default(DRAFT)
+  examName  String?
+  examScore Int?
+  note      String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  policy RebatePolicy @relation(fields: [policyId], references: [id])
+  order  Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+}
+
+/**
+ * ==========================================================================
+ * Phase 6 — discount coupons
+ * ==========================================================================
+ */
+
+enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+/// A discount code an admin creates. Validation and the discounted amount are
+/// always computed server-side from this row — a code in a request body is a
+/// claim, never a price.
+model Coupon {
+  id             String       @id @default(cuid())
+  /// Stored upper-cased; lookups upper-case the input so entry is forgiving.
+  code           String       @unique
+  description    String?
+  type           DiscountType @default(PERCENT)
+  /// Percent (1-100) or minor units off, depending on `type`.
+  value          Int
+  currency       Currency?
+  /// Null means the coupon applies to every product.
+  productId      String?
+  /// Optional floor, in minor units, before the coupon may be used.
+  minAmountMinor Int?
+  /// Null means unlimited redemptions.
+  maxRedemptions Int?
+  redemptions    Int          @default(0)
+  startsAt       DateTime?
+  expiresAt      DateTime?
+  active         Boolean      @default(true)
+  createdById    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  product        Product?           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdBy      User?              @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  redemptionRows CouponRedemption[]
+
+  @@index([active, expiresAt])
+  @@index([productId])
+}
+
+/// One use of a coupon. Unique per order so a retried checkout cannot count a
+/// redemption twice, and unique per user+coupon so a code cannot be reused by
+/// the same person when it is meant to be single-use.
+model CouponRedemption {
+  id          String   @id @default(cuid())
+  couponId    String
+  userId      String
+  orderId     String   @unique
+  amountMinor Int
+  createdAt   DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order  Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([couponId])
+  @@index([userId])
+}
+
+/// A section of a lecture deck: the level between a subject and a lesson.
+///
+/// Modules come out of the source material, never out of a template. A deck
+/// that marks its sections with divider slides gets those sections; a deck
+/// that does not gets a single module holding its lessons in slide order. The
+/// structure is allowed to be uneven because the source is.
+/// Where a module's content came from.
+///
+/// The distinction is not bookkeeping: importing a deck replaces that deck's
+/// modules wholesale, and a section written by hand to fill a syllabus gap
+/// must not be swept away by the next content update. Only DECK modules are
+/// replaced on import.
+enum ModuleOrigin {
+  DECK
+  AUTHORED
+}
+
+model CourseModule {
+  id           String        @id @default(cuid())
+  subjectId    String
+  title        String
+  /// The KiwiPilotPrep syllabus section number for this module — the "1.10"
+  /// in "1.10 — Right of Way Rules".
+  ///
+  /// Held on the module because the module IS the section: it is the unit a
+  /// student studies under, and the unit a result is grouped by. Persisted
+  /// rather than derived from position so that reordering the curriculum
+  /// cannot silently renumber the sections already printed on reports.
+  sectionCode  String?
+  /// This chapter's canonical number inside its own subject: the 27 in
+  /// "27 — Emergency Communications and Signals", and the 27 that its points
+  /// 27.1, 27.2 … are numbered from.
+  ///
+  /// Counted within the subject and nowhere else. It is deliberately NOT the
+  /// subject's position in its course, not a row id, not a creation order and
+  /// not an index into any list — an earlier scheme prefixed the subject's
+  /// position, which is how Air Law chapter 27 came to be written "1.27".
+  ///
+  /// Stored rather than derived so that reordering the curriculum cannot
+  /// silently renumber chapters that reports have already been printed with.
+  chapterNumber Int?
+  /// What this chapter is for, in a sentence or two. Written as part of the
+  /// curriculum rather than extracted, so it is null for imported material.
+  summary      String?
+  origin       ModuleOrigin  @default(DECK)
+  /// Slide the section divider was printed on, kept for traceability back to
+  /// the source. The title remains the reference, never the slide number.
+  sourceSlide  Int?
+  displayOrder Int           @default(0)
+  status       ContentStatus @default(DRAFT)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  subject      Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  lessons      Lesson[]
+  coversTopics SyllabusTopic[]
+  questions    Question[]
+
+  @@unique([subjectId, sectionCode])
+  @@unique([subjectId, chapterNumber])
+  @@index([subjectId, status, displayOrder])
+}
+
+/// One lesson of imported lecture material, in the order it was taught.
+model Lesson {
+  id             String        @id @default(cuid())
+  moduleId       String
+  slug           String
+  title          String
+  /// The span of source slides this lesson was built from. Traceability only.
+  sourceFrom     Int?
+  sourceTo       Int?
+  displayOrder   Int           @default(0)
+  /// This point's canonical number inside its own chapter: the 3 in "27.3".
+  ///
+  /// Counted within the chapter, so the full code of a point is its chapter's
+  /// number, a dot, and this. Stored for the same reason a chapter number is.
+  pointNumber    Int?
+  status         ContentStatus @default(DRAFT)
+  /// Optional link to the official syllabus item this lesson teaches. Left
+  /// null where no confident match exists — an unmapped lesson is still
+  /// reachable under its module, so a missing link costs traceability, never
+  /// access to the material.
+  syllabusItemId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  module   CourseModule         @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  item     SyllabusItem?        @relation(fields: [syllabusItemId], references: [id], onDelete: SetNull)
+  content   StudyContent?
+  progress  LessonProgress[]
+  mappings  LessonSyllabusItem[]
+  questions Question[]
+
+  @@unique([moduleId, slug])
+  @@unique([moduleId, pointNumber])
+  @@index([moduleId, status, displayOrder])
+  @@index([syllabusItemId])
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime?
+  updatedAt   DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+}
+
+/// Whether a proposed lesson-to-syllabus link has been reviewed.
+///
+/// A link is written as PROPOSED and is invisible to students until a person
+/// confirms it. Matching decides where material *probably* sits in the
+/// examinable index, and a wrong link is worse than no link: it sends a
+/// student who lost marks on a code to the wrong page and tells them that is
+/// the answer.
+enum MappingStatus {
+  PROPOSED
+  CONFIRMED
+  REJECTED
+}
+
+/// Which syllabus items a lesson teaches.
+///
+/// Many-to-many because the material genuinely is: one lesson on Coriolis
+/// force covers 8.12.8, 8.12.10 and 8.12.12, and a single item is often taught
+/// across several consecutive lessons. A single foreign key on Lesson would
+/// force a choice between them and quietly lose the rest.
+model LessonSyllabusItem {
+  id             String        @id @default(cuid())
+  lessonId       String
+  syllabusItemId String
+  /// How this link was arrived at: "auto" or "manual".
+  method         String        @default("auto")
+  /// 0..1. Recorded so a reviewer can sort by how sure the matcher was,
+  /// rather than being handed a flat list of equally-plausible guesses.
+  confidence     Float         @default(0)
+  /// What the match was actually made on, for a reviewer to check against.
+  evidence       String?
+  status         MappingStatus @default(PROPOSED)
+  reviewedById   String?
+  reviewedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  lesson     Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  item       SyllabusItem @relation(fields: [syllabusItemId], references: [id], onDelete: Cascade)
+  reviewedBy User?        @relation("MappingReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@unique([lessonId, syllabusItemId])
+  @@index([syllabusItemId, status, confidence])
+  @@index([lessonId, status])
+  @@index([status, confidence])
+}
