@@ -59,15 +59,7 @@ const nextConfig: NextConfig = {
     // for the same app, so it is named here explicitly. Local testing only:
     // this list should hold nothing but the real domain in production.
     serverActions: {
-      allowedOrigins: [
-        "localhost:3100",
-        "127.0.0.1:3100",
-        // Every Codespaces forwarded port is served from this domain, so a
-        // server action posted from the demo arrives with an Origin that does
-        // not match localhost and would be rejected as CSRF without it.
-        // Demo only — see .devcontainer/.
-        "*.app.github.dev",
-      ],
+      allowedOrigins: ["localhost:3100", "127.0.0.1:3100"],
     },
   },
 

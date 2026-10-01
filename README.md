@@ -172,27 +172,6 @@ npm run dev                 # http://localhost:3000
 
 > Migrations are additive and are applied with `db:migrate:deploy`. `prisma migrate dev` is guarded to refuse running under `NODE_ENV=production`.
 
-### 5. Temporary demo on GitHub Codespaces
-
-For a shareable link without provisioning anything, open the repository in a
-codespace (**Code -> Codespaces -> Create codespace on main**). `.devcontainer/`
-brings up a throwaway Postgres, migrates, seeds, builds, and serves the app on
-port 3100 at `https://<codespace-name>-3100.app.github.dev`.
-
-Sign in as `admin@kiwipilotprep.com` / `admin12345`, or
-`student@example.com` / `student12345`.
-
-This is a **demo, not a deployment**: payments run through the built-in sandbox
-gateway, email is written to the server log instead of being sent, and study
-material is the seeded placeholder content — the extracted decks live in
-`.cache/` and are not in the repository. The forwarded port starts private to
-the codespace owner; `start.sh` tries to make it public, and the PORTS panel
-does it manually if that fails. A codespace stops when idle, and the link stops
-with it.
-
-GitHub **Pages** cannot host this app at all: it serves static files only, while
-every page here needs a database and a server.
-
 ---
 
 ## Testing

@@ -1,4 +1,0 @@
-# Shell scripts run inside the Linux dev container. Checked out with CRLF they
-# fail at the shebang ("bad interpreter: /usr/bin/env bash^M"), so they are
-# pinned to LF regardless of the platform doing the checkout.
-*.sh text eol=lf
