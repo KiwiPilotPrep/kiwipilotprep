@@ -1,0 +1,28 @@
+# Disposable Codespaces environment for KiwiPilotPrep.
+#
+# Two containers: the Node workspace and a throwaway Postgres. The app joins
+# the database's network namespace (`network_mode: service:db`) so Postgres is
+# reachable at localhost:5432 — which is also what prisma/seed.ts checks for
+# before it will write demo accounts, and the reason this stays a demo-only
+# file rather than anything production touches.
+
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+    volumes:
+      - ..:/workspaces/${localWorkspaceFolderBasename}:cached
+    command: sleep infinity
+    network_mode: service:db
+
+  db:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: kiwi
+      POSTGRES_PASSWORD: kiwi
+      POSTGRES_DB: kiwipilotprep
+
+volumes:
+  postgres-data:

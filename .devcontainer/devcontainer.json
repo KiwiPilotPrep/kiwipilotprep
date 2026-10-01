@@ -1,0 +1,23 @@
+{
+  "name": "KiwiPilotPrep (temporary demo)",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "forwardPorts": [3100],
+  "portsAttributes": {
+    "3100": {
+      "label": "KiwiPilotPrep",
+      "onAutoForward": "openPreview"
+    }
+  },
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["Prisma.prisma", "dbaeumer.vscode-eslint"]
+    }
+  }
+}
