@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
@@ -54,8 +55,19 @@ export async function destroySession() {
  * The role is deliberately re-read from the database rather than trusted from
  * the token: if an admin demotes someone, that must take effect immediately
  * instead of when their week-old cookie happens to expire.
+ *
+ * Wrapped in React's `cache` so that re-reading is once per request rather
+ * than once per caller. A layout and the page inside it both ask who is signed
+ * in, which was two JWT verifications and two identical SELECTs on every
+ * signed-in page — cheap against a database on the same machine, and a pair of
+ * network round trips against a hosted one.
+ *
+ * This is per-request memoisation, not a cache with a lifetime: the next
+ * request reads the database again, so the demotion above still takes effect
+ * immediately. Nothing in the app mutates the user and then re-reads it within
+ * one request, which is the only pattern this would change.
  */
-export async function getCurrentUser(): Promise<User | null> {
+export const getCurrentUser = cache(async function getCurrentUser(): Promise<User | null> {
   const token = (await cookies()).get(COOKIE)?.value;
   if (!token) return null;
 
@@ -83,7 +95,7 @@ export async function getCurrentUser(): Promise<User | null> {
     // expired, tampered with, or signed by a different secret
     return null;
   }
-}
+});
 
 /** Server-side gate for any student page or action. */
 export async function requireUser(): Promise<User> {

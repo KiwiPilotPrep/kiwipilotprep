@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
-import { alreadyOwnsProduct } from "@/lib/entitlements";
+import { ownedProductIds } from "@/lib/entitlements";
 import { formatMinor } from "@/lib/money";
 import { count } from "@/lib/plural";
 import { preferredCurrency, rememberCurrency, type Currency } from "@/lib/currency";
@@ -89,12 +89,9 @@ export default async function PricingPage({
   ]);
 
   const owned = user
-    ? new Set(
-        (
-          await Promise.all(
-            products.map(async (p) => ((await alreadyOwnsProduct(user.id, p.id)) ? p.id : null)),
-          )
-        ).filter((id): id is string => id !== null),
+    ? await ownedProductIds(
+        user.id,
+        products.map((p) => p.id),
       )
     : new Set<string>();
 

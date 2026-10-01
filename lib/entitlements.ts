@@ -213,6 +213,61 @@ export async function alreadyOwnsProduct(userId: string, productId: string): Pro
   return held >= scopeKeys.length;
 }
 
+/**
+ * The same question as `alreadyOwnsProduct`, asked about a list at once.
+ *
+ * The pricing page asks it of every product on the page. Done one at a time
+ * that is two queries per product — twenty-odd products became forty-odd round
+ * trips, which costs almost nothing against a database on the same machine and
+ * is most of the page's time against a hosted one. Two queries answer it for
+ * the whole list, and the comparison itself is cheap in memory.
+ *
+ * Deliberately a separate function rather than a rewrite of the single-product
+ * one: checkout asks about exactly one product, and should not pay to assemble
+ * a set to answer that.
+ */
+export async function ownedProductIds(
+  userId: string,
+  productIds: string[],
+): Promise<Set<string>> {
+  const owned = new Set<string>();
+  if (productIds.length === 0) return owned;
+
+  const [items, held] = await Promise.all([
+    db.productItem.findMany({
+      where: { productId: { in: productIds } },
+      select: { productId: true, courseId: true, subjectId: true },
+    }),
+    db.entitlement.findMany({
+      where: liveWhere(userId),
+      select: { scopeKey: true },
+    }),
+  ]);
+
+  const heldKeys = new Set(held.map((e) => e.scopeKey));
+
+  const required = new Map<string, string[]>();
+  for (const item of items) {
+    const key = item.courseId
+      ? courseScope(item.courseId)
+      : item.subjectId
+        ? subjectScope(item.subjectId)
+        : null;
+    if (!key) continue;
+    const list = required.get(item.productId);
+    if (list) list.push(key);
+    else required.set(item.productId, [key]);
+  }
+
+  for (const [productId, keys] of required) {
+    // A product with no items is not owned — same as the single-product path,
+    // where an empty item list returns false rather than vacuously true.
+    if (keys.length > 0 && keys.every((k) => heldKeys.has(k))) owned.add(productId);
+  }
+
+  return owned;
+}
+
 /** Computes the expiry for a purchase, or null for lifetime access. */
 export function expiryFor(accessMonths: number | null | undefined): Date | null {
   if (accessMonths === null || accessMonths === undefined) return null;
