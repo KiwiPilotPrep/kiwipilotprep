@@ -72,6 +72,7 @@ type S3Config = {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
+  forcePathStyle: boolean;
 };
 
 /** `null` when no bucket is configured, which selects the disk driver. */
@@ -103,10 +104,16 @@ function s3Config(): S3Config | null {
   return {
     bucket,
     endpoint,
-    // R2 requires a region to be present and ignores its value.
+    // R2 requires a region to be present and ignores its value. A provider
+    // that does care about it — S3, Supabase Storage — needs the real one.
     region: process.env.S3_REGION ?? "auto",
     accessKeyId,
     secretAccessKey,
+    // Whether the bucket goes in the URL path rather than the hostname.
+    // R2 and S3 are happy with virtual-hosted style, which is the SDK default;
+    // Supabase Storage only answers to path style. Getting it wrong fails at
+    // DNS or with a 404, not with anything that names the cause.
+    forcePathStyle: process.env.S3_FORCE_PATH_STYLE === "true",
   };
 }
 
@@ -122,6 +129,7 @@ function s3Client(config: S3Config) {
         new S3Client({
           region: config.region,
           endpoint: config.endpoint,
+          forcePathStyle: config.forcePathStyle,
           credentials: {
             accessKeyId: config.accessKeyId,
             secretAccessKey: config.secretAccessKey,

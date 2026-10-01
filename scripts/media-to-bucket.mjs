@@ -68,9 +68,13 @@ const bucket = required("S3_BUCKET");
 const mediaDir = process.env.MEDIA_DIR ?? "./.dev/media";
 
 const s3 = new S3Client({
-  // R2 requires a region to be present and ignores its value.
+  // R2 requires a region to be present and ignores its value. A provider that
+  // does care about it — S3, Supabase Storage — needs the real one.
   region: process.env.S3_REGION ?? "auto",
   endpoint: required("S3_ENDPOINT"),
+  // R2 and S3 take the SDK default of virtual-hosted style; Supabase Storage
+  // only answers to path style. Must match what lib/storage uses.
+  forcePathStyle: process.env.S3_FORCE_PATH_STYLE === "true",
   credentials: {
     accessKeyId: required("S3_ACCESS_KEY_ID"),
     secretAccessKey: required("S3_SECRET_ACCESS_KEY"),

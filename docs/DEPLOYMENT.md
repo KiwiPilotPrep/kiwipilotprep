@@ -66,23 +66,40 @@ an upload at all and cannot read back one written by an earlier deploy — every
 lesson diagram 404s and every guarantee-claim upload fails. There are 3,700-odd
 `MediaAsset` rows behind the study reader alone.
 
-**Cloudflare R2** (10 GB free, no egress charges):
+Whichever provider, the bucket must be **private** — no public access, no
+custom domain. Files are only ever served through the app's own authenticated
+routes, which check entitlement and verify a signed token first.
 
-1. Create a bucket. Keep it **private** — no public access, no custom domain.
-   Files are only ever served through the app's own authenticated routes, which
-   check entitlement and verify a signed token first.
-2. Create an R2 API token scoped to that one bucket, with object read and write.
-3. Set the variables:
+**Cloudflare R2** (10 GB free, no egress charges, but a payment method is
+required on file even for the free tier):
 
 ```bash
 S3_BUCKET="kiwipilotprep-media"
 S3_ENDPOINT="https://<ACCOUNT_ID>.r2.cloudflarestorage.com"
-S3_ACCESS_KEY_ID="..."
+S3_ACCESS_KEY_ID="..."      # R2 API token, object read+write, scoped to the bucket
 S3_SECRET_ACCESS_KEY="..."
-S3_REGION="auto"        # R2 requires a region and ignores its value
+S3_REGION="auto"            # R2 requires a region and ignores its value
 ```
 
-4. Move the existing files across:
+**Supabase Storage** (1 GB free, no payment method needed). Credentials come
+from Storage → S3 Configuration:
+
+```bash
+S3_BUCKET="kiwipilotprep-media"
+S3_ENDPOINT="https://<PROJECT_REF>.storage.supabase.co/storage/v1/s3"
+S3_ACCESS_KEY_ID="..."
+S3_SECRET_ACCESS_KEY="..."
+S3_REGION="us-east-2"       # the project's real region, not "auto"
+S3_FORCE_PATH_STYLE="true"  # required — Supabase does not serve virtual-hosted style
+```
+
+`S3_FORCE_PATH_STYLE` puts the bucket in the URL path rather than the hostname.
+R2 and S3 accept the SDK default without it; Supabase only answers to path
+style, and set wrong this fails at DNS or with a bare 404 that names no cause.
+Use the `storage.supabase.co` hostname rather than `supabase.co` — it is the
+one tuned for large transfers.
+
+Then move the existing files across:
 
 ```bash
 npm run media:push -- --dry-run   # inventory first
