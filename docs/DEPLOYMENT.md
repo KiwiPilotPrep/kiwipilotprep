@@ -343,8 +343,118 @@ Watch, at minimum:
   that is failing silently
 - Failed webhook deliveries in the Razorpay dashboard
 - 5xx rate on `/api/checkout/*`
-- Disk usage on `MEDIA_DIR`
+- Storage: disk usage on `MEDIA_DIR`, or the bucket's own size and request
+  metrics when `S3_BUCKET` is set
 - Database connection count
 
 Expired mock attempts are swept on read rather than by a cron job, so no
 scheduled task is required for the exam engine.
+
+---
+
+## 9. Production launch
+
+A client demo has been running since 2026-10-01 on free tiers —
+`kiwipilotprep.vercel.app`, Neon Postgres, Supabase Storage. It proved the
+application works on a host with no persistent disk, and nothing about it is
+production. This section is the ordered path from that to a launch.
+
+Sections 2, 2a, 4 and 4a hold the detail for each variable; this is the
+sequence and the reasoning, so that steps are not done in an order that
+wastes them.
+
+### 9.1 Decide the application host first
+
+Everything after this assumes an answer, so it goes first.
+
+Cloudflare for **DNS, CDN and R2 storage** is straightforward and worth doing
+on its own merits. Moving **the application itself** to Cloudflare is a
+different proposition: Workers are not Node, so Next.js needs the OpenNext
+adapter and a full round of retesting — streamed server rendering, server
+actions, the PDF generation in the report route, and Prisma's connection
+handling all deserve checking rather than assuming.
+
+These are two decisions, not one. The app and its object storage do not have
+to share a provider, and it is entirely reasonable to take R2 now and leave the
+application where it builds without an adapter.
+
+### 9.2 The ordered sequence
+
+1. **Decide the host** (9.1).
+
+2. **Provision the production database.** A paid tier, TLS required, backups
+   scheduled per §6. Apply migrations with `db:migrate:deploy` — do **not**
+   copy the demo data across; seed real content per §3.
+
+   If the provider pools connections, note that two connection strings are
+   needed and they are not interchangeable: the **pooled** host for the
+   application, with `pgbouncer=true` so Prisma stops caching prepared
+   statements that transaction pooling cannot hold, and the **direct**
+   (unpooled) host for migrations and any bulk restore, which need a
+   session-level connection. Using the pooled string for a migration produces
+   lock and prepared-statement errors that do not name their cause.
+
+3. **Create the bucket and move the media** (§2a). Keep it private. Then
+   `npm run media:push`. Storage keys are preserved, so no database row changes
+   and nothing is re-imported. Mind the addressing difference: R2 and S3 want
+   `S3_FORCE_PATH_STYLE` **absent**; Supabase Storage requires it `true`.
+
+4. **Point the domain at the application and set `NEXT_PUBLIC_SITE_URL` to
+   it.** This one variable decides every link that leaves the server —
+   verification, password reset, flight-school invitations, the report link in
+   a scorecard email, the dashboard link on a receipt.
+
+   It must be set, not left to the fallback. `lib/site-url.ts` prefers it and
+   falls back to the `Host` header, which the client supplies: a request
+   carrying `Host: evil.example` would otherwise put someone else's domain into
+   a verification email we sent. `app/layout.tsx` separately falls back to
+   `http://localhost:3000`, which would put localhost in every canonical URL
+   and sitemap entry.
+
+5. **Switch Razorpay to live** (§4). Live keys (`rzp_live_`), then register the
+   webhook at `POST /api/webhooks/razorpay` against the real domain, copy the
+   secret it generates into `RAZORPAY_WEBHOOK_SECRET`, and redeploy so the app
+   picks it up.
+
+   Order matters here. Without that secret the endpoint falls back to a
+   sandbox secret, so every genuine Razorpay delivery is rejected as a forgery
+   and the webhook never settles an order. A purchase can still complete
+   without it — `/api/checkout/verify` checks the signature in the browser
+   callback and calls `fulfilOrder` — so the failure is invisible until a buyer
+   closes the tab mid-payment and never receives what they paid for. Confirm
+   one real payment shows a 200 in Razorpay's own delivery log.
+
+6. **Auth and payment safety.** A fresh `AUTH_SECRET` for production, never the
+   demo's: `openssl rand -base64 32`. It signs the `kpp_session` cookie and
+   also the short-lived tokens that authorise reading a stored document, so
+   rotating it signs everyone out — which is the correct response to a
+   suspected leak, and a reason not to share one secret across environments.
+
+   Confirm `ALLOW_SANDBOX_PAYMENTS` is absent, with the check in §2. Set on a
+   reachable URL it lets anyone grant themselves paid access.
+
+7. **Accounts.** Create the first administrator by hand (§3). Then confirm no
+   development account exists in the production database — `prisma/seed.ts`
+   publishes `admin12345` and `student12345` in its own source, and
+   `scripts/make-qa-account.mjs` hardcodes the QA password, so any of those
+   three reaching production is a published credential on a live admin console.
+   The seed refuses a non-local `DATABASE_URL` for exactly this reason, but
+   verify rather than trust it.
+
+8. **Product data and legal.** Set the real PPL Theory Package price — it sits
+   at $1.00 from a payment test, and every other product is already correct.
+   Fill in the `TODO BEFORE LAUNCH` placeholders: registered entity and NZBN in
+   the footer and privacy policy, a monitored public contact address, and the
+   DPDP grievance officer, which is required because sales are also in INR.
+
+9. **Rotate and verify.** Rotate every credential used during the demo, then do
+   the one check nothing in this repository can do for you: send a real
+   verification email to an inbox on another provider and confirm it arrives in
+   the inbox rather than in spam (§4a, step 5).
+
+### 9.3 Build configuration worth keeping
+
+`postinstall` runs `prisma generate` explicitly. Platforms that cache
+`node_modules` between builds skip Prisma's own install hook, and the failure
+surfaces as a client that does not match the schema. It is a no-op when the
+client is already current, so it is harmless to keep wherever you deploy.
