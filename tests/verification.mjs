@@ -91,6 +91,50 @@ class User {
     fd.set(`$ACTION_ID_${id}`, "");
     return this.request("/login", { method: "POST", body: fd });
   }
+  /**
+   * Presses the confirm button on a verification link.
+   *
+   * Redemption is a POST on purpose — mail scanners follow the GET — so the
+   * tests have to press the button rather than just open the page.
+   */
+  async confirmVerification(token) {
+    const path = `/verify/${token}`;
+    const html = await (await this.request(path)).text();
+    const decode = (v) =>
+      v.replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&#x27;/g, "'");
+
+    const fd = new FormData();
+    fd.set("token", token);
+
+    const ref = html.match(/name="\$ACTION_REF_(\d+)"/);
+    if (ref) {
+      const n = ref[1];
+      fd.set(`$ACTION_REF_${n}`, "");
+      fd.set(
+        `$ACTION_${n}:0`,
+        decode(html.match(new RegExp(`name="\\$ACTION_${n}:0" value="([^"]*)"`))?.[1] ?? ""),
+      );
+      const args = html.match(new RegExp(`name="\\$ACTION_${n}:1" value="([^"]*)"`))?.[1];
+      fd.set(`$ACTION_${n}:1`, args ? decode(args) : "[]");
+    } else {
+      const id = html.match(/ACTION_ID_([a-f0-9]+)/)?.[1];
+      if (!id) return { status: 0, body: html, landedOn: path };
+      fd.set(`$ACTION_ID_${id}`, "");
+    }
+
+    // Next compares Origin against Host and refuses a mismatch as CSRF; fetch
+    // does not set one by itself, so it is set explicitly to our own host.
+    let res = await this.request(path, { method: "POST", body: fd, headers: { origin: BASE } });
+    let hops = 0;
+    const trail = [path];
+    while (res.status >= 300 && res.status < 400 && hops++ < 5) {
+      const loc = res.headers.get("location");
+      const next = loc.startsWith("http") ? new URL(loc).pathname + new URL(loc).search : loc;
+      trail.push(next);
+      res = await this.request(next);
+    }
+    return { status: res.status, body: await res.text(), landedOn: trail.at(-1) };
+  }
 }
 
 const stamp = Date.now().toString(36).slice(-6);
@@ -256,8 +300,24 @@ async function main() {
   const stillUnverified = await db.user.findUnique({ where: { email: NEW_USER } });
   t("a refused token verifies nothing", stillUnverified.emailVerifiedAt === null);
 
-  const confirm = await student.visit(`/verify/${raw}`);
-  t("the real link confirms the address", confirm.body.includes("email is confirmed"),
+  // The property this pair of assertions exists for: a verification link is
+  // fetched by mail security scanners and link preview bots before any person
+  // sees it, and every one of those issues a GET. If rendering the page
+  // redeemed the token, those fetches would confirm the address on the
+  // recipient's behalf — an address nobody clicked, verified seconds after
+  // signup, which is the one thing email verification exists to rule out.
+  const opened = await student.visit(`/verify/${raw}`);
+  t("opening the link only offers a confirm button",
+    opened.body.includes("Confirm my email"), "the landing page did not offer the button");
+
+  const afterGet = await db.user.findUnique({ where: { email: NEW_USER } });
+  t("a GET on the link verifies nothing", afterGet.emailVerifiedAt === null,
+    "merely opening the link confirmed the address — a mail scanner would have too");
+  t("a GET leaves the token redeemable", afterGet.verifyTokenHash !== null,
+    "opening the link spent the token");
+
+  const confirm = await student.confirmVerification(raw);
+  t("pressing confirm confirms the address", confirm.body.includes("email is confirmed"),
     "confirmation page did not report success");
 
   const verified = await db.user.findUnique({ where: { email: NEW_USER } });

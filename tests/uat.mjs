@@ -622,9 +622,17 @@ scenario("UAT-11", "A student can buy a package and start learning");
     "no link found in the outgoing mail");
 
   if (link) {
-    const confirmed = await buyer.visit(link);
-    step("Opening the link confirms the address",
-      confirmed.text.includes("email is confirmed"), `landed ${confirmed.landedOn}`);
+    // Opening the link deliberately does not confirm anything: mail security
+    // scanners and link preview bots fetch URLs out of mail before the
+    // recipient sees them, and they issue a GET. Confirmation is the POST
+    // behind the button, which those fetches never make.
+    const opened = await buyer.visit(link);
+    step("Opening the link offers a confirm button",
+      opened.text.includes("Confirm my email"), `landed ${opened.landedOn}`);
+
+    const confirmed = await buyer.submitForm(link, { token: link.split("/").pop() });
+    step("Pressing confirm confirms the address",
+      confirmed.text.includes("email is confirmed"), `status ${confirmed.status}`);
   }
 
   const pricing = await buyer.visit("/pricing");

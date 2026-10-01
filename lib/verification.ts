@@ -58,6 +58,38 @@ export type ConsumeResult =
   | { ok: false; reason: "invalid" | "expired" };
 
 /**
+ * Reads a token without redeeming it, so the landing page can be rendered by a
+ * GET that changes nothing.
+ *
+ * This separation is the whole point. A verification link is fetched by things
+ * that are not the recipient: mail security scanners, link preview bots and
+ * antivirus proxies all follow URLs in mail before a human sees them. While
+ * redeeming happened on GET, one of those fetches confirmed the address on the
+ * recipient's behalf — which is how an address nobody ever clicked ends up
+ * verified seconds after signup, and how someone could have an account on an
+ * address they do not own confirmed for them by the real owner's scanner.
+ *
+ * Redeeming now happens only on the POST behind the confirm button. Scanners
+ * do not post.
+ */
+export async function inspectVerificationToken(raw: string): Promise<ConsumeResult> {
+  if (!raw) return { ok: false, reason: "invalid" };
+
+  const user = await db.user.findUnique({
+    where: { verifyTokenHash: hashToken(raw) },
+    select: { id: true, verifyTokenExpiresAt: true, emailVerifiedAt: true },
+  });
+
+  if (!user) return { ok: false, reason: "invalid" };
+
+  if (!user.verifyTokenExpiresAt || user.verifyTokenExpiresAt <= new Date()) {
+    return { ok: false, reason: "expired" };
+  }
+
+  return { ok: true, userId: user.id, alreadyVerified: Boolean(user.emailVerifiedAt) };
+}
+
+/**
  * Redeems a token from a verification link.
  *
  * An unknown token and an expired one are reported differently on purpose:

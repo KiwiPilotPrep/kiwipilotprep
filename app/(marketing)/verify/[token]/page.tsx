@@ -1,12 +1,22 @@
 import Link from "next/link";
 
-import { consumeVerificationToken } from "@/lib/verification";
+import { inspectVerificationToken } from "@/lib/verification";
 import { getCurrentUser } from "@/lib/auth";
+
+import { confirmEmailAction } from "./actions";
 
 export const metadata = { title: "Confirming your email" };
 
 /**
  * The landing page for a verification link.
+ *
+ * Rendering this page changes nothing. The token is only read here, and is
+ * redeemed by the POST behind the confirm button — because the link is fetched
+ * by things that are not the recipient. Mail security scanners, link preview
+ * bots and antivirus proxies all follow URLs in mail before a person sees
+ * them, and while redemption happened during render, one of those fetches
+ * confirmed the address on the recipient's behalf. An address nobody clicked
+ * would be verified seconds after signup.
  *
  * Deliberately does not require a session: people open these links in whatever
  * browser their mail app hands them, which is often not the one they signed up
@@ -16,11 +26,15 @@ export const metadata = { title: "Confirming your email" };
  */
 export default async function VerifyTokenPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ token: string }>;
+  searchParams: Promise<{ busy?: string }>;
 }) {
   const { token } = await params;
-  const result = await consumeVerificationToken(token);
+  const { busy } = await searchParams;
+
+  const result = await inspectVerificationToken(token);
   const user = await getCurrentUser();
 
   if (result.ok) {
@@ -28,35 +42,39 @@ export default async function VerifyTokenPage({
       <section className="sec">
         <div className="wrap auth-wrap">
           <div className="sec-head center r in">
-            <div className="eyebrow">Confirmed</div>
+            <div className="eyebrow">One last tap</div>
             <h1 className="h2">
               {result.alreadyVerified
-                ? "That address was already confirmed."
-                : "Your email is confirmed."}
+                ? "That address is already confirmed."
+                : "Confirm your email address."}
             </h1>
             <p className="lede mt-s">
               {result.alreadyVerified
                 ? "Nothing more to do — your account is ready."
-                : "Free practice questions and checkout are both open to you now."}
+                : "Press the button below and free practice questions and checkout both open up."}
             </p>
           </div>
 
-          <div className="acts" style={{ justifyContent: "center", marginTop: "26px" }}>
-            {user ? (
-              <>
-                <Link className="btn btn-p" href="/pricing">
-                  Choose your course
-                </Link>
-                <Link className="btn btn-g" href="/dashboard">
-                  Go to my dashboard
-                </Link>
-              </>
-            ) : (
-              <Link className="btn btn-p" href="/login?next=/pricing">
-                Log in to continue
-              </Link>
-            )}
-          </div>
+          {busy ? (
+            <p className="xs" style={{ textAlign: "center", marginTop: "18px" }}>
+              That was a lot of attempts at once. Wait a moment and press it again.
+            </p>
+          ) : null}
+
+          <form
+            action={confirmEmailAction}
+            className="acts"
+            style={{ justifyContent: "center", marginTop: "26px" }}
+          >
+            <input type="hidden" name="token" value={token} />
+            <button className="btn btn-p" type="submit">
+              {result.alreadyVerified ? "Continue" : "Confirm my email"}
+            </button>
+          </form>
+
+          <p className="xs" style={{ textAlign: "center", marginTop: "22px" }}>
+            The link stays valid until you press it, for 24 hours from when it was sent.
+          </p>
         </div>
       </section>
     );

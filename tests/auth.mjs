@@ -286,9 +286,25 @@ async function main() {
     t("an invented verification token is refused",
       bad.body.includes("couldn&#x27;t use that link"), "an invented token was accepted");
 
-    const ok = await buyer.visit(`/verify/${verifyToken}`);
-    t("§30-A the real link confirms the address", ok.body.includes("email is confirmed"),
-      `landed ${ok.landedOn}`);
+    // Opening the link must not redeem it. Mail security scanners and link
+    // preview bots fetch URLs out of mail before the recipient sees them, and
+    // they issue a GET — so redeeming on render would confirm an address its
+    // owner never clicked.
+    const opened = await buyer.visit(`/verify/${verifyToken}`);
+    t("§30-A opening the link only offers a confirm button",
+      opened.body.includes("Confirm my email"), `landed ${opened.landedOn}`);
+
+    const unconfirmed = await db.user.findUnique({ where: { email: buyerEmail } });
+    t("§30-A a GET on the link verifies nothing", unconfirmed.emailVerifiedAt === null,
+      "opening the link confirmed the address — a mail scanner would have too");
+
+    const ok = await buyer.postForm(`/verify/${verifyToken}`, { token: verifyToken });
+    t("§30-A pressing confirm confirms the address",
+      (ok.headers.get("location") ?? "").includes("/verify/confirmed"),
+      `redirected to ${ok.headers.get("location")}`);
+
+    const confirmed = await db.user.findUnique({ where: { email: buyerEmail } });
+    t("§30-A the account is verified after confirming", Boolean(confirmed.emailVerifiedAt));
 
     const again = await buyer.visit(`/verify/${verifyToken}`);
     t("§30-E a verification token cannot be reused",
