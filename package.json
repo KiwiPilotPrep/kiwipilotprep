@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
     "seed": "npx tsx prisma/seed.ts",
+    "media:push": "node scripts/media-to-bucket.mjs",
     "db:migrate": "node scripts/no-prod-migrate-dev.mjs && prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:status": "prisma migrate status",
@@ -63,6 +65,7 @@
     "sections:assign": "node scripts/assign-section-codes.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1144.0",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.12",

@@ -24,7 +24,9 @@ cookie, which is scoped to the origin.
 
 - Node.js 20 LTS or newer
 - PostgreSQL 16 or newer, with TLS
-- Persistent disk for `MEDIA_DIR` (guarantee-claim documents)
+- File storage — **either** a persistent disk for `MEDIA_DIR`, **or** a private
+  S3-compatible bucket via `S3_BUCKET` (see §2a). Lesson diagrams, question
+  images, thumbnails and guarantee-claim documents are all served from it
 - Outbound HTTPS to `api.razorpay.com` and the email provider
 
 ---
@@ -41,13 +43,64 @@ are wrong:
 | `NEXT_PUBLIC_SITE_URL` | Canonical URLs, Open Graph tags, `robots.txt` and the sitemap all derive from it. Leave it unset and they point at localhost. |
 | `ALLOW_SANDBOX_PAYMENTS` | **Must be absent or `false`.** Set in production it would let anyone grant themselves paid access with a locally-signed payment. |
 | `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Server-side only. Never in client code, a build log, or a screenshot. |
-| `MEDIA_DIR` | Must be outside the web root and outside the repository, on a disk included in backups. |
+| `MEDIA_DIR` | Must be outside the web root and outside the repository, on a disk included in backups. Ignored when `S3_BUCKET` is set. |
+| `S3_BUCKET` and friends | Set them and files move to the bucket; leave them unset and files stay on disk. Set `S3_BUCKET` without its endpoint or credentials and the app refuses to start a request rather than quietly writing to a disk that may not persist. |
 
 Verify before going live:
 
 ```bash
 node -e "if (process.env.ALLOW_SANDBOX_PAYMENTS === 'true') { console.error('SANDBOX PAYMENTS ARE ON'); process.exit(1) } else console.log('sandbox off — ok')"
 ```
+
+---
+
+## 2a. File storage on a host without a disk
+
+`lib/storage` has two drivers and picks one from the environment: the local
+disk, or any S3-compatible bucket. Setting `S3_BUCKET` selects the bucket and
+`MEDIA_DIR` is then ignored.
+
+On a serverless platform the bucket is not optional. The filesystem there is
+read-only apart from a per-invocation `/tmp`, so the disk driver cannot store
+an upload at all and cannot read back one written by an earlier deploy — every
+lesson diagram 404s and every guarantee-claim upload fails. There are 3,700-odd
+`MediaAsset` rows behind the study reader alone.
+
+**Cloudflare R2** (10 GB free, no egress charges):
+
+1. Create a bucket. Keep it **private** — no public access, no custom domain.
+   Files are only ever served through the app's own authenticated routes, which
+   check entitlement and verify a signed token first.
+2. Create an R2 API token scoped to that one bucket, with object read and write.
+3. Set the variables:
+
+```bash
+S3_BUCKET="kiwipilotprep-media"
+S3_ENDPOINT="https://<ACCOUNT_ID>.r2.cloudflarestorage.com"
+S3_ACCESS_KEY_ID="..."
+S3_SECRET_ACCESS_KEY="..."
+S3_REGION="auto"        # R2 requires a region and ignores its value
+```
+
+4. Move the existing files across:
+
+```bash
+npm run media:push -- --dry-run   # inventory first
+npm run media:push
+```
+
+Storage keys are preserved exactly, so **nothing in Postgres changes and
+nothing needs re-importing** — the key that resolved to a file on disk now
+resolves to an object in the bucket. The script is resumable: an object already
+present at its full size is skipped, so an interrupted run picks up where it
+stopped. It finishes by checking every `MediaAsset` row against the bucket and
+naming any that have no object.
+
+The same variables work for S3 or any compatible provider; only the endpoint
+and region change.
+
+> Backups: §6 covers the database. A bucket is **not** covered by a database
+> backup — enable the provider's own versioning or lifecycle policy.
 
 ---
 
