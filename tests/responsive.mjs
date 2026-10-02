@@ -2,13 +2,17 @@
  * Phase 6 §17/§18/§26 — responsive, browser and accessibility QA.
  *
  * Drives a real Chromium at each width the brief names and measures the page
- * rather than inspecting the stylesheet. Three things are checked on every
+ * rather than inspecting the stylesheet. Four things are checked on every
  * page at every width:
  *
  *   1. No horizontal overflow — `scrollWidth` must not exceed the viewport.
- *   2. No console errors and no unhandled page errors (this is also the
+ *   2. Nothing escapes its own box — an element can paint its text outside its
+ *      own border while the page stays exactly as wide as the phone, so (1)
+ *      never sees it. A fixed height on a label that wraps, and a min-width on
+ *      a paragraph narrower than its minimum, both shipped that way.
+ *   3. No console errors and no unhandled page errors (this is also the
  *      hydration check: a mismatch reports as a console error).
- *   3. Nothing important is clipped out of reach.
+ *   4. Nothing important is clipped out of reach.
  *
  * Plus a keyboard and labelling pass on the pages that carry forms.
  *
@@ -32,6 +36,7 @@ const WIDTHS = [
   { w: 430, h: 932, label: "mobile 430" },
   { w: 390, h: 844, label: "mobile 390" },
   { w: 375, h: 812, label: "mobile 375" },
+  { w: 320, h: 720, label: "mobile 320" },
 ];
 
 const stamp = Date.now().toString(36).slice(-6);
@@ -91,10 +96,61 @@ async function auditPage(context, path, label) {
         }
       }
     }
+    // Text that does not fit the box drawn around it.
+    //
+    // The check above measures the page, so it only sees a layout that pushes
+    // the document sideways. It cannot see a label whose own content paints
+    // outside its own border while the page stays exactly as wide as the
+    // phone — which is what a fixed height does to a one-line label the moment
+    // the words wrap onto a second line, and what a min-width does to a
+    // paragraph narrower than its own minimum. Both shipped; both looked
+    // perfect on a desktop.
+    //
+    // Only boxes that are actually drawn count: escaping an invisible wrapper
+    // is normal and invisible. Anything that scrolls or clips its own overflow
+    // is doing so deliberately.
+    const escaping = [];
+    for (const el of document.querySelectorAll("body *")) {
+      const cs = getComputedStyle(el);
+      if (cs.display === "none" || cs.visibility === "hidden") continue;
+      if (cs.overflow !== "visible") continue;
+
+      const drawn =
+        cs.borderTopWidth !== "0px" ||
+        (cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)");
+      if (!drawn) continue;
+
+      const overY = el.scrollHeight - el.clientHeight;
+      const overX = el.scrollWidth - el.clientWidth;
+      if (overY <= 2 && overX <= 2) continue;
+
+      // A positioned descendant that sticks out is meant to — the header's
+      // dropdown hangs 240px below it by design — and it inflates scrollHeight
+      // without any text having escaped anything. Overflow that one explains
+      // is not a defect. Text nodes have no position of their own, so the case
+      // this check exists for still reports.
+      const box = el.getBoundingClientRect();
+      let explained = false;
+      for (const kid of el.querySelectorAll("*")) {
+        const ks = getComputedStyle(kid);
+        if (ks.position !== "absolute" && ks.position !== "fixed") continue;
+        const kb = kid.getBoundingClientRect();
+        if (kb.bottom > box.bottom + 2 || kb.right > box.right + 2) {
+          explained = true;
+          break;
+        }
+      }
+      if (explained) continue;
+
+      const name = `${el.tagName.toLowerCase()}.${el.className?.toString?.().slice(0, 28)}`;
+      escaping.push(`${name} (${overY > 2 ? `${overY}px below` : `${overX}px past`} its box)`);
+    }
+
     return {
       scrollWidth: doc.scrollWidth,
       clientWidth: doc.clientWidth,
       offenders: offenders.slice(0, 4),
+      escaping: escaping.slice(0, 4),
     };
   });
 
@@ -103,6 +159,11 @@ async function auditPage(context, path, label) {
     `${label} · ${path} · no horizontal overflow`,
     !overflow,
     `scrollWidth ${metrics.scrollWidth} > viewport ${metrics.clientWidth}: ${metrics.offenders.join(", ")}`,
+  );
+  t(
+    `${label} · ${path} · nothing escapes its own box`,
+    metrics.escaping.length === 0,
+    metrics.escaping.join(", "),
   );
   t(
     `${label} · ${path} · no console or page errors`,
@@ -168,7 +229,7 @@ async function main() {
   }
 
   const STUDENT_PAGES = ["/dashboard", "/progress", "/mocks", "/guarantee", "/profile", "/courses"];
-  for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS[6]]) {
+  for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS.at(-1)]) {
     const context = await browser.newContext({ viewport: { width: w, height: h } });
     await context.addInitScript(() => { try { localStorage.setItem("kpp_cookie_notice", "seen"); } catch {} });
     const landed = await signIn(context, STUDENT, PASSWORD);
@@ -211,7 +272,7 @@ async function main() {
       `/study/${courseSlug}/${subjectSlug}/lessons/${sampleLesson.slug}`,
     ];
 
-    for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS[6]]) {
+    for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS.at(-1)]) {
       const context = await browser.newContext({ viewport: { width: w, height: h } });
       await context.addInitScript(() => {
         try { localStorage.setItem("kpp_cookie_notice", "seen"); } catch {}
@@ -239,7 +300,7 @@ async function main() {
     "/admin/organizations", "/admin/students"];
 
   if (adminExists) {
-    for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS[6]]) {
+    for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS.at(-1)]) {
       const context = await browser.newContext({ viewport: { width: w, height: h } });
       await context.addInitScript(() => { try { localStorage.setItem("kpp_cookie_notice", "seen"); } catch {} });
       const landed = await signIn(context, adminEmail, "admin12345");

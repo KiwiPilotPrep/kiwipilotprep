@@ -248,10 +248,16 @@ body.lock{overflow:hidden}
 .hero-trust{display:flex;flex-wrap:wrap;align-items:center;gap:9px 15px;margin-top:30px;font-size:13.5px;font-weight:500;color:var(--muted)}
 .hero-trust b{color:var(--ink-2);font-weight:600}
 .dot{width:3px;height:3px;border-radius:50%;background:var(--line-2);flex:none}
+/* min-height, not height. This label is a full sentence, and on a phone it
+   wraps to two lines — against a fixed 31px the second line simply painted
+   outside the rounded border. The padding and line-height below reproduce that
+   31px exactly while it fits on one line, so nothing moves on a wide screen,
+   and let the pill grow around the text when it does not. */
 .pill{
-  display:inline-flex;align-items:center;gap:8px;height:31px;padding:0 13px 0 10px;margin-bottom:22px;
+  display:inline-flex;align-items:center;gap:8px;min-height:31px;
+  padding:6px 13px 6px 10px;margin-bottom:22px;
   border-radius:99px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh-1);
-  font-size:12.5px;font-weight:600;color:var(--ink-2);
+  font-size:12.5px;line-height:1.35;font-weight:600;color:var(--ink-2);
 }
 .pill i{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
 
@@ -331,7 +337,11 @@ body.lock{overflow:hidden}
   margin-top:56px;padding:30px 34px;border-radius:var(--r);
   background:var(--invert-bg);color:#fff;display:flex;gap:22px;align-items:center;flex-wrap:wrap;
 }
-.prob-note p{font-size:clamp(17px,1.8vw,21px);font-weight:500;letter-spacing:-.02em;line-height:1.45;color:#fff;flex:1;min-width:280px}
+/* min-width:280px was holding the paragraph wider than the card itself on a
+   320px phone, so the text ran past the panel's edge. `min()` keeps the
+   intent — do not let it get narrow enough to read badly beside the icon —
+   without letting it exceed the space there actually is. */
+.prob-note p{font-size:clamp(17px,1.8vw,21px);font-weight:500;letter-spacing:-.02em;line-height:1.45;color:#fff;flex:1;min-width:min(280px,100%)}
 .prob-note .ic{width:46px;height:46px;border-radius:12px;background:rgba(91,155,213,.18);display:grid;place-items:center;flex:none}
 
 /* ---------- Founder ---------- */
@@ -1262,8 +1272,11 @@ body.lock{overflow:hidden}
   font-weight:400;margin-top:2px}
 .rowitem .acts{display:flex;gap:6px;flex-wrap:wrap}
 
-.pill-s{display:inline-flex;align-items:center;height:23px;padding:0 10px;border-radius:20px;
-  font-size:11px;font-weight:700;letter-spacing:.04em}
+/* Same reason as .pill above: a status chip is one word until the column it
+   sits in gets narrow, and against a fixed 23px the wrapped word painted
+   outside the chip. The padding reproduces 23px while it fits on one line. */
+.pill-s{display:inline-flex;align-items:center;min-height:23px;padding:3px 10px;border-radius:20px;
+  font-size:11px;line-height:1.4;font-weight:700;letter-spacing:.04em}
 .pill-s.published{background:var(--ok-l);color:var(--ok)}
 .pill-s.draft{background:var(--warn-l);color:var(--warn)}
 .pill-s.archived{background:var(--mist);color:var(--muted)}
@@ -1920,8 +1933,12 @@ main:focus{outline:none}
 .study-stat small{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
 .study-search{display:flex;gap:9px}
+/* min-width:0 because a flex item defaults to min-width:auto, and an input's
+   intrinsic minimum is about twenty characters wide. On a 320px phone that
+   refused to shrink and pushed the Search button 31px off the side of the
+   screen instead. */
 .study-search input{
-  flex:1;height:46px;padding:0 15px;border:1px solid var(--line-2);border-radius:10px;
+  flex:1;min-width:0;height:46px;padding:0 15px;border:1px solid var(--line-2);border-radius:10px;
   background:var(--card);color:var(--ink);font:inherit;font-size:15px;
 }
 .study-search input:focus{
