@@ -177,6 +177,58 @@ async function main() {
     await context.close();
   }
 
+  /* ============================ study reader ============================
+     The pages that carry the actual course material — a syllabus index, a
+     lesson list, and a lesson with diagrams in it. They are the widest content
+     in the product and so the likeliest to overflow a phone, and they were the
+     one student surface this file did not reach, because getting to them needs
+     an account that actually holds an entitlement. */
+
+  const qaEmail = "qa@example.com";
+  const qaExists = await db.user.findUnique({ where: { email: qaEmail } });
+
+  // Slugs come from the database rather than being written here, so the pass
+  // keeps working as content changes.
+  const sampleLesson = await db.lesson
+    .findFirst({
+      where: { status: "PUBLISHED" },
+      select: {
+        slug: true,
+        module: {
+          select: { subject: { select: { slug: true, course: { select: { slug: true } } } } },
+        },
+      },
+    })
+    .catch(() => null);
+
+  const subjectSlug = sampleLesson?.module?.subject?.slug;
+  const courseSlug = sampleLesson?.module?.subject?.course?.slug;
+
+  if (qaExists && sampleLesson && subjectSlug && courseSlug) {
+    const STUDY_PAGES = [
+      `/study/${courseSlug}/${subjectSlug}`,
+      `/study/${courseSlug}/${subjectSlug}/lessons`,
+      `/study/${courseSlug}/${subjectSlug}/lessons/${sampleLesson.slug}`,
+    ];
+
+    for (const { w, h, label } of [WIDTHS[0], WIDTHS[3], WIDTHS[6]]) {
+      const context = await browser.newContext({ viewport: { width: w, height: h } });
+      await context.addInitScript(() => {
+        try { localStorage.setItem("kpp_cookie_notice", "seen"); } catch {}
+      });
+      const landed = await signIn(context, qaEmail, "KiwiQA@2026");
+      if (!landed || landed.startsWith("/login")) {
+        t(`${label} · study reader sign-in`, false, `landed ${landed}`);
+        await context.close();
+        continue;
+      }
+      for (const path of STUDY_PAGES) await auditPage(context, path, label);
+      await context.close();
+    }
+  } else {
+    checks.push("SKIP  study reader widths (no entitled QA account or no published lesson)");
+  }
+
   /* ============================ admin console =========================== */
 
   const adminEmail = "admin@kiwipilotprep.com";
