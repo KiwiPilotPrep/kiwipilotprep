@@ -3,6 +3,7 @@ import Link from "next/link";
 import LegalPage from "@/components/site/LegalPage";
 
 export const metadata = {
+  alternates: { canonical: "/terms" },
   title: "Terms of Service",
   description:
     "The terms on which KiwiPilotPrep provides Aspeq PPL, CPL and IR theory exam preparation.",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import LegalPage from "@/components/site/LegalPage";
 
 export const metadata = {
+  alternates: { canonical: "/cookies" },
   title: "Cookie Policy",
   description:
     "The small number of cookies KiwiPilotPrep sets, what each is for, and how to control them.",

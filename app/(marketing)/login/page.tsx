@@ -6,7 +6,7 @@ import { safeNextPath } from "@/lib/safe-next";
 import { createSession, getCurrentUser, verifyPassword } from "@/lib/auth";
 import { rateLimit, clearRateLimit, actionKey } from "@/lib/rate-limit";
 
-export const metadata = { title: "Log in — KiwiPilotPrep" };
+export const metadata = { title: "Log in — KiwiPilotPrep", alternates: { canonical: "/login" } };
 
 async function login(formData: FormData) {
   "use server";

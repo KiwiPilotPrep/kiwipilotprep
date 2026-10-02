@@ -3,6 +3,7 @@ import Link from "next/link";
 import LegalPage from "@/components/site/LegalPage";
 
 export const metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy",
   description:
     "What KiwiPilotPrep collects, why we hold it, how long we keep it, and the rights you have over it.",

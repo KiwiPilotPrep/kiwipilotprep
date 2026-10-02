@@ -5,7 +5,7 @@ import { requestPasswordReset } from "@/lib/password-reset";
 import { rateLimit, actionKey } from "@/lib/rate-limit";
 import { sweepExpiredAuthTokens } from "@/lib/verification";
 
-export const metadata = { title: "Forgot your password" };
+export const metadata = { title: "Forgot your password", alternates: { canonical: "/forgot" } };
 
 async function requestReset(formData: FormData) {
   "use server";

@@ -8,6 +8,11 @@ import { getCurrentUser } from "@/lib/auth";
 import FaqList from "@/components/site/FaqList";
 import ContactForm from "@/components/site/ContactForm";
 
+/* The canonical for this route. The root layout no longer declares one,
+ * because metadata is inherited and a single shared canonical told search
+ * engines every page was a copy of this one. */
+export const metadata = { alternates: { canonical: "/" } };
+
 export default async function HomePage() {
   // What the front-page pricing section needs to sell the packages right there:
   // the prices, the currency to show them in, and whether the visitor is signed

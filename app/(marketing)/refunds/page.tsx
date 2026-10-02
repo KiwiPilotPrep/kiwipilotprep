@@ -3,6 +3,7 @@ import Link from "next/link";
 import LegalPage from "@/components/site/LegalPage";
 
 export const metadata = {
+  alternates: { canonical: "/refunds" },
   title: "Refund Policy",
   description:
     "When KiwiPilotPrep refunds a purchase, how to ask for one, and how long it takes.",

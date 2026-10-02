@@ -49,9 +49,7 @@ export const metadata: Metadata = {
     "IR theory",
     "New Zealand pilot exams",
     "aviation theory exam preparation",
-  ],
-  alternates: { canonical: "/" },
-  openGraph: {
+  ],  openGraph: {
     type: "website",
     siteName: "KiwiPilotPrep",
     locale: "en_NZ",

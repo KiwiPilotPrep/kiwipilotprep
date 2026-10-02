@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import FlightSchoolFaq from "@/components/site/FlightSchoolFaq";
 
 export const metadata = {
+  alternates: { canonical: "/flight-schools" },
   title: "For Flight Schools — KiwiPilotPrep",
   description:
     "Enterprise licensing, seat management and real student progress visibility for New Zealand flight training organisations.",

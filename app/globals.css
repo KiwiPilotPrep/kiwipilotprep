@@ -1741,9 +1741,12 @@ body.lock{overflow:hidden}
    The card stays where people expect to find it; only the purchase closes.
    Muted rather than hidden, so it reads as "not yet" instead of "missing". */
 .plan.is-soon{border-style:dashed}
-.plan.is-soon .amt,
-.plan.is-soon .pnote,
-.plan.is-soon ul{opacity:.55}
+/* The price, note and inclusions used to be dimmed to .55 here. Opacity on
+   text blends it into the card, and it took the muted colour to 2.3:1 — the
+   worst contrast anywhere on the site, on the card a visitor most needs to
+   read before deciding to wait for it. The card already says "not yet" four
+   other ways: a dashed border, the Coming Soon flag, a disabled button and a
+   line of copy under it. It does not need a fifth that costs legibility. */
 .plan.is-soon>.btn:disabled,
 .plan .btn:disabled{opacity:.5;cursor:not-allowed}
 .flag-soon{background:var(--warn,#9A6516);color:var(--on-accent)}

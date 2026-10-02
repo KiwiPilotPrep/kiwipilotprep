@@ -1,6 +1,6 @@
 import ContactForm from "@/components/site/ContactForm";
 
-export const metadata = { title: "Contact — KiwiPilotPrep" };
+export const metadata = { title: "Contact — KiwiPilotPrep", alternates: { canonical: "/contact" } };
 
 export default async function ContactPage({
   searchParams,

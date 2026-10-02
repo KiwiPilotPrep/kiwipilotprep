@@ -5,7 +5,7 @@ import { preferredCurrency } from "@/lib/currency";
 import { singleSubjectData } from "@/lib/single-subject";
 import SingleSubjectSection from "@/components/checkout/SingleSubjectSection";
 
-export const metadata = { title: "Buy a single subject — KiwiPilotPrep" };
+export const metadata = { title: "Buy a single subject — KiwiPilotPrep", alternates: { canonical: "/pricing/subject" } };
 
 /**
  * The dedicated single-subject page.

@@ -10,7 +10,7 @@ import { checkPassword } from "@/lib/password-policy";
 import { rememberFields, echoedFields, clearFields } from "@/lib/form-echo";
 import PasswordField from "@/components/auth/PasswordField";
 
-export const metadata = { title: "Create your account — KiwiPilotPrep" };
+export const metadata = { title: "Create your account — KiwiPilotPrep", alternates: { canonical: "/signup" } };
 
 async function signup(formData: FormData) {
   "use server";

@@ -10,7 +10,7 @@ import { preferredCurrency, rememberCurrency, type Currency } from "@/lib/curren
 import { isComingSoon } from "@/lib/coming-soon";
 import BuyButton from "@/components/checkout/BuyButton";
 
-export const metadata = { title: "Pricing — KiwiPilotPrep" };
+export const metadata = { title: "Pricing — KiwiPilotPrep", alternates: { canonical: "/pricing" } };
 
 /**
  * The one place a course is chosen and bought.
