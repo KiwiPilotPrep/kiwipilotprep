@@ -37,10 +37,27 @@ export function initReveal(): Cleanup {
     });
   };
 
+  const all = $$(".r");
+
   if (!("IntersectionObserver" in window)) {
-    $$(".r").forEach(animate);
+    all.forEach(animate);
     return () => {};
   }
+
+  // Whatever is already on screen is shown without animating, before the
+  // hidden state is switched on at all. The first paint already drew these
+  // elements; hiding them in order to fade them back in is what used to delay
+  // the largest paint by seconds, and it animates content the visitor has been
+  // looking at since the page arrived.
+  const offScreen: Element[] = [];
+  for (const el of all) {
+    const box = el.getBoundingClientRect();
+    if (box.top < window.innerHeight && box.bottom > 0) animate(el);
+    else offScreen.push(el);
+  }
+
+  // Only now does anything become hidden, and only what is still out of sight.
+  document.documentElement.classList.add("js-reveal");
 
   const io = new IntersectionObserver(
     (entries) => {
@@ -52,8 +69,12 @@ export function initReveal(): Cleanup {
     },
     { rootMargin: "0px 0px -10% 0px", threshold: 0.05 },
   );
-  $$(".r").forEach((el) => io.observe(el));
-  return () => io.disconnect();
+  offScreen.forEach((el) => io.observe(el));
+
+  return () => {
+    io.disconnect();
+    document.documentElement.classList.remove("js-reveal");
+  };
 }
 
 /** FAQ accordion — one panel open at a time. */
