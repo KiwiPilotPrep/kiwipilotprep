@@ -18,9 +18,10 @@ function chapterCount(subject: { _count: { chapters: number; modules: number } }
 }
 
 export default async function CourseTracks() {
-  const user = await getCurrentUser();
-
-  const [courses, pricingAnchors, reachable] = await Promise.all([
+  // Who is reading is asked for alongside the content, not before it. Awaiting
+  // it first put a round trip in front of the heaviest query on the page, and
+  // the course grid does not depend on the answer to begin loading.
+  const [courses, pricingAnchors, user] = await Promise.all([
     db.course.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { order: "asc" },
@@ -58,10 +59,12 @@ export default async function CourseTracks() {
       },
     }),
     pricingAnchorByCourse(),
-    user ? accessibleCourseIds(user) : Promise.resolve([] as string[]),
+    getCurrentUser(),
   ]);
 
-  const owned = new Set(reachable);
+  // Only a signed-in reader has entitlements to look up, so a visitor -- which
+  // is who the home page is mostly for -- pays nothing for this.
+  const owned = new Set(user ? await accessibleCourseIds(user) : []);
 
   /**
    * Where Explore Subject goes depends on whether the reader can open it.
