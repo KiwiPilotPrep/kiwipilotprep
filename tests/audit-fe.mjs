@@ -16,7 +16,14 @@ import { chromium } from "playwright";
 import { PrismaClient } from "@prisma/client";
 
 const BASE = process.env.TEST_BASE ?? "http://localhost:3100";
-const ADMIN = { email: "admin@kiwipilotprep.com", password: "admin12345" };
+
+// The seeded password differs per environment — it was rotated on the deployed
+// database, because it is published in this repository. Override both when
+// running this against anything but a local database.
+const ADMIN = {
+  email: process.env.TEST_ADMIN_EMAIL ?? "admin@kiwipilotprep.com",
+  password: process.env.TEST_ADMIN_PASSWORD ?? "admin12345",
+};
 
 const db = new PrismaClient();
 const checks = [];
