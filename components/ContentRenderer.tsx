@@ -1,10 +1,17 @@
 import type { Block } from "@/lib/content";
+import { joinSplitParagraphs } from "@/lib/study/join-split-paragraphs";
 
 /**
  * Renders chapter blocks. Everything is escaped by React, so admin-entered
  * text can never become markup on a student's page.
  */
-export default function ContentRenderer({ blocks }: { blocks: Block[] }) {
+export default function ContentRenderer({ blocks: source }: { blocks: Block[] }) {
+  // FE-012 — same repair as the study reader: sentences that the slide
+  // extraction split across paragraphs are set as one paragraph again. Nothing
+  // is rewritten and the stored blocks are untouched; the admin editor shows
+  // the source unchanged.
+  const blocks = joinSplitParagraphs(source);
+
   if (blocks.length === 0) {
     return (
       <div className="empty">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import type { Block } from "@/lib/content";
+import { joinSplitParagraphs } from "@/lib/study/join-split-paragraphs";
 
 /**
  * Renders study material as a technical textbook rather than as dashboard
@@ -28,7 +29,15 @@ import type { Block } from "@/lib/content";
  * running text stays running text; hierarchy comes from type, spacing and
  * rules.
  */
-export default function StudyContentRenderer({ blocks }: { blocks: Block[] }) {
+export default function StudyContentRenderer({ blocks: source }: { blocks: Block[] }) {
+  // FE-012 — the material was extracted from slide decks, so a line break on a
+  // slide arrived here as a paragraph break and single sentences were set as
+  // several paragraphs. Rejoining them is presentation: no word is changed and
+  // the stored blocks are untouched, which is why this happens here rather than
+  // in the database. The admin editor deliberately does not do this — it shows
+  // the source as it is stored.
+  const blocks = joinSplitParagraphs(source);
+
   const [zoomed, setZoomed] = useState<{ src: string; caption?: string } | null>(null);
 
   if (blocks.length === 0) {
