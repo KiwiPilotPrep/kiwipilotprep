@@ -63,6 +63,34 @@ const nextConfig: NextConfig = {
     },
   },
 
+  /**
+   * FE-006 / FE-018 — the attempt report used to live at a route segment
+   * literally named `report.pdf`, and `.gitignore` carries `*.pdf`. A gitignore
+   * pattern matches directories as readily as files, so the whole directory was
+   * ignored and the route handler inside it was never committed. It worked on
+   * every developer machine and did not exist in production at all, which is
+   * why the direct URL and the Download report button both returned a 404 page
+   * while every local test passed.
+   *
+   * The handler now lives at `/report`, a segment no ignore rule can swallow.
+   * Report links already sent out by email point at the old `.pdf` URL, so that
+   * path is rewritten onto the new one. `beforeFiles` matters: it runs ahead of
+   * the static-file check, which is what a path ending in `.pdf` would
+   * otherwise be treated as.
+   */
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/mocks/attempts/:attemptId/report.pdf",
+          destination: "/mocks/attempts/:attemptId/report",
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
+  },
+
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },
