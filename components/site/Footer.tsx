@@ -26,10 +26,10 @@ export default function Footer() {
 
           <div className="ft-col">
             <h3>Courses</h3>
-            <Link href="/pricing#ppl-theory-package">PPL Subjects</Link>
-            <Link href="/pricing#cpl-theory-package">CPL Subjects</Link>
-            <Link href="/pricing#ir-theory-package">IR Subjects</Link>
-            <Link href="/pricing#ppl-flight-test-package">Flight Test Groundwork</Link>
+            <Link href="/#ppl-theory-package">PPL Subjects</Link>
+            <Link href="/#cpl-theory-package">CPL Subjects</Link>
+            <Link href="/#ir-theory-package">IR Subjects</Link>
+            <Link href="/#ppl-flight-test-package">Flight Test Groundwork</Link>
             <Link href="/#mocks">Mock Exams</Link>
             <Link href="/trial">Free 10-Question Mock</Link>
           </div>
@@ -39,7 +39,7 @@ export default function Footer() {
             <Link href="/#how">How It Works</Link>
             <Link href="/#guarantee">First-Attempt Guarantee</Link>
             <Link href="/flight-schools">Flight Schools</Link>
-            <Link href="/pricing">Pricing</Link>
+            <Link href="/#pricing">Pricing</Link>
             <Link href="/#faq">FAQ</Link>
           </div>
 

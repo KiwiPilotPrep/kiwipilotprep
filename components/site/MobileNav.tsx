@@ -11,6 +11,8 @@ type Track = {
   subjectCount: number;
   /** Whether the course has any material yet. */
   ready: boolean;
+  /** Where this track leads for the current reader. */
+  href: string;
 };
 
 export default function MobileNav({
@@ -60,7 +62,7 @@ export default function MobileNav({
       >
         {tracks.map((t) =>
           t.ready ? (
-            <Link className="mitem" key={t.id} href={`/courses/${t.slug}`}>
+            <Link className="mitem" key={t.id} href={t.href}>
               {t.title}{" "}
               <em>
                 {t.subjectCount} {t.subjectCount === 1 ? "subject" : "subjects"}

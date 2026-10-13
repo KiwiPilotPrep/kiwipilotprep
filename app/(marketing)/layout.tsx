@@ -10,7 +10,7 @@ export default async function MarketingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, courses] = await Promise.all([
+  const [user, courses, products] = await Promise.all([
     getCurrentUser(),
     db.course.findMany({
       where: { status: "PUBLISHED" },
@@ -27,13 +27,35 @@ export default async function MarketingLayout({
         },
       },
     }),
+    // Which package sells which course, so a visitor who is not signed in can
+    // be taken to the card that sells what they just clicked.
+    db.product.findMany({
+      where: { status: "PUBLISHED", items: { some: { courseId: { not: null } } } },
+      orderBy: { order: "asc" },
+      select: { slug: true, items: { select: { courseId: true } } },
+    }),
   ]);
+
+  const productOfCourse = new Map<string, string>();
+  for (const p of products) {
+    for (const item of p.items) {
+      if (item.courseId && !productOfCourse.has(item.courseId)) {
+        productOfCourse.set(item.courseId, p.slug);
+      }
+    }
+  }
 
   // A course that has been created but not yet filled still belongs on the
   // site -- a visitor should be able to see that it is coming rather than
   // wonder whether it exists. What it must not do is look ready: a course with
   // no modules, no syllabus and no chapters has nothing to open, so it is
   // listed and marked instead of linked.
+  //
+  // Where the menu points depends on who is reading it. A signed-in student
+  // gets the course, because that is their material. A visitor gets the pricing
+  // card for the package that sells it, on the home page, because the course
+  // route would only bounce them to the login screen -- which answers a
+  // question they did not ask and loses the one they did.
   const tracks = courses.map((c) => ({
     id: c.id,
     slug: c.slug,
@@ -42,6 +64,9 @@ export default async function MarketingLayout({
     ready: c.subjects.some(
       (s) => s._count.modules > 0 || s._count.syllabusTopics > 0 || s._count.chapters > 0,
     ),
+    href: user
+      ? `/courses/${c.slug}`
+      : `/#${productOfCourse.get(c.id) ?? "pricing"}`,
   }));
 
   return (

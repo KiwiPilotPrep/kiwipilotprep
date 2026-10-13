@@ -222,3 +222,81 @@ export function initPricing(): Cleanup {
 
   return () => handlers.forEach(([el, fn]) => el.removeEventListener("click", fn));
 }
+
+/**
+ * Keeps long in-page jumps from feeling like a page that will not load.
+ *
+ * The subject menu and the subject cards scroll to a pricing card rather than
+ * navigating to a second copy of the prices. On the home page that card can be
+ * sixteen thousand pixels away, and `scroll-behavior: smooth` animates the
+ * whole distance -- two seconds on a phone, during which nothing the reader can
+ * follow is on screen and the site reads as stuck rather than as moving.
+ *
+ * Smooth motion is kept where it tells the reader where they went, which is
+ * jumps of up to a couple of screens, and dropped beyond that, where it only
+ * costs time.
+ *
+ * The jump is performed here rather than by flipping `scroll-behavior` and
+ * letting the router do it: a hash link is a client-side navigation, and the
+ * scroll happens a render later, by which point any style this handler had
+ * restored would be back in force. Preventing the default and scrolling
+ * directly is the only version that is actually in control of the scroll.
+ */
+export function initAnchorJumps(): Cleanup {
+  /** Beyond this many screens, the animation stops orienting and becomes a wait. */
+  const FAR = 2.5;
+
+  function onClick(event: MouseEvent) {
+    if (event.defaultPrevented || event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    const link = (event.target as Element | null)?.closest?.("a");
+    if (!(link instanceof HTMLAnchorElement)) return;
+    if (link.target && link.target !== "_self") return;
+
+    const href = link.getAttribute("href") ?? "";
+    const hash = href.startsWith("#") ? href : href.startsWith("/#") ? href.slice(1) : "";
+    if (hash.length < 2) return;
+
+    // Only same-page jumps. A link to another page is a navigation, and the
+    // browser arrives at the anchor with no scrolling to animate.
+    if (href.startsWith("/#") && window.location.pathname !== "/") return;
+
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!target) return;
+    if (Math.abs(target.getBoundingClientRect().top) <= window.innerHeight * FAR) return;
+
+    event.preventDefault();
+
+    // The destination is computed rather than delegated to scrollIntoView,
+    // and the animation is refused by argument rather than by CSS. Setting
+    // scroll-behavior inline does not reliably win here -- the scrolling box
+    // is not always the element the declaration is on -- whereas an explicit
+    // instant behaviour is not a hint the engine can take or leave.
+    //
+    // The arithmetic is the alignment the browser would have used: the page
+    // scroll-padding that holds content clear of the sticky header, plus any
+    // scroll-margin the card asks for on top of it.
+    const scroller = document.scrollingElement ?? document.documentElement;
+    const padding = parseFloat(getComputedStyle(scroller).scrollPaddingTop) || 0;
+    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    const top = window.scrollY + target.getBoundingClientRect().top - padding - margin;
+
+    window.scrollTo({ top: Math.max(0, top), behavior: "instant" });
+
+    // The address bar still has to name where the reader is, so the link can be
+    // copied and the back button still works. Replacing rather than pushing
+    // would lose the way back to the top of the page.
+    if (window.location.hash !== hash) {
+      window.history.pushState(null, "", hash);
+    }
+  }
+
+  // Capture phase, deliberately. React attaches its listeners to the root it
+  // rendered into, which is below the document, so a bubbling listener here
+  // runs after the Link has already begun its own smooth scroll -- and that
+  // animation then plays over the jump this made. Capturing puts the decision
+  // first, where preventDefault can still stop the navigation.
+  document.addEventListener("click", onClick, true);
+  return () => document.removeEventListener("click", onClick, true);
+}

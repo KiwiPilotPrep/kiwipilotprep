@@ -12,6 +12,8 @@ type Track = {
   subjectCount: number;
   /** Whether the course has any material yet. */
   ready: boolean;
+  /** Where this track leads for the current reader. */
+  href: string;
 };
 
 /**

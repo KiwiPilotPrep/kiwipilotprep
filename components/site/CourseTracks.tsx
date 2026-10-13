@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { db } from "@/lib/db";
+import { getCurrentUser } from "@/lib/auth";
+import { accessibleCourseIds } from "@/lib/entitlements";
 import { count } from "@/lib/plural";
 
 /**
@@ -15,42 +17,75 @@ function chapterCount(subject: { _count: { chapters: number; modules: number } }
 }
 
 export default async function CourseTracks() {
-  const courses = await db.course.findMany({
-    where: { status: "PUBLISHED" },
-    orderBy: { order: "asc" },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      description: true,
-      accessMonths: true,
-      subjects: {
-        where: { status: "PUBLISHED" },
-        orderBy: { order: "asc" },
-        select: {
-          id: true,
-          slug: true,
-          title: true,
-          description: true,
-          // Both shapes a subject's material can take. An imported study
-          // manual is a module tree; a subject written in the CMS has
-          // chapters. Counting only the second advertised "4 chapters" on
-          // every subject, including twenty-chapter ones and empty ones.
-          _count: {
-            select: {
-              chapters: { where: { status: "PUBLISHED" } },
-              modules: { where: { status: "PUBLISHED", lessons: { some: { status: "PUBLISHED" } } } },
+  const user = await getCurrentUser();
+
+  const [courses, products, reachable] = await Promise.all([
+    db.course.findMany({
+      where: { status: "PUBLISHED" },
+      orderBy: { order: "asc" },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        description: true,
+        accessMonths: true,
+        subjects: {
+          where: { status: "PUBLISHED" },
+          orderBy: { order: "asc" },
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            description: true,
+            // Both shapes a subject's material can take. An imported study
+            // manual is a module tree; a subject written in the CMS has
+            // chapters. Counting only the second advertised "4 chapters" on
+            // every subject, including twenty-chapter ones and empty ones.
+            _count: {
+              select: {
+                chapters: { where: { status: "PUBLISHED" } },
+                modules: { where: { status: "PUBLISHED", lessons: { some: { status: "PUBLISHED" } } } },
+              },
             },
-          },
-          chapters: {
-            where: { status: "PUBLISHED" },
-            orderBy: { order: "asc" },
-            select: { id: true, title: true },
+            chapters: {
+              where: { status: "PUBLISHED" },
+              orderBy: { order: "asc" },
+              select: { id: true, title: true },
+            },
           },
         },
       },
-    },
-  });
+    }),
+    db.product.findMany({
+      where: { status: "PUBLISHED", items: { some: { courseId: { not: null } } } },
+      orderBy: { order: "asc" },
+      select: { slug: true, items: { select: { courseId: true } } },
+    }),
+    user ? accessibleCourseIds(user) : Promise.resolve([] as string[]),
+  ]);
+
+  const productOfCourse = new Map<string, string>();
+  for (const p of products) {
+    for (const item of p.items) {
+      if (item.courseId && !productOfCourse.has(item.courseId)) {
+        productOfCourse.set(item.courseId, p.slug);
+      }
+    }
+  }
+  const owned = new Set(reachable);
+
+  /**
+   * Where Explore Subject goes depends on whether the reader can open it.
+   *
+   * A student who owns the course gets the subject. Everyone else gets the
+   * pricing card for the package that sells it, further down this same page --
+   * not the separate pricing page, and not the course route, which for a
+   * visitor is a login wall and for an unentitled student was a dead end.
+   */
+  function subjectHref(courseId: string, courseSlug: string, subjectSlug: string) {
+    if (user && owned.has(courseId)) return `/courses/${courseSlug}/subjects/${subjectSlug}`;
+    return `/#${productOfCourse.get(courseId) ?? "pricing"}`;
+  }
 
   return (
     <section className="sec" id="courses">
@@ -95,7 +130,7 @@ export default async function CourseTracks() {
                     <Link
                       className="subj r in"
                       key={subject.id}
-                      href={`/courses/${course.slug}/subjects/${subject.slug}`}
+                      href={subjectHref(course.id, course.slug, subject.slug)}
                     >
                       <span className="ic">
                         <svg

@@ -129,7 +129,7 @@ export default function PricingSection({
           </div>
 
           <div className="price-grid">
-            <div data-plan="ppl" className="plan r">
+            <div id="ppl-theory-package" data-plan="ppl" className="plan r">
               <div className="pn">Theory</div>
               <h3>PPL Theory Package</h3>
               <p className="pd">All six PPL theory subjects.</p>
@@ -147,7 +147,7 @@ export default function PricingSection({
               {cta("ppl")}
             </div>
 
-            <div data-plan="cpl" className="plan r" style={{ "--d": ".06s" } as React.CSSProperties}>
+            <div id="cpl-theory-package" data-plan="cpl" className="plan r" style={{ "--d": ".06s" } as React.CSSProperties}>
               <div className="pn">Theory</div>
               <h3>CPL Theory Package</h3>
               <p className="pd">All six CPL theory subjects.</p>
@@ -165,7 +165,7 @@ export default function PricingSection({
               {cta("cpl")}
             </div>
 
-            <div data-plan="ir" className="plan r" style={{ "--d": ".12s" } as React.CSSProperties}>
+            <div id="ir-theory-package" data-plan="ir" className="plan r" style={{ "--d": ".12s" } as React.CSSProperties}>
               <div className="pn">Theory</div>
               <h3>IR Theory Package</h3>
               <p className="pd">All three Instrument Rating subjects.</p>
@@ -183,7 +183,7 @@ export default function PricingSection({
               {cta("ir")}
             </div>
 
-            <div data-plan="ftppl" className="plan r" style={{ "--d": ".18s" } as React.CSSProperties}>
+            <div id="ppl-flight-test-package" data-plan="ftppl" className="plan r" style={{ "--d": ".18s" } as React.CSSProperties}>
               <div className="pn">Groundwork</div>
               <h3>PPL Flight Test Groundwork</h3>
               <p className="pd">Eight oral and preparation modules.</p>
@@ -200,7 +200,7 @@ export default function PricingSection({
               {cta("ftppl")}
             </div>
 
-            <div data-plan="ftcpl" className="plan r is-soon" style={{ "--d": ".24s" } as React.CSSProperties}>
+            <div id="cpl-flight-test-package" data-plan="ftcpl" className="plan r is-soon" style={{ "--d": ".24s" } as React.CSSProperties}>
               <span className="flag flag-soon">Coming Soon</span>
               <div className="pn">Groundwork</div>
               <h3>CPL Flight Test Groundwork</h3>
@@ -218,7 +218,7 @@ export default function PricingSection({
               {cta("ftcpl")}
             </div>
 
-            <div data-plan="complete" className="plan best r" style={{ "--d": ".30s" } as React.CSSProperties}>
+            <div id="complete-aviator-pass" data-plan="complete" className="plan best r" style={{ "--d": ".30s" } as React.CSSProperties}>
               <span className="flag">Best Value</span>
               <div className="pn">Complete</div>
               <h3>Complete Aviator Pass</h3>

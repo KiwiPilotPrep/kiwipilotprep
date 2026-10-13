@@ -83,11 +83,15 @@ async function signIn() {
   const bareHashes = hrefs.filter((h) => h.startsWith("#") && h !== "#");
   t("FE-007 no footer link is a bare page-relative hash", bareHashes.length === 0, bareHashes.join(", "));
 
+  // The pricing destinations are the home page section, not the standalone
+  // /pricing page. Both show the same prices; the one a reader means by "the
+  // pricing" is the section further down the front page, and sending them off
+  // that page to a second copy of it is a worse answer than a scroll.
   for (const [label, href] of [
-    ["Pricing", "/pricing"],
+    ["Pricing", "/#pricing"],
     ["FAQ", "/#faq"],
     ["Contact", "/contact"],
-    ["PPL Subjects", "/pricing#ppl-theory-package"],
+    ["PPL Subjects", "/#ppl-theory-package"],
   ]) {
     t(`FE-007 footer links ${label} somewhere real`, hrefs.includes(href), `want ${href}`);
   }

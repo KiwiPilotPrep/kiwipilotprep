@@ -10,6 +10,8 @@ type Track = {
   subjectCount: number;
   /** Whether the course has any material yet. */
   ready: boolean;
+  /** Where this track leads for the current reader. */
+  href: string;
 };
 
 export default function SubjectsMenu({ tracks }: { tracks: Track[] }) {
@@ -60,7 +62,7 @@ export default function SubjectsMenu({ tracks }: { tracks: Track[] }) {
           t.ready ? (
             <Link
               key={t.id}
-              href={`/courses/${t.slug}`}
+              href={t.href}
               role="menuitem"
               onClick={() => setOpen(false)}
             >

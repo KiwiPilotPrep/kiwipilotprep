@@ -215,14 +215,14 @@ async function main() {
 
   // FE-008: a student without the entitlement is now taken to the package that
   // would unlock the course, instead of being left on a dead-end panel. What is
-  // being tested is that the course page refuses — landing on pricing is proof
-  // of the refusal, because the redirect happens after the entitlement check
-  // and before anything is read. That the material itself never reaches the
+  // being tested is that the course page refuses — landing on the home page
+  // pricing section is proof of the refusal, because the redirect happens
+  // after the entitlement check and before anything is read. That the material itself never reaches the
   // browser is asserted a few lines below, at the chapter, which is where the
   // material actually is.
   const lockedCourse = await student.visit(`/courses/${courseA.slug}`);
   t("unpurchased course is not readable",
-    lockedCourse.landedOn.startsWith("/pricing"),
+    lockedCourse.landedOn.startsWith("/#"),
     `landed ${lockedCourse.landedOn}`);
 
   const lockedChapter = await student.visit(
@@ -311,7 +311,7 @@ async function main() {
 
   const otherCourse = await student.visit(`/courses/${courseB.slug}`);
   t("§34 unpurchased second course stays locked",
-    otherCourse.landedOn.startsWith("/pricing"),
+    otherCourse.landedOn.startsWith("/#"),
     `landed ${otherCourse.landedOn}`);
 
   const otherChapter = await student.visit(

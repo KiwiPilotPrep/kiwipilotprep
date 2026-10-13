@@ -49,7 +49,12 @@ export default async function CoursePage({
       orderBy: { order: "asc" },
       select: { slug: true },
     });
-    redirect(unlocks ? `/pricing#${unlocks.slug}` : "/pricing");
+    // The home page's own pricing section, at the card for this course — not
+    // the standalone /pricing page. Both are real, but the one people mean when
+    // they say "the pricing" is the one further down the front page, and
+    // sending them off it to a second copy is a worse answer to "how do I get
+    // this course?" than scrolling them to the card that sells it.
+    redirect(unlocks ? `/#${unlocks.slug}` : "/#pricing");
   }
 
   const overall = await courseProgress(user.id, course.id);

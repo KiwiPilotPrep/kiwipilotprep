@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-import { initHeader, initReveal } from "@/lib/site-interactions";
+import { initAnchorJumps, initHeader, initReveal } from "@/lib/site-interactions";
 
 /**
  * Page-wide Phase 1 behaviours: sticky header and reveal-on-scroll.
@@ -13,7 +13,7 @@ export default function SiteEffects() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const cleanups = [initHeader(), initReveal()];
+    const cleanups = [initHeader(), initReveal(), initAnchorJumps()];
     return () => cleanups.forEach((fn) => fn());
   }, [pathname]);
 

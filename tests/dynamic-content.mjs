@@ -177,9 +177,25 @@ async function main() {
   // A course the student has no entitlement to. IR Theory rather than CPL:
   // this account holds both PPL and CPL, and the check has to name a course it
   // genuinely does not hold or it proves nothing.
-  const noAccess = await s.html("/courses/ir-theory");
+  //
+  // FE-008 changed what refusal looks like, not whether it happens. The page
+  // used to render a panel saying the course was not part of the student's
+  // access and leave them there; it now redirects to the package that would
+  // unlock it. So the assertions are on the properties that matter -- the
+  // material is never sent, and the refusal leads somewhere -- rather than on
+  // the wording of a panel that no longer exists.
+  const noAccess = await s.go("/courses/ir-theory");
+  const destination = noAccess.headers.get("location") ?? "";
   t("student cannot read an unentitled course",
-    noAccess.body.includes("do not have access"), "expected the access-denied panel");
+    noAccess.status >= 300 && noAccess.status < 400 && !destination.includes("/subjects/"),
+    `status ${noAccess.status} loc ${destination}`);
+  t("refusal offers the package that unlocks it",
+    destination.startsWith("/#"),
+    `expected a home-page pricing anchor, got ${destination}`);
+  // Subject titles are deliberately not asserted absent here: they are
+  // public marketing copy on the home page this now redirects to. Material
+  // leakage is covered by tests/idor.mjs and tests/security.mjs.
+
 
   // ================= ADMIN LOGIN =================
   const a = new Session("admin");
