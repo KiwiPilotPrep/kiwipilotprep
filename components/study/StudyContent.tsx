@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { Block } from "@/lib/content";
 import { joinSplitParagraphs } from "@/lib/study/join-split-paragraphs";
+import { dropBlankFigures } from "@/lib/study/blank-figures";
 
 /**
  * Renders study material as a technical textbook rather than as dashboard
@@ -36,7 +37,10 @@ export default function StudyContentRenderer({ blocks: source }: { blocks: Block
   // the stored blocks are untouched, which is why this happens here rather than
   // in the database. The admin editor deliberately does not do this — it shows
   // the source as it is stored.
-  const blocks = joinSplitParagraphs(source);
+  // FE-013 — and one figure whose stored asset is a blank page. Rendering it
+  // left a large empty panel where a diagram belongs; the block stays in the
+  // database so the caption still describes what is missing.
+  const blocks = dropBlankFigures(joinSplitParagraphs(source));
 
   const [zoomed, setZoomed] = useState<{ src: string; caption?: string } | null>(null);
 
