@@ -122,6 +122,37 @@ for (const vp of VIEWPORTS) {
       p ? `section top ${p.top}px` : "not found");
   }
 
+  /* ---------------- the same thing from the mobile menu ------------------- */
+
+  // The burger menu carries its own copy of the subject list, and it is the
+  // one a phone actually uses -- the header nav it sits beside is hidden at
+  // this width. It also has to close itself on the way out, or the reader
+  // lands on the card behind a full-screen menu.
+  const burger = page.locator("button.burger").first();
+  if (await burger.isVisible()) {
+    await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    await page.waitForTimeout(400);
+    await page.locator("button.burger").first().click();
+    await page.waitForTimeout(500);
+
+    const entry = page.locator('.mnav a.mitem[href^="/#"]').first();
+    if (await entry.count()) {
+      const entryHref = (await entry.getAttribute("href")) ?? "";
+      await entry.click();
+      await page.waitForTimeout(PROMPT_MS);
+
+      const m = await placement(page, entryHref.replace(/^\/#/, ""));
+      const menuOpen = await page.evaluate(() =>
+        document.querySelector(".mnav")?.className.includes("on") ?? null,
+      );
+      t(`${vp.label}: the mobile menu reaches the pricing card too`,
+        Boolean(m) && m.top >= m.headerBottom - 2 && m.top < vp.h,
+        m ? `card top ${m.top}px, header ends ${m.headerBottom}px` : "anchor not found");
+      t(`${vp.label}: the mobile menu closes on the way out`,
+        menuOpen === false, "the menu is still covering the page");
+    }
+  }
+
   /* ---------------- placeholders are left alone --------------------------- */
 
   const bare = await page.locator('a[href="#"]').count();
