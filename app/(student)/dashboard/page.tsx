@@ -119,18 +119,66 @@ export default async function DashboardPage({
     },
   });
 
-  const subjectRows = await Promise.all(
-    subjects.map(async (sub) => {
-      const total = await db.syllabusItem.count({
-        where: { status: "PUBLISHED", topic: { subjectId: sub.id, status: "PUBLISHED" } },
-      });
-      if (total === 0) return null;
-      const done = await db.syllabusItemProgress.count({
-        where: { userId: user.id, completedAt: { not: null }, item: { topic: { subjectId: sub.id } } },
-      });
-      return { ...sub, total, done, percent: Math.round((done / total) * 100) };
-    }),
-  );
+  // Counted for every subject at once rather than two queries per subject.
+  //
+  // This page was the slowest in the product — about two seconds — and nearly
+  // all of it was waiting, not working: a query costs a tenth of a millisecond
+  // against a database on the same machine and a network round trip against the
+  // hosted one, so a loop of 2xN counts is most of the page's time.
+  //
+  // The two counts do not filter alike, and that difference is preserved: the
+  // total is of published items under published topics, while the completed
+  // count is every progress row the student holds under the subject, whatever
+  // the item's status. Narrowing the second to published items would quietly
+  // change a percentage somebody has already seen.
+  const topics = await db.syllabusTopic.findMany({
+    where: { subjectId: { in: subjects.map((s) => s.id) } },
+    select: { id: true, subjectId: true, status: true },
+  });
+
+  const subjectOfTopic = new Map(topics.map((t) => [t.id, t.subjectId]));
+  const publishedTopicIds = topics.filter((t) => t.status === "PUBLISHED").map((t) => t.id);
+
+  const [itemCounts, completed] = await Promise.all([
+    publishedTopicIds.length
+      ? db.syllabusItem.groupBy({
+          by: ["syllabusTopicId"],
+          where: { status: "PUBLISHED", syllabusTopicId: { in: publishedTopicIds } },
+          _count: { _all: true },
+        })
+      : Promise.resolve([]),
+    topics.length
+      ? db.syllabusItemProgress.findMany({
+          where: {
+            userId: user.id,
+            completedAt: { not: null },
+            item: { syllabusTopicId: { in: topics.map((t) => t.id) } },
+          },
+          select: { item: { select: { syllabusTopicId: true } } },
+        })
+      : Promise.resolve([]),
+  ]);
+
+  const totalBySubject = new Map<string, number>();
+  for (const row of itemCounts) {
+    const subjectId = subjectOfTopic.get(row.syllabusTopicId);
+    if (!subjectId) continue;
+    totalBySubject.set(subjectId, (totalBySubject.get(subjectId) ?? 0) + row._count._all);
+  }
+
+  const doneBySubject = new Map<string, number>();
+  for (const row of completed) {
+    const subjectId = subjectOfTopic.get(row.item.syllabusTopicId);
+    if (!subjectId) continue;
+    doneBySubject.set(subjectId, (doneBySubject.get(subjectId) ?? 0) + 1);
+  }
+
+  const subjectRows = subjects.map((sub) => {
+    const total = totalBySubject.get(sub.id) ?? 0;
+    if (total === 0) return null;
+    const done = doneBySubject.get(sub.id) ?? 0;
+    return { ...sub, total, done, percent: Math.round((done / total) * 100) };
+  });
   const withSyllabus = subjectRows.filter((r): r is NonNullable<typeof r> => r !== null);
 
   /* ------------------------------------------------------------ weak areas */

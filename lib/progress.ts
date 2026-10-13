@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { db } from "./db";
 
 /**
@@ -51,89 +53,90 @@ export function countLabel(n: number, unit: ProgressStat["unit"]): string {
  * So each subject is measured in its own units: lessons where a manual was
  * imported, chapters where it was not. They are never mixed, because "17 of
  * 320" and "2 of 4" are not addable quantities.
+ *
+ * Each statistic is two aggregate counts issued together, rather than a fetch
+ * of every matching id followed by a second query that sends those ids back as
+ * an IN list. The numbers are identical; what changes is the cost. Reading a
+ * subject of three hundred lessons used to carry three hundred ids out to the
+ * application and three hundred back, and the second query could not start
+ * until the first had landed. Against a database on the same machine that is
+ * invisible. Against a hosted one it is two network round trips plus a payload,
+ * per subject, on pages that ask for twenty subjects at once -- which is most
+ * of what /progress and /dashboard were waiting for.
  */
+type LessonScope = { subjectId: string } | { subject: { courseId: string; status: "PUBLISHED" } };
+
 async function lessonStat(
   userId: string,
-  where: { subjectId: string } | { subject: { courseId: string; status: "PUBLISHED" } },
+  where: LessonScope,
 ): Promise<ProgressStat | null> {
-  const lessons = await db.lesson.findMany({
-    where: { status: "PUBLISHED", module: { status: "PUBLISHED", ...where } },
-    select: { id: true },
-  });
-  if (lessons.length === 0) return null;
+  const published = { status: "PUBLISHED" as const, module: { status: "PUBLISHED" as const, ...where } };
 
-  const completed = await db.lessonProgress.count({
-    where: {
-      userId,
-      lessonId: { in: lessons.map((l) => l.id) },
-      completedAt: { not: null },
-    },
-  });
-  return pct(completed, lessons.length, "topic");
+  const [total, completed] = await Promise.all([
+    db.lesson.count({ where: published }),
+    db.lessonProgress.count({
+      where: { userId, completedAt: { not: null }, lesson: published },
+    }),
+  ]);
+
+  // No lessons means no manual was imported for this scope, and the caller
+  // falls through to chapters. An imported subject with nothing read yet is a
+  // different answer -- zero of forty -- and still returns a stat.
+  if (total === 0) return null;
+  return pct(completed, total, "topic");
 }
 
 /** Study progress for one subject: completed / published topics (or chapters). */
-export async function subjectProgress(
+export const subjectProgress = cache(async function subjectProgress(
   userId: string,
   subjectId: string,
 ): Promise<ProgressStat> {
   const imported = await lessonStat(userId, { subjectId });
   if (imported) return imported;
 
-  const chapters = await db.chapter.findMany({
-    where: { subjectId, status: "PUBLISHED" },
-    select: { id: true },
-  });
-  if (chapters.length === 0) return pct(0, 0);
-
-  const completed = await db.chapterProgress.count({
-    where: {
-      userId,
-      chapterId: { in: chapters.map((c) => c.id) },
-      completedAt: { not: null },
-    },
-  });
-  return pct(completed, chapters.length);
-}
+  const [total, completed] = await Promise.all([
+    db.chapter.count({ where: { subjectId, status: "PUBLISHED" } }),
+    db.chapterProgress.count({
+      where: { userId, completedAt: { not: null }, chapter: { subjectId, status: "PUBLISHED" } },
+    }),
+  ]);
+  if (total === 0) return pct(0, 0);
+  return pct(completed, total);
+});
 
 /** Study progress for a whole course, across every published subject. */
-export async function courseProgress(
+export const courseProgress = cache(async function courseProgress(
   userId: string,
   courseId: string,
 ): Promise<ProgressStat> {
-  const imported = await lessonStat(userId, {
-    subject: { courseId, status: "PUBLISHED" },
-  });
+  const scope = { courseId, status: "PUBLISHED" as const };
+
+  const imported = await lessonStat(userId, { subject: scope });
   if (imported) return imported;
 
-  const chapters = await db.chapter.findMany({
-    where: {
-      status: "PUBLISHED",
-      subject: { courseId, status: "PUBLISHED" },
-    },
-    select: { id: true },
-  });
-  if (chapters.length === 0) return pct(0, 0);
-
-  const completed = await db.chapterProgress.count({
-    where: {
-      userId,
-      chapterId: { in: chapters.map((c) => c.id) },
-      completedAt: { not: null },
-    },
-  });
-  return pct(completed, chapters.length);
-}
+  const [total, completed] = await Promise.all([
+    db.chapter.count({ where: { status: "PUBLISHED", subject: scope } }),
+    db.chapterProgress.count({
+      where: {
+        userId,
+        completedAt: { not: null },
+        chapter: { status: "PUBLISHED", subject: scope },
+      },
+    }),
+  ]);
+  if (total === 0) return pct(0, 0);
+  return pct(completed, total);
+});
 
 /**
  * How many chapters a subject really has, and what to call them.
  *
  * The subject card used to print `_count.chapters`, which for an imported
  * subject counts the four placeholder chapters the seed attaches to every
- * subject — so a subject with twenty chapters of real material advertised
+ * subject -- so a subject with twenty chapters of real material advertised
  * four, and one with none at all also advertised four.
  */
-export async function subjectSize(
+export const subjectSize = cache(async function subjectSize(
   subjectId: string,
 ): Promise<{ chapters: number; topics: number }> {
   const [chapters, topics, placeholders] = await Promise.all([
@@ -146,29 +149,31 @@ export async function subjectSize(
     db.chapter.count({ where: { subjectId, status: "PUBLISHED" } }),
   ]);
   return chapters > 0 ? { chapters, topics } : { chapters: placeholders, topics: 0 };
-}
+});
 
-/** Practice progress: distinct questions attempted / available (§23). */
-export async function practiceProgress(
+/**
+ * Practice progress: distinct questions attempted / available (§23).
+ *
+ * The attempted side counts questions that hold at least one attempt by this
+ * student, which is the same number the previous distinct-on-questionId pass
+ * produced, without carrying every question id in the subject across the wire.
+ */
+export const practiceProgress = cache(async function practiceProgress(
   userId: string,
   subjectId: string,
 ): Promise<ProgressStat> {
-  const questions = await db.question.findMany({
-    where: {
-      status: "PUBLISHED",
-      OR: [{ subjectId }, { chapter: { subjectId } }],
-    },
-    select: { id: true },
-  });
-  if (questions.length === 0) return pct(0, 0);
+  const published = {
+    status: "PUBLISHED" as const,
+    OR: [{ subjectId }, { chapter: { subjectId } }],
+  };
 
-  const attempted = await db.questionAttempt.findMany({
-    where: { userId, questionId: { in: questions.map((q) => q.id) } },
-    select: { questionId: true },
-    distinct: ["questionId"],
-  });
-  return pct(attempted.length, questions.length);
-}
+  const [total, attempted] = await Promise.all([
+    db.question.count({ where: published }),
+    db.question.count({ where: { ...published, attempts: { some: { userId } } } }),
+  ]);
+  if (total === 0) return pct(0, 0);
+  return pct(attempted, total);
+});
 
 /** Records that a chapter was opened, and moves the "continue" pointer. */
 export async function touchChapter(
