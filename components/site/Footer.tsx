@@ -1,17 +1,19 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="ft">
       <div className="wrap">
         <div className="ft-top">
           <div>
-            <a className="brand" href="#top">
+            <Link className="brand" href="/">
               <span className="mark">
                 <svg viewBox="0 0 24 24" fill="none" stroke="var(--on-accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2 L14.2 9.4 L22 12 L14.2 14.6 L12 22 L9.8 14.6 L2 12 L9.8 9.4 Z" />
                 </svg>
               </span>
               <span><span className="bn">KiwiPilotPrep</span><span className="bs">Pilot Theory Prep</span></span>
-            </a>
+            </Link>
             <p className="ft-about">Exam-focused preparation for Aspeq PPL, CPL and IR theory exams — built from real
               student exam recalls. By a student pilot, for student pilots.</p>
             <div className="ft-soc">
@@ -24,30 +26,30 @@ export default function Footer() {
 
           <div className="ft-col">
             <h3>Courses</h3>
-            <a href="#courses">PPL Subjects</a>
-            <a href="#courses">CPL Subjects</a>
-            <a href="#courses">IR Subjects</a>
-            <a href="#courses">Flight Test Groundwork</a>
-            <a href="#mocks">Mock Exams</a>
-            <a href="/trial">Free 10-Question Mock</a>
+            <Link href="/pricing#ppl-theory-package">PPL Subjects</Link>
+            <Link href="/pricing#cpl-theory-package">CPL Subjects</Link>
+            <Link href="/pricing#ir-theory-package">IR Subjects</Link>
+            <Link href="/pricing#ppl-flight-test-package">Flight Test Groundwork</Link>
+            <Link href="/#mocks">Mock Exams</Link>
+            <Link href="/trial">Free 10-Question Mock</Link>
           </div>
 
           <div className="ft-col">
             <h3>Platform</h3>
-            <a href="#how">How It Works</a>
-            <a href="#guarantee">First-Attempt Guarantee</a>
-            <a href="/flight-schools">Flight Schools</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#faq">FAQ</a>
+            <Link href="/#how">How It Works</Link>
+            <Link href="/#guarantee">First-Attempt Guarantee</Link>
+            <Link href="/flight-schools">Flight Schools</Link>
+            <Link href="/pricing">Pricing</Link>
+            <Link href="/#faq">FAQ</Link>
           </div>
 
           <div className="ft-col">
             <h3>Company</h3>
-            <a href="#about">About</a>
-            <a href="#story">Our Story</a>
-            <a href="#contact">Contact</a>
-            <a href="#contact">Support</a>
-            <a href="/login">Log In</a>
+            <Link href="/#about">About</Link>
+            <Link href="/#story">Our Story</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/contact">Support</Link>
+            <Link href="/login">Log In</Link>
           </div>
         </div>
 
@@ -56,13 +58,13 @@ export default function Footer() {
               NZBN / company number, and a public contact email. Required for
               NZ Fair Trading / Consumer Guarantees Act and India's DPDP Act.
               e.g. "Operated by <Entity> Ltd (NZBN 9429000000000)". */}
-          <span>© 2026 KiwiPilotPrep · Aotearoa New Zealand · <a href="/contact">Contact us</a></span>
+          <span>© 2026 KiwiPilotPrep · Aotearoa New Zealand · <Link href="/contact">Contact us</Link></span>
           <div className="lg">
-            <a href="/terms">Terms</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/refunds">Refunds</a>
-            <a href="/cookies">Cookies</a>
-            <a href="#guarantee">Guarantee Terms</a>
+            <Link href="/terms">Terms</Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/refunds">Refunds</Link>
+            <Link href="/cookies">Cookies</Link>
+            <Link href="/#guarantee">Guarantee Terms</Link>
           </div>
         </div>
 

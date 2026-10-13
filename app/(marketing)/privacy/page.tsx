@@ -23,10 +23,12 @@ export default function PrivacyPage() {
         2023 (see section&nbsp;11).
       </p>
       <p>
-        {/* TODO BEFORE LAUNCH: replace with the registered legal entity and a
-            monitored contact email. */}
-        KiwiPilotPrep is operated by <b>[add your legal entity]</b>, Aotearoa New Zealand. You can
-        reach us any time through the <Link href="/contact">contact form</Link>.
+        {/* FE-004: the drafting placeholder is gone. The sentence no longer
+            names an operating entity rather than naming an invented one — the
+            registered entity still has to be added here before launch, and
+            that is tracked in docs/DEPLOYMENT.md §9.8. */}
+        KiwiPilotPrep is operated from Aotearoa New Zealand. You can reach us any time through the{" "}
+        <Link href="/contact">contact form</Link>.
       </p>
 
       <h2>1. What we collect</h2>
@@ -166,11 +168,12 @@ export default function PrivacyPage() {
         </li>
         <li>
           <b>Grievance redressal.</b> If you have a complaint about how your data is handled, contact
-          our Grievance Officer:{" "}
-          {/* TODO BEFORE LAUNCH: appoint and name a Grievance Officer with a
-              monitored email — required under the DPDP Act. */}
-          <b>[add Grievance Officer name and email]</b>. If unresolved, you may approach the Data
-          Protection Board of India.
+          our Grievance Officer at{" "}
+          {/* FE-004: the address below is the one named in the audit report.
+              No officer name is shown, because none was supplied and inventing
+              one would be worse than omitting it. */}
+          <a href="mailto:support@kiwipilotprepco.nz">support@kiwipilotprepco.nz</a>. If unresolved,
+          you may approach the Data Protection Board of India.
         </li>
       </ul>
     </LegalPage>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/auth";
@@ -32,19 +32,24 @@ export default async function CoursePage({
   if (!course) notFound();
 
   // Server-side entitlement check — not a hidden link (§25).
+  //
+  // FE-008: this used to render a dead end. A student who followed "Explore
+  // Subject" for a course they had not bought was told the course "is not part
+  // of your current access" and left there; the subject page redirects here on
+  // the same condition, so that panel was the end of the journey rather than
+  // the start of one.
+  //
+  // They are now taken to the package that would unlock it. The check above is
+  // unchanged and still runs on the server before anything is read — the
+  // redirect is what happens *after* access is refused, not instead of
+  // refusing it.
   if (!(await canAccessCourse(user, course.id))) {
-    return (
-      <section className="sec">
-        <div className="wrap">
-          <div className="empty panel">
-            <b>You do not have access to this course</b>
-            This course is not part of your current access. Browse the{" "}
-            <Link href="/pricing">available packages</Link> or{" "}
-            <Link href="/contact">get in touch</Link>.
-          </div>
-        </div>
-      </section>
-    );
+    const unlocks = await db.product.findFirst({
+      where: { status: "PUBLISHED", items: { some: { courseId: course.id } } },
+      orderBy: { order: "asc" },
+      select: { slug: true },
+    });
+    redirect(unlocks ? `/pricing#${unlocks.slug}` : "/pricing");
   }
 
   const overall = await courseProgress(user.id, course.id);

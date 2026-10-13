@@ -346,7 +346,7 @@ export default async function HomePage() {
                   <div className="arow low" data-w="62"><span className="nm">Licensing &amp; currency</span><span className="tr"><i></i></span><span className="pc">62%</span></div>
                 </div>
                 <div className="rec">
-                  <span className="ic"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#9A6516" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3.5v.01M12 8v8" /><circle cx="12" cy="12" r="9" /></svg></span>
+                  <span className="ic"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3.5v.01M12 8v8" /><circle cx="12" cy="12" r="9" /></svg></span>
                   <div>
                     <div className="t">Recommended revision</div>
                     <p>Revisit Rules of the Air (topics 3 &amp; 5), then sit another mock to see whether it has stuck.</p>

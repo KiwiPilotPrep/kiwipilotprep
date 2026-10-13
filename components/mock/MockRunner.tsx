@@ -227,15 +227,12 @@ export default function MockRunner({
                 Next →
               </button>
             )}
-
-            <button
-              className="btn btn-g"
-              onClick={() => setIndex((i) => Math.min(questions.length - 1, i + 1))}
-              disabled={index === questions.length - 1}
-              type="button"
-            >
-              Next →
-            </button>
+            {/* FE-005: a second "Next →" used to sit here, outside the
+                conditional above. On every question but the last it rendered
+                alongside the primary Next and did exactly the same thing; on
+                the last it rendered disabled next to Submit Exam. The branch
+                above already covers both states, so this is removed rather
+                than hidden. */}
           </div>
 
           <details className="exam-finish">

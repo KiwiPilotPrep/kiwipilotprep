@@ -449,10 +449,15 @@ scenario("UAT-07", "Restricted areas are enforced on the server");
   // IR Theory: a published course with real chapters that this account does
   // not hold. Naming a course it does hold would make both checks pass for the
   // wrong reason.
+  // FE-008: refusal now routes to the package that would unlock the course
+  // rather than stopping at a dead-end panel. Landing on pricing is the proof
+  // of refusal — the entitlement check runs first, and nothing of the course is
+  // read before the redirect.
   const unentitled = await student.visit("/courses/ir-theory");
   step(
     "A student cannot read a course they have not been granted",
-    unentitled.text.includes("do not have access"),
+    unentitled.landedOn.startsWith("/pricing"),
+    `landed ${unentitled.landedOn}`,
   );
   step(
     "The unentitled course's chapters are not readable either",
@@ -644,7 +649,7 @@ scenario("UAT-11", "A student can buy a package and start learning");
 
   const locked = await buyer.visit("/courses/ppl-theory");
   step("Course is locked before purchase",
-    locked.text.includes("not part of your current access"), `landed ${locked.landedOn}`);
+    locked.landedOn.startsWith("/pricing"), `landed ${locked.landedOn}`);
 
   // Start checkout through the real API — no price is sent.
   const res = await buyer.request("/api/checkout/create-order", {
