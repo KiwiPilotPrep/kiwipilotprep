@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
+import { pricingAnchorByCourse, pricingAnchorFor } from "@/lib/pricing-anchors";
 import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 import CookieNotice from "@/components/site/CookieNotice";
@@ -10,7 +11,7 @@ export default async function MarketingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, courses, products] = await Promise.all([
+  const [user, courses, pricingAnchors] = await Promise.all([
     getCurrentUser(),
     db.course.findMany({
       where: { status: "PUBLISHED" },
@@ -27,23 +28,8 @@ export default async function MarketingLayout({
         },
       },
     }),
-    // Which package sells which course, so a visitor who is not signed in can
-    // be taken to the card that sells what they just clicked.
-    db.product.findMany({
-      where: { status: "PUBLISHED", items: { some: { courseId: { not: null } } } },
-      orderBy: { order: "asc" },
-      select: { slug: true, items: { select: { courseId: true } } },
-    }),
+    pricingAnchorByCourse(),
   ]);
-
-  const productOfCourse = new Map<string, string>();
-  for (const p of products) {
-    for (const item of p.items) {
-      if (item.courseId && !productOfCourse.has(item.courseId)) {
-        productOfCourse.set(item.courseId, p.slug);
-      }
-    }
-  }
 
   // A course that has been created but not yet filled still belongs on the
   // site -- a visitor should be able to see that it is coming rather than
@@ -64,9 +50,7 @@ export default async function MarketingLayout({
     ready: c.subjects.some(
       (s) => s._count.modules > 0 || s._count.syllabusTopics > 0 || s._count.chapters > 0,
     ),
-    href: user
-      ? `/courses/${c.slug}`
-      : `/#${productOfCourse.get(c.id) ?? "pricing"}`,
+    href: user ? `/courses/${c.slug}` : pricingAnchorFor(pricingAnchors, c.id),
   }));
 
   return (

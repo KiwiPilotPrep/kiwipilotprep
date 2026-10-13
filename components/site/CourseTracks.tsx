@@ -3,6 +3,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { accessibleCourseIds } from "@/lib/entitlements";
+import { pricingAnchorByCourse, pricingAnchorFor } from "@/lib/pricing-anchors";
 import { count } from "@/lib/plural";
 
 /**
@@ -19,7 +20,7 @@ function chapterCount(subject: { _count: { chapters: number; modules: number } }
 export default async function CourseTracks() {
   const user = await getCurrentUser();
 
-  const [courses, products, reachable] = await Promise.all([
+  const [courses, pricingAnchors, reachable] = await Promise.all([
     db.course.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { order: "asc" },
@@ -56,22 +57,10 @@ export default async function CourseTracks() {
         },
       },
     }),
-    db.product.findMany({
-      where: { status: "PUBLISHED", items: { some: { courseId: { not: null } } } },
-      orderBy: { order: "asc" },
-      select: { slug: true, items: { select: { courseId: true } } },
-    }),
+    pricingAnchorByCourse(),
     user ? accessibleCourseIds(user) : Promise.resolve([] as string[]),
   ]);
 
-  const productOfCourse = new Map<string, string>();
-  for (const p of products) {
-    for (const item of p.items) {
-      if (item.courseId && !productOfCourse.has(item.courseId)) {
-        productOfCourse.set(item.courseId, p.slug);
-      }
-    }
-  }
   const owned = new Set(reachable);
 
   /**
@@ -84,7 +73,7 @@ export default async function CourseTracks() {
    */
   function subjectHref(courseId: string, courseSlug: string, subjectSlug: string) {
     if (user && owned.has(courseId)) return `/courses/${courseSlug}/subjects/${subjectSlug}`;
-    return `/#${productOfCourse.get(courseId) ?? "pricing"}`;
+    return pricingAnchorFor(pricingAnchors, courseId);
   }
 
   return (
