@@ -125,7 +125,7 @@ export default async function CoursePage({
                     {unlockingProduct ? unlockingProduct.title : `the ${course.title} package`}.
                   </p>
                   <div className="acts" style={{ marginTop: "14px" }}>
-                    <Link className="btn btn-p btn-sm" href="/pricing">
+                    <Link className="btn btn-p btn-sm" href="/#pricing">
                       View Package
                     </Link>
                     {/* One free experience, chosen from one place. */}

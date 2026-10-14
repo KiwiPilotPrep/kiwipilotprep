@@ -125,7 +125,7 @@ export default async function MocksPage({
                       </button>
                     </form>
                   ) : (
-                    <Link className="btn btn-g btn-w" href="/pricing">
+                    <Link className="btn btn-g btn-w" href="/#pricing">
                       Unlock with a package
                     </Link>
                   )}

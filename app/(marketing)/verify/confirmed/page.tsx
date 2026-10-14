@@ -40,7 +40,7 @@ export default async function VerifyConfirmedPage({
         <div className="acts" style={{ justifyContent: "center", marginTop: "26px" }}>
           {user ? (
             <>
-              <Link className="btn btn-p" href="/pricing">
+              <Link className="btn btn-p" href="/#pricing">
                 Choose your course
               </Link>
               <Link className="btn btn-g" href="/dashboard">

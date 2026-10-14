@@ -57,7 +57,7 @@ export default async function TrialPage({
             material come with a package.
           </p>
           <div className="acts" style={{ marginTop: "12px", gap: "10px", flexWrap: "wrap" }}>
-            <Link className="btn btn-p btn-sm" href="/pricing">
+            <Link className="btn btn-p btn-sm" href="/#pricing">
               View pricing
             </Link>
             {used.attemptId && (
@@ -148,7 +148,7 @@ export default async function TrialPage({
 
       <p className="xs" style={{ marginTop: "26px" }}>
         The free mock is a sample. Full-length mock exams in every subject come with a package —{" "}
-        <Link href="/pricing">see what is included</Link>.
+        <Link href="/#pricing">see what is included</Link>.
       </p>
     </div>
   );

@@ -48,7 +48,7 @@ export default async function BuySubjectPage({
             <b>No single subjects on sale yet</b>
             <p>
               They appear here as soon as an administrator publishes them. In the meantime, the{" "}
-              <Link href="/pricing">full packages</Link> are available.
+              <Link href="/#pricing">full packages</Link> are available.
             </p>
           </div>
         ) : (
@@ -63,7 +63,7 @@ export default async function BuySubjectPage({
         )}
 
         <p className="xs" style={{ marginTop: "18px", textAlign: "center" }}>
-          <Link href="/pricing">← Back to all packages</Link>
+          <Link href="/#pricing">← Back to all packages</Link>
         </p>
       </div>
     </section>

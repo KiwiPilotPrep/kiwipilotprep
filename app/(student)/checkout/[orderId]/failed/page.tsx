@@ -45,7 +45,7 @@ export default async function CheckoutFailedPage({
         </div>
 
         <div className="acts" style={{ marginTop: "20px", justifyContent: "center" }}>
-          <Link className="btn btn-p" href="/pricing">Try Again</Link>
+          <Link className="btn btn-p" href="/#pricing">Try Again</Link>
           <Link className="btn btn-g" href="/contact">Contact support</Link>
         </div>
       </div>

@@ -285,11 +285,11 @@ async function main() {
   });
 
   /* =================================================================== */
-  /* A. the pricing page is the whole shop                               */
+  /* A. the front page is the whole shop                                 */
   /* =================================================================== */
 
   const anon = new Visitor();
-  const pricing = await anon.visit("/pricing");
+  const pricing = await anon.visit("/");
   const real = await db.product.findMany({
     where: { status: "PUBLISHED", slug: { not: { startsWith: "t9-" } } },
     include: { items: { select: { courseId: true, subjectId: true } } },
@@ -297,7 +297,7 @@ async function main() {
   const realPackages = real.filter((p) => p.items.some((i) => i.courseId));
   const realSubjects = real.filter((p) => p.items.length > 0 && p.items.every((i) => i.subjectId));
 
-  t("the pricing page loads", pricing.status === 200, `status ${pricing.status}`);
+  t("the front page loads", pricing.status === 200, `status ${pricing.status}`);
 
   const subjectCatalogue = await new Visitor().visit("/pricing/subject");
   // Packages are sold on /pricing; single subjects on /pricing/subject. Every
@@ -311,47 +311,44 @@ async function main() {
     `missing: ${missing.map((p) => p.slug).join(", ")}`,
   );
 
-  t(
-    "it separates theory packages from groundwork and from single subjects",
-    /Theory packages/.test(pricing.text) &&
-      /Flight test groundwork/.test(unescape(pricing.text)) &&
-      /Buy a single subject/.test(pricing.text),
-    "one of the three section headings is missing",
-  );
-
-  // Each band carries an anchor, and each card carries its slug, so which
-  // product sits in which section can be read off the markup rather than
-  // guessed at from prose.
-  const bands = ["theory-packages", "groundwork", "single-subject"].map((id) =>
-    pricing.body.indexOf(`id="${id}"`),
-  );
-  t(
-    "the sections run packages → groundwork → single subject",
-    bands.every((i) => i >= 0) && bands[0] < bands[1] && bands[1] < bands[2],
-    `anchors at ${bands.join(",")}`,
-  );
-
-  const sectionA = pricing.body.slice(bands[0], bands[1]);
-  const sectionB = pricing.body.slice(bands[1], bands[2]);
+  // The band headings that used to group these -- "Theory packages", "Flight
+  // test groundwork" -- belonged to the standalone pricing page, and went with
+  // it. The front page lays the packages out in one grid in product order,
+  // which is a layout decision rather than a correctness one. What is still
+  // worth asserting is the ordering a reader relies on: licence tracks first,
+  // groundwork after them, and the single subject last, because it is the
+  // smallest thing on offer and reads as an afterthought anywhere else.
+  const positionOf = (slug) => pricing.body.indexOf(`id="${slug}"`);
   const theory = realPackages.filter((p) => p.slug.endsWith("-theory-package"));
   const groundwork = realPackages.filter((p) => p.slug.includes("flight-test"));
   const everything = realPackages.filter((p) => p.items.length > 1);
 
   t(
-    "the three theory packages are in the theory section, and only those",
-    theory.length === 3 &&
-      theory.every((p) => sectionA.includes(`id="${p.slug}"`)) &&
-      !groundwork.some((p) => sectionA.includes(`id="${p.slug}"`)),
-    `${theory.length} theory packages found`,
+    "every package has a card of its own on the front page",
+    realPackages.every((p) => positionOf(p.slug) >= 0),
+    `missing: ${realPackages.filter((p) => positionOf(p.slug) < 0).map((p) => p.slug).join(", ")}`,
   );
   t(
-    "groundwork and the complete pass are in the second section",
-    groundwork.length === 2 &&
-      everything.length === 1 &&
-      [...groundwork, ...everything].every((p) => sectionB.includes(`id="${p.slug}"`)),
-    `${groundwork.length} groundwork, ${everything.length} all-inclusive`,
+    "the three theory packages come before the groundwork ones",
+    theory.length === 3 &&
+      groundwork.length === 2 &&
+      Math.max(...theory.map((p) => positionOf(p.slug))) <
+        Math.min(...groundwork.map((p) => positionOf(p.slug))),
+    `${theory.length} theory, ${groundwork.length} groundwork`,
   );
-
+  t(
+    "the all-inclusive pass comes after both",
+    everything.length === 1 &&
+      positionOf(everything[0].slug) >
+        Math.max(...[...theory, ...groundwork].map((p) => positionOf(p.slug))),
+    `${everything.length} all-inclusive`,
+  );
+  t(
+    "and the single subject is offered last, after every package",
+    pricing.body.indexOf('data-plan="single"') >
+      Math.max(...realPackages.map((p) => positionOf(p.slug))),
+    "the single-subject card is not after the packages",
+  );
   // The subject picker lives on its own focused page now; the pricing page
   // only carries a card that links to it. The picker's options are props on a
   // client component, so they live in the payload — one `subjectTitle` each.
@@ -409,8 +406,8 @@ async function main() {
   /* =================================================================== */
 
   for (const [label, path] of [
-    ["pricing page", "/pricing"],
     ["home page", "/"],
+    ["single subject page", "/pricing/subject"],
   ]) {
     const page = await new Visitor().visit(path);
     const flat = unescape(page.text).replace(/\s+/g, " ");
@@ -427,15 +424,28 @@ async function main() {
   }
 
   /* =================================================================== */
-  /* C. currency lives on the pricing page and is remembered             */
+  /* C. currency lives on the front page and is remembered               */
   /* =================================================================== */
 
   const sample = await distinctlyPricedProduct();
-  const inr = await anon.visit("/pricing?currency=INR");
+  const inr = await anon.visit("/?currency=INR");
+
+  /** The rendered card for one product, not the whole document. */
+  const cardOf = (body, slug) => {
+    const at = body.indexOf(`id="${slug}"`);
+    if (at < 0) return "";
+    const next = body.indexOf('id="', at + 1);
+    return body.slice(at, next < 0 ? body.length : next);
+  };
+
+  // Both currencies are shipped in the payload on purpose -- it is what lets
+  // the toggle reprice without a round trip, and a separate check asserts it
+  // -- so the quoted figure is read off the card, where a reader sees it.
+  const inrCard = cardOf(unescape(inr.body), sample.slug);
   t(
     "asking for INR prices the whole page in INR",
-    inr.text.includes(sample.inr) && !inr.text.includes(sample.nzd),
-    `${sample.slug}: expected ${sample.inr} and not ${sample.nzd}`,
+    inrCard.includes(sample.inr) && !inrCard.includes(sample.nzd),
+    `${sample.slug}: card quotes ${inrCard.match(/[₹$][d,]+/)?.[0] ?? "nothing"}, wanted ${sample.inr}`,
   );
   // Read straight from the rows, so this fails if anyone ever converts in the
   // browser instead of showing the configured figure.
@@ -452,34 +462,29 @@ async function main() {
     `shown: ${shown.join(", ")}`,
   );
 
+  // The toggle is React state and a cookie now, not a form and a redirect:
+  // it reprices the section in place so nobody loses their position in the
+  // page to change money. Pressing it is exercised in a real browser further
+  // down; what matters here is the half the server owns -- that the cookie the
+  // browser writes is read back and prices the next request.
   const toggler = new Visitor();
-  const actionId = await toggler.actionId("/pricing");
-  const fd = new FormData();
-  fd.set("currency", "INR");
-  fd.set(`$ACTION_ID_${actionId}`, "");
-  const toggled = await toggler.request("/pricing", { method: "POST", body: fd });
-  t(
-    "the toggle remembers the choice",
-    toggler.cookie.includes("kpp_currency=INR"),
-    `cookie: ${toggler.cookie}`,
-  );
-  t("the toggle returns to the pricing page", toggled.status >= 300 && toggled.status < 400, `status ${toggled.status}`);
+  toggler.cookie = [toggler.cookie, "kpp_currency=INR"].filter(Boolean).join("; ");
 
-  const remembered = await toggler.visit("/pricing");
+  const remembered = await toggler.visit("/");
   t(
-    "the remembered currency prices the page on the next visit, with no parameter",
+    "the remembered currency prices the page on the next request, with no parameter",
     remembered.text.includes(sample.inr),
     `expected ${sample.inr} for ${sample.slug}`,
   );
 
-  const homeInr = await toggler.visit("/");
+  const subjectInr = await toggler.visit("/pricing/subject");
   t(
-    "the home page quotes the same currency the pricing page was left in",
-    homeInr.text.includes(sample.inr),
-    `expected ${sample.inr} for ${sample.slug}`,
+    "and the single-subject page quotes the same currency",
+    subjectInr.text.includes("INR") || /₹/.test(unescape(subjectInr.text)),
+    "the single-subject page ignored the remembered currency",
   );
 
-  const overridden = await toggler.visit("/pricing?currency=NZD");
+  const overridden = await toggler.visit("/?currency=NZD");
   t(
     "a currency in the link wins over the remembered one, so a shared link shows what the sender saw",
     overridden.text.includes(sample.nzd),
@@ -541,13 +546,13 @@ async function main() {
   const bogus = await buyer.visit("/checkout/start?product=not-a-real-id&currency=NZD");
   t(
     "an id that is not a product sells nothing",
-    bogus.landedOn.startsWith("/pricing"),
+    bogus.landedOn.includes("#pricing"),
     `landed ${bogus.landedOn}`,
   );
   const draft = await buyer.visit(`/checkout/start?product=${unpublished.id}&currency=NZD`);
   t(
     "an unpublished product cannot be bought by knowing its id",
-    draft.landedOn.startsWith("/pricing"),
+    draft.landedOn.includes("#pricing"),
     `landed ${draft.landedOn}`,
   );
   t(
@@ -833,11 +838,21 @@ async function main() {
   // The home page is now the whole shop, not a teaser that pushes people to a
   // second page: every buyable package carries the same discount prompt the
   // pricing page does, and the single subject is chosen and bought inline.
-  const homePrompts = (unescape(home.body).match(/Have a discount code\?/g) ?? []).length;
+  // Counted per card, not in total: the page carries every published package,
+  // including ones this suite created itself, so a total would drift with the
+  // fixtures while saying nothing about any particular card.
+  const homeBody = unescape(home.body);
+  const promptless = sellable.filter((p) => {
+    const at = homeBody.indexOf(`id="${p.slug}"`);
+    if (at < 0) return true;
+    const next = homeBody.indexOf('id="', at + 1);
+    const card = homeBody.slice(at, next < 0 ? homeBody.length : next);
+    return !card.includes("Have a discount code?");
+  });
   t(
-    "every package on sale carries a discount prompt on the home page itself",
-    homePrompts === sellable.length,
-    `${homePrompts} discount prompts for ${sellable.length} sellable packages`,
+    "every package on sale carries a discount prompt on its own card",
+    promptless.length === 0,
+    `no prompt on ${promptless.map((p) => p.slug).join(", ")}`,
   );
   t(
     "the home page offers a single subject via a link to its own focused page",
@@ -929,8 +944,9 @@ async function main() {
         `landed ${page.url()}`,
       );
 
-      await page.goto(`${BASE}/pricing`, { waitUntil: "networkidle" });
+      await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
       const card = page.locator(`#${await db.product.findUnique({ where: { id: other.id }, select: { slug: true } }).then((p) => p.slug)}`);
+      await card.scrollIntoViewIfNeeded();
 
       t(
         "the card shows a price and a prompt, not a coupon field",
@@ -1041,13 +1057,12 @@ async function main() {
         `discount ${cardOrder?.discountMinor}, charged ${cardOrder?.amountMinor}`,
       );
 
-      // The currency toggle is a form, so it works without JavaScript too —
-      // but it must not be broken by having it.
-      await page.goto(`${BASE}/pricing`, { waitUntil: "networkidle" });
+      // The currency toggle is React state and a cookie on the front page,
+      // not a form and a redirect, so a changed URL is not what proves it
+      // worked. The cards are, and then that the choice survives a reload.
+      await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+      await page.locator("#pricing").scrollIntoViewIfNeeded();
       await page.getByRole("button", { name: "INR ₹" }).click();
-      // A server action is a fetch and a re-render, not a page load, so the
-      // usual load states have nothing to report.
-      await page.waitForURL(/currency=INR/, { timeout: 20_000 });
       await page.locator(".plan .amt .c").first().filter({ hasText: "INR" }).waitFor({ timeout: 10_000 });
       t(
         "the toggle reprices every card on the page",
@@ -1056,8 +1071,15 @@ async function main() {
         `${await page.locator(".plan .amt .c", { hasText: "NZD" }).count()} cards still in NZD`,
       );
 
+      await page.reload({ waitUntil: "networkidle" });
+      t(
+        "and the choice is remembered on the next page load",
+        (await page.locator(".plan .amt .c", { hasText: "INR" }).count()) > 5,
+        "the server did not read the currency cookie back",
+      );
+
+      await page.locator("#pricing").scrollIntoViewIfNeeded();
       await page.getByRole("button", { name: "NZD $" }).click();
-      await page.waitForURL(/currency=NZD/, { timeout: 20_000 });
       await page.locator(".plan .amt .c").first().filter({ hasText: "NZD" }).waitFor({ timeout: 10_000 });
       t(
         "and switches back again",
@@ -1172,9 +1194,14 @@ async function main() {
       ]) {
         const page = await browser.newPage({ viewport: { width: w, height: h } });
         await page.addInitScript(() => { try { localStorage.setItem("kpp_cookie_notice", "seen"); } catch {} });
-        await page.goto(`${BASE}/pricing`, { waitUntil: "networkidle" });
+        // There is one pricing surface and it is the front page, so the control
+        // is measured where it lives: inside the pricing section, above the
+        // cards it governs. The checks that used to be about a standalone page
+        // filling its first screenful went with the page -- a section partway
+        // down one is not meant to be above the fold.
+        await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
 
-        const control = page.locator(".cur-switch");
+        const control = page.locator("#pricing .cur-switch");
         const nzdBtn = control.getByRole("button", { name: "NZD $" });
         const inrBtn = control.getByRole("button", { name: "INR ₹" });
 
@@ -1190,8 +1217,17 @@ async function main() {
             return o;
           });
 
+        // Read down the page the way a person does, so the section's own
+        // fade-in has fired before anything is measured.
+        for (let y = 0; y < 5000; y += 400) {
+          await page.evaluate((at) => window.scrollTo({ top: at, behavior: "instant" }), y);
+          await page.waitForTimeout(60);
+        }
+        await control.scrollIntoViewIfNeeded();
+        await page.waitForTimeout(900);
+
         t(
-          `${size}: both currency buttons are on the pricing page`,
+          `${size}: both currency buttons are in the pricing section`,
           (await nzdBtn.count()) === 1 &&
             (await inrBtn.count()) === 1 &&
             (await nzdBtn.isVisible()) &&
@@ -1205,14 +1241,9 @@ async function main() {
         );
 
         const nzdBox = await nzdBtn.boundingBox();
-        const firstCard = await page.locator(".plan").first().boundingBox();
+        const firstCard = await page.locator("#pricing .plan").first().boundingBox();
         t(
-          `${size}: they are in the first screenful, with nothing to scroll or open`,
-          nzdBox !== null && nzdBox.y >= 0 && nzdBox.y + nzdBox.height <= h,
-          `y=${Math.round(nzdBox?.y ?? -1)} in a ${h}px viewport`,
-        );
-        t(
-          `${size}: and above the first product card, not below the prices`,
+          `${size}: above the first product card, not below the prices`,
           nzdBox !== null && firstCard !== null && nzdBox.y + nzdBox.height < firstCard.y,
           `control ends ${Math.round((nzdBox?.y ?? 0) + (nzdBox?.height ?? 0))}, first card at ${Math.round(firstCard?.y ?? 0)}`,
         );
@@ -1228,6 +1259,8 @@ async function main() {
             const cs = getComputedStyle(el);
             return { bg: cs.backgroundColor, fg: cs.color, pressed: el.getAttribute("aria-pressed") };
           });
+        await nzdBtn.click();
+        await page.locator("#pricing .plan .amt .c").first().filter({ hasText: "NZD" }).waitFor({ timeout: 10_000 });
         const onPaint = await paint(nzdBtn);
         const offPaint = await paint(inrBtn);
         t(
@@ -1238,82 +1271,67 @@ async function main() {
           `${JSON.stringify(onPaint)} vs ${JSON.stringify(offPaint)}`,
         );
 
-        // And it actually reprices the page it is on.
-        const nzdPrice = await page.locator(".plan .amt .v").first().innerText();
+        // It reprices on the spot, which is the reason the control is here
+        // rather than on a page of its own: no reload, no lost place.
+        const nzdPrice = await page.locator("#pricing .plan .amt .v").first().innerText();
+        const wasAt = await page.evaluate(() => Math.round(window.scrollY));
         await inrBtn.click();
-        await page.waitForURL(/currency=INR/, { timeout: 20_000 });
-        await page.locator(".plan .amt .c").first().filter({ hasText: "INR" }).waitFor({ timeout: 10_000 });
-        const inrPrice = await page.locator(".plan .amt .v").first().innerText();
+        await page.locator("#pricing .plan .amt .c").first().filter({ hasText: "INR" }).waitFor({ timeout: 10_000 });
+        const inrPrice = await page.locator("#pricing .plan .amt .v").first().innerText();
         t(
-          `${size}: pressing INR reprices the pricing page itself`,
+          `${size}: pressing INR reprices the cards on the spot`,
           inrPrice !== nzdPrice && inrPrice.includes("₹"),
           `${nzdPrice} -> ${inrPrice}`,
         );
         t(
+          `${size}: and the reader keeps their place in the page`,
+          Math.abs((await page.evaluate(() => Math.round(window.scrollY))) - wasAt) < 40,
+          `scroll moved from ${wasAt}`,
+        );
+        t(
           `${size}: and the INR button is now the selected one`,
-          (await paint(control.getByRole("button", { name: "INR ₹" }))).bg === onPaint.bg,
-          "the selected state did not move",
+          (await paint(inrBtn)).pressed === "true" &&
+            (await paint(nzdBtn)).pressed === "false",
+          `INR pressed=${(await paint(inrBtn)).pressed}, NZD pressed=${(await paint(nzdBtn)).pressed}`,
+        );
+        t(
+          `${size}: no card is left quoting the other currency`,
+          (await page.locator("#pricing .plan .amt .c", { hasText: "NZD" }).count()) === 0 &&
+            (await page.locator("#pricing .plan .amt .c", { hasText: "INR" }).count()) > 5,
+          `${await page.locator("#pricing .plan .amt .c", { hasText: "NZD" }).count()} cards still in NZD`,
         );
 
-        await control.getByRole("button", { name: "NZD $" }).click();
-        await page.waitForURL(/currency=NZD/, { timeout: 20_000 });
-        await page.locator(".plan .amt .c").first().filter({ hasText: "NZD" }).waitFor({ timeout: 10_000 });
+        await page.reload({ waitUntil: "networkidle" });
+        t(
+          `${size}: the choice is remembered on the next page load`,
+          (await page.locator("#pricing .plan .amt .c", { hasText: "INR" }).count()) > 5,
+          "the server did not read the currency cookie back",
+        );
+
+        await nzdBtn.click();
+        await page.locator("#pricing .plan .amt .c").first().filter({ hasText: "NZD" }).waitFor({ timeout: 10_000 });
         t(
           `${size}: pressing NZD brings the NZD prices back`,
-          (await page.locator(".plan .amt .v").first().innerText()) === nzdPrice,
+          (await page.locator("#pricing .plan .amt .v").first().innerText()) === nzdPrice,
           `expected ${nzdPrice}`,
         );
 
         // The single subject has its own page with its own currency control;
         // that it reprices there is covered by the dedicated-page checks below.
-
-        /* --- and the same control in the home page's pricing section --- */
-        await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
-        const homeControl = page.locator("#pricing .cur-switch");
-        // Read down the page the way a person does, so the section's own
-        // fade-in has a chance to fire before anything is measured.
-        for (let y = 0; y < 5000; y += 400) {
-          await page.evaluate((to) => window.scrollTo({ top: to, behavior: "instant" }), y);
-          await page.waitForTimeout(60);
-        }
-        await homeControl.scrollIntoViewIfNeeded();
-        await page.waitForTimeout(900);
-        const homeNzd = homeControl.getByRole("button", { name: "NZD $" });
-        const homeInr = homeControl.getByRole("button", { name: "INR ₹" });
         t(
-          `${size}: the home page's pricing section carries the control too`,
-          (await homeNzd.isVisible()) &&
-            (await homeInr.isVisible()) &&
-            (await seen(homeNzd)) === 1,
-          `visible ${await homeNzd.isVisible()}, opacity ${await seen(homeNzd)}`,
-        );
-        t(
-          `${size}: and does not tell people to go elsewhere to change currency`,
+          `${size}: the section does not send people elsewhere to change currency`,
           !/switch currency on the/i.test(await page.locator("#pricing").innerText()),
-          "the home page still points at another page for currency",
+          "the pricing section points at another page for currency",
         );
-
-        await homeNzd.click();
-        await page.locator("#pricing .plan .amt .c").first().filter({ hasText: "NZD" }).waitFor({ timeout: 10_000 });
-        const homeBefore = await page.locator("#pricing .plan .amt .v").first().innerText();
-        await homeInr.click();
-        await page.locator("#pricing .plan .amt .c").first().filter({ hasText: "INR" }).waitFor({ timeout: 10_000 });
-        const homeAfter = await page.locator("#pricing .plan .amt .v").first().innerText();
+        // The cards buy through BuyButton (a button, not a link), so "the
+        // currency carries into checkout" is proved by the discount prompt
+        // being present on every sellable card rather than by a href -- the
+        // click path itself is exercised in the home-buy checks.
         t(
-          `${size}: pressing INR there reprices that section on the spot`,
-          homeAfter !== homeBefore && homeAfter.includes("₹"),
-          `${homeBefore} -> ${homeAfter}`,
-        );
-        // The home cards now buy through the same BuyButton the pricing page
-        // uses (a button, not a link), so "currency carries" is proved by the
-        // discount prompt being present on every sellable card rather than by
-        // a href — the click path is exercised in the home-buy checks.
-        t(
-          `${size}: every sellable home card carries a discount prompt`,
+          `${size}: every sellable card carries a discount prompt`,
           (await page.locator("#pricing .coupon-link").count()) >= 5,
           `${await page.locator("#pricing .coupon-link").count()} discount prompts`,
         );
-
         await page.close();
       }
 
@@ -1325,7 +1343,7 @@ async function main() {
         const reader = await browser.newPage({ viewport: { width: 1440, height: 900 } });
         await reader.addInitScript(() => { try { localStorage.setItem("kpp_cookie_notice", "seen"); } catch {} });
         for (const currency of ["NZD", "INR"]) {
-          await reader.goto(`${BASE}/pricing?currency=${currency}`, { waitUntil: "networkidle" });
+          await reader.goto(`${BASE}/?currency=${currency}`, { waitUntil: "networkidle" });
           for (const shown of await reader.locator(".plan .amt").allInnerTexts()) {
             const m = /([₹$])\s*([\d,]+)/.exec(shown.replace(/\s+/g, " "));
             if (!m) continue;
@@ -1406,7 +1424,7 @@ async function main() {
       const hop = await ctaBuyer.visit(`/checkout/start?product=${product.id}&currency=NZD`);
       t(
         `a product that is not on sale cannot be bought by link (${product.slug})`,
-        hop.landedOn.startsWith("/pricing") &&
+        hop.landedOn.includes("soon=1") &&
           (await db.order.count({ where: { productId: product.id } })) === before,
         `landed ${hop.landedOn}`,
       );

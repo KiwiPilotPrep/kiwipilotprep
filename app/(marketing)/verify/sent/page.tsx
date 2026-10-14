@@ -23,7 +23,7 @@ async function resend(next: string) {
     select: { id: true, name: true, email: true, emailVerifiedAt: true, verifySentAt: true },
   });
   if (!fresh) redirect("/login");
-  if (fresh.emailVerifiedAt) redirect(back || "/pricing");
+  if (fresh.emailVerifiedAt) redirect(back || "/#pricing");
 
   // Two brakes: a short per-account cooldown so the button cannot be leaned
   // on, and a per-source hourly cap so the endpoint cannot be turned into a
@@ -60,7 +60,7 @@ export default async function VerifySentPage({
 
   // Already confirmed — go on to whatever they were doing. Resend is neither
   // available nor needed past this point (§6).
-  if (user.emailVerifiedAt) redirect(safeNext || "/pricing");
+  if (user.emailVerifiedAt) redirect(safeNext || "/#pricing");
 
   return (
     <section className="sec">
@@ -115,7 +115,7 @@ export default async function VerifySentPage({
                   Send it again
                 </button>
               </form>
-              <Link className="btn btn-g" href={safeNext || "/pricing"}>
+              <Link className="btn btn-g" href={safeNext || "/#pricing"}>
                 {safeNext ? "Back to checkout" : "Look at the courses"}
               </Link>
             </div>

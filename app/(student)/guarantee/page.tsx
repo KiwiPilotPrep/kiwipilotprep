@@ -70,7 +70,7 @@ export default async function GuaranteePage({
           <div className="empty panel mt-l">
             <b>No guarantee applies to your account yet</b>
             The guarantee covers specific packages. Browse the{" "}
-            <Link href="/pricing">available packages</Link> to see what is included.
+            <Link href="/#pricing">available packages</Link> to see what is included.
           </div>
         ) : (
           <>

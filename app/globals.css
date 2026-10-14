@@ -502,7 +502,10 @@ body.lock{overflow:hidden}
 .exam-opt.sel{border-color:var(--sky);background:rgba(91,155,213,.14);color:#fff}
 .exam-opt.sel .k{background:var(--sky);border-color:var(--sky);color:#0C1B2A}
 .exam-ft{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-top:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.02);flex-wrap:wrap}
-.flagbtn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 13px;border-radius:8px;border:1px solid rgba(255,255,255,.16);color:#BFD1E2;font-size:13.5px;font-weight:600}
+/* 40px, not 36: this is a real control in the exam reader, tapped with a
+   thumb on a phone mid-question, and min-height rather than height so the
+   label can wrap without being clipped. */
+.flagbtn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 13px;border-radius:8px;border:1px solid rgba(255,255,255,.16);color:#BFD1E2;font-size:13.5px;font-weight:600}
 .flagbtn svg{width:14px;height:14px;stroke:currentColor}
 .flagbtn.on{color:#F0C070;border-color:rgba(240,192,112,.5);background:rgba(240,192,112,.1)}
 .flagbtn.on svg{fill:#F0C070;stroke:#F0C070}

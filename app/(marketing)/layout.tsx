@@ -37,11 +37,12 @@ export default async function MarketingLayout({
   // no modules, no syllabus and no chapters has nothing to open, so it is
   // listed and marked instead of linked.
   //
-  // Where the menu points depends on who is reading it. A signed-in student
-  // gets the course, because that is their material. A visitor gets the pricing
-  // card for the package that sells it, on the home page, because the course
-  // route would only bounce them to the login screen -- which answers a
-  // question they did not ask and loses the one they did.
+  // Every track in this menu leads to its price, and that does not depend on
+  // who is reading. Sending a signed-in student into the course instead looked
+  // helpful and was not: the marketing site is where someone decides what to
+  // buy, so a tap there went to a course page and then bounced to pricing
+  // anyway for anyone without it. A student who wants to study starts from
+  // their dashboard, which is the surface built for it.
   const tracks = courses.map((c) => ({
     id: c.id,
     slug: c.slug,
@@ -50,7 +51,7 @@ export default async function MarketingLayout({
     ready: c.subjects.some(
       (s) => s._count.modules > 0 || s._count.syllabusTopics > 0 || s._count.chapters > 0,
     ),
-    href: user ? `/courses/${c.slug}` : pricingAnchorFor(pricingAnchors, c.id),
+    href: pricingAnchorFor(pricingAnchors, c.id),
   }));
 
   return (

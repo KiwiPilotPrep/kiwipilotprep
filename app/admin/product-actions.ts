@@ -83,7 +83,7 @@ export async function updateProductPrices(productId: string, formData: FormData)
   const inr = parsePrice(parsed.data.priceINR, "INR price");
 
   // Both currencies in one transaction: a product priced in one currency and
-  // not the other is a product the pricing page cannot render.
+  // not the other is a product the pricing cards cannot render.
   await db.$transaction([
     db.productPrice.upsert({
       where: { productId_currency: { productId, currency: "NZD" } },
@@ -97,12 +97,11 @@ export async function updateProductPrices(productId: string, formData: FormData)
     }),
   ]);
 
-  // Everywhere the price is read. The public pricing page and the checkout
-  // both read ProductPrice directly, so this is a cache concern rather than
-  // a data one — but an admin who saves a price and then sees the old one on
-  // the public page has no reason to believe the save worked.
+  // Everywhere the price is read. The front page and the checkout both read
+  // ProductPrice directly, so this is a cache concern rather than a data one —
+  // but an admin who saves a price and then sees the old one on the public page
+  // has no reason to believe the save worked.
   revalidatePath("/admin/products");
-  revalidatePath("/pricing");
   revalidatePath("/");
   redirect("/admin/products?saved=" + productId);
 }

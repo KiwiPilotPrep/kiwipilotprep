@@ -19,8 +19,16 @@ const checks = [];
 const t = (name, ok, extra = "") =>
   checks.push(`${ok ? "PASS  " : "FAIL  "}${name}${ok ? "" : `  ← ${extra}`}`);
 
-/** A long jump must be done by the time a reader could notice it was not. */
-const PROMPT_MS = 300;
+/**
+ * The animation is deliberately short and deliberately not absent.
+ *
+ * Instant arrival was tried and was worse -- nothing told the reader the page
+ * had moved rather than changed -- and the browser's own smooth scroll takes
+ * about two seconds over the sixteen thousand pixels involved, which reads as
+ * a page that will not load. So both bounds are asserted.
+ */
+const SETTLED_MS = 900;
+const MIN_FRAMES = 5;
 
 const VIEWPORTS = [
   { w: 1440, h: 900, label: "desktop 1440" },
@@ -67,8 +75,19 @@ for (const vp of VIEWPORTS) {
   await page.waitForTimeout(800);
 
   const distance = Math.abs((await placement(page, id))?.top ?? 0);
+
+  await page.evaluate(() => {
+    window.__ys = [];
+    const t0 = performance.now();
+    const tick = () => {
+      window.__ys.push(Math.round(window.scrollY));
+      if (performance.now() - t0 < 2000) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+
   await card.click();
-  await page.waitForTimeout(PROMPT_MS);
+  await page.waitForTimeout(SETTLED_MS);
 
   const landed = await placement(page, id);
   t(`${vp.label}: the pricing card exists to scroll to`, Boolean(landed), `no element with id ${id}`);
@@ -78,9 +97,14 @@ for (const vp of VIEWPORTS) {
       landed.path === "/", `went to ${landed.path}`);
     t(`${vp.label}: the address bar names the card`,
       landed.hash === `#${id}`, `hash is ${landed.hash}`);
-    t(`${vp.label}: the card is on screen within ${PROMPT_MS}ms`,
+    t(`${vp.label}: the card is on screen within ${SETTLED_MS}ms`,
       landed.top >= 0 && landed.top < vp.h,
-      `${distance}px away, still at ${landed.top}px after ${PROMPT_MS}ms`);
+      `${distance}px away, still at ${landed.top}px after ${SETTLED_MS}ms`);
+
+    const positions = new Set(await page.evaluate(() => window.__ys ?? []));
+    t(`${vp.label}: it scrolls rather than jumping`,
+      positions.size >= MIN_FRAMES,
+      `only ${positions.size} distinct scroll positions — it teleported`);
     t(`${vp.label}: the sticky header is not covering it`,
       landed.top >= landed.headerBottom - 2,
       `card top ${landed.top}px, header ends ${landed.headerBottom}px`);
@@ -139,7 +163,7 @@ for (const vp of VIEWPORTS) {
     if (await entry.count()) {
       const entryHref = (await entry.getAttribute("href")) ?? "";
       await entry.click();
-      await page.waitForTimeout(PROMPT_MS);
+      await page.waitForTimeout(SETTLED_MS);
 
       const m = await placement(page, entryHref.replace(/^\/#/, ""));
       const menuOpen = await page.evaluate(() =>

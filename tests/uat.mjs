@@ -640,12 +640,16 @@ scenario("UAT-11", "A student can buy a package and start learning");
       confirmed.text.includes("email is confirmed"), `status ${confirmed.status}`);
   }
 
-  const pricing = await buyer.visit("/pricing");
-  step("Pricing page lists purchasable packages", pricing.status === 200 &&
+  // The prices live on the front page; /pricing is a redirect to the section.
+  const pricing = await buyer.visit("/");
+  step("The front page lists purchasable packages", pricing.status === 200 &&
     pricing.text.includes("PPL Theory Package"), `status ${pricing.status}`);
   step("Prices are shown", /\$\d/.test(pricing.text));
   step("Currency can be switched to INR",
-    (await buyer.visit("/pricing?currency=INR")).text.includes("₹"));
+    (await buyer.visit("/?currency=INR")).text.includes("₹"));
+  const oldAddress = await buyer.visit("/pricing");
+  step("And the old pricing address still reaches them",
+    oldAddress.landedOn.includes("#pricing"), `landed ${oldAddress.landedOn}`);
 
   const locked = await buyer.visit("/courses/ppl-theory");
   step("Course is locked before purchase",
@@ -659,10 +663,10 @@ scenario("UAT-11", "A student can buy a package and start learning");
   });
   step("Checkout rejects a malformed request", res.status === 400, `status ${res.status}`);
 
-  const productId = pricing.body.match(/data-plan="ppl-theory-package"/)
-    ? "found"
-    : null;
-  step("The PPL package is offered on the pricing page", productId !== null);
+  // The written cards key data-plan to the card; the anchor carries the slug.
+  step("The PPL package has a card of its own",
+    pricing.body.includes('id="ppl-theory-package"'),
+    "no card anchored at ppl-theory-package");
 }
 
 /* =========================================================================

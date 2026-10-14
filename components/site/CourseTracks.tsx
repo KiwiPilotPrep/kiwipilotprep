@@ -1,8 +1,6 @@
 import Link from "next/link";
 
 import { db } from "@/lib/db";
-import { getCurrentUser } from "@/lib/auth";
-import { accessibleCourseIds } from "@/lib/entitlements";
 import { pricingAnchorByCourse, pricingAnchorFor } from "@/lib/pricing-anchors";
 import { count } from "@/lib/plural";
 
@@ -18,10 +16,7 @@ function chapterCount(subject: { _count: { chapters: number; modules: number } }
 }
 
 export default async function CourseTracks() {
-  // Who is reading is asked for alongside the content, not before it. Awaiting
-  // it first put a round trip in front of the heaviest query on the page, and
-  // the course grid does not depend on the answer to begin loading.
-  const [courses, pricingAnchors, user] = await Promise.all([
+  const [courses, pricingAnchors] = await Promise.all([
     db.course.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { order: "asc" },
@@ -59,23 +54,21 @@ export default async function CourseTracks() {
       },
     }),
     pricingAnchorByCourse(),
-    getCurrentUser(),
   ]);
 
-  // Only a signed-in reader has entitlements to look up, so a visitor -- which
-  // is who the home page is mostly for -- pays nothing for this.
-  const owned = new Set(user ? await accessibleCourseIds(user) : []);
-
   /**
-   * Where Explore Subject goes depends on whether the reader can open it.
+   * Explore Subject goes to the price of the package that sells it, for
+   * everybody.
    *
-   * A student who owns the course gets the subject. Everyone else gets the
-   * pricing card for the package that sells it, further down this same page --
-   * not the separate pricing page, and not the course route, which for a
-   * visitor is a login wall and for an unentitled student was a dead end.
+   * It used to depend on entitlement, which meant this grid asked who was
+   * reading and what they owned -- two more queries on the busiest page -- to
+   * produce an answer that was wrong either way. A visitor was sent to a course
+   * route that is behind the login wall. A student without the course was sent
+   * there and bounced straight back out to pricing, which is the detour this
+   * removes. And a student who does own it does not browse the marketing site
+   * to reach their material; they open their dashboard.
    */
-  function subjectHref(courseId: string, courseSlug: string, subjectSlug: string) {
-    if (user && owned.has(courseId)) return `/courses/${courseSlug}/subjects/${subjectSlug}`;
+  function subjectHref(courseId: string) {
     return pricingAnchorFor(pricingAnchors, courseId);
   }
 
@@ -122,7 +115,7 @@ export default async function CourseTracks() {
                     <Link
                       className="subj r in"
                       key={subject.id}
-                      href={subjectHref(course.id, course.slug, subject.slug)}
+                      href={subjectHref(course.id)}
                     >
                       <span className="ic">
                         <svg

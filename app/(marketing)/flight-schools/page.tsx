@@ -363,7 +363,7 @@ export default async function FlightSchoolsPage() {
               <Link className="btn btn-p" href="/contact?subject=enterprise">
                 Contact us
               </Link>
-              <Link className="btn btn-g" href="/pricing">
+              <Link className="btn btn-g" href="/#pricing">
                 See student pricing
               </Link>
             </div>

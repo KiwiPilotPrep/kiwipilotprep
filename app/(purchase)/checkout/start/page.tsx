@@ -34,7 +34,7 @@ export default async function StartCheckoutPage({
   searchParams: Promise<{ product?: string; currency?: string; coupon?: string }>;
 }) {
   const { product: productId, currency: currencyParam, coupon } = await searchParams;
-  if (!productId) redirect("/pricing");
+  if (!productId) redirect("/#pricing");
 
   const currency = currencyParam === "INR" ? "INR" : "NZD";
   // The code the student typed on the pricing card travels with the product
@@ -56,12 +56,12 @@ export default async function StartCheckoutPage({
     where: { id: productId },
     select: { id: true, slug: true, status: true },
   });
-  if (!product || product.status !== "PUBLISHED") redirect("/pricing?error=unavailable");
+  if (!product || product.status !== "PUBLISHED") redirect("/?error=unavailable#pricing");
 
   // A disabled button stops the click, not the URL. Without this an old link
   // or a typed address would still open an order for a course that has no
   // material behind it yet.
-  if (isComingSoon(product.slug)) redirect(`/pricing?soon=1#${product.slug}`);
+  if (isComingSoon(product.slug)) redirect(`/?soon=1#${product.slug}`);
 
   if (await alreadyOwnsProduct(user.id, product.id)) redirect("/dashboard?owned=1");
 
@@ -72,9 +72,9 @@ export default async function StartCheckoutPage({
     // A code that no longer applies must not cost them the purchase: send
     // them back to the card with the reason, not to a dead end.
     if (result.couponRejected) {
-      redirect(`/pricing?currency=${currency}&coupon=rejected#${product.slug}`);
+      redirect(`/?currency=${currency}&coupon=rejected#${product.slug}`);
     }
-    redirect(`/pricing?currency=${currency}#${product.slug}`);
+    redirect(`/?currency=${currency}#${product.slug}`);
   }
 
   // The order summary, not the gateway. Currency and any discount were

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import type { PlanPrice } from "@/lib/home-pricing";
+import type { ExtraPackage, PlanPrice } from "@/lib/home-pricing";
 import { isComingSoon } from "@/lib/coming-soon";
 import BuyButton from "@/components/checkout/BuyButton";
 
@@ -43,12 +43,21 @@ const LABELS: Record<PlanKey, string> = {
 
 export default function PricingSection({
   plans,
+  extras = [],
   currency: initialCurrency = "NZD",
   signedIn = false,
+  owned = [],
+  notice,
 }: {
   plans: Record<string, PlanPrice>;
+  /** Published packages with no written card, described from their own rows. */
+  extras?: ExtraPackage[];
   currency?: "NZD" | "INR";
   signedIn?: boolean;
+  /** Product slugs this reader already holds, so a card does not sell twice. */
+  owned?: string[];
+  /** Something the checkout bounced back here to say. */
+  notice?: "coupon-rejected" | "coming-soon" | "unavailable";
 }) {
   // The server already reads the currency cookie (preferredCurrency) to pick
   // initialCurrency, so this starts on the right money with no flash.
@@ -70,7 +79,47 @@ export default function PricingSection({
     return (currency === "INR" ? p?.inr : p?.nzd) ?? "Contact us";
   };
 
-  /** A card's call to action: coming-soon, or the same buy control as /pricing. */
+  const held = new Set(owned);
+
+  /** "3 months access" / "Lifetime access", as the written cards phrase it. */
+  const accessLabel = (months: number | null) =>
+    months === null ? "Lifetime access" : `${months} month${months === 1 ? "" : "s"} access`;
+
+  /** The same three outcomes as a written card, for a package without one. */
+  const extraCta = (extra: ExtraPackage) => {
+    if (isComingSoon(extra.slug)) {
+      return (
+        <button className="btn btn-g btn-w" type="button" disabled>
+          Coming Soon
+        </button>
+      );
+    }
+    if (held.has(extra.slug)) {
+      return (
+        <a className="btn btn-g btn-w" href="/dashboard">
+          You already have this — Continue Learning
+        </a>
+      );
+    }
+    const price = currency === "INR" ? extra.inr : extra.nzd;
+    if (!price) {
+      return (
+        <a className="btn btn-g btn-w" href="/contact">
+          Enquire
+        </a>
+      );
+    }
+    return (
+      <BuyButton
+        productId={extra.id}
+        currency={currency}
+        label={`Get ${extra.title}`}
+        signedIn={signedIn}
+      />
+    );
+  };
+
+  /** A card's call to action: coming-soon, already-bought, or the buy control. */
   const cta = (key: PlanKey) => {
     const slug = SLUGS[key];
     const id = plans[key]?.id;
@@ -81,11 +130,19 @@ export default function PricingSection({
         </button>
       );
     }
+    // Somebody who has already bought this needs a way in, not a second sale.
+    if (held.has(slug)) {
+      return (
+        <a className="btn btn-g btn-w" href="/dashboard">
+          You already have this — Continue Learning
+        </a>
+      );
+    }
     if (!id) {
       // Only if the product is missing from the database — never in normal use.
       return (
-        <a className="btn btn-g btn-w" href={`/pricing#${slug}`}>
-          {LABELS[key]}
+        <a className="btn btn-g btn-w" href="/contact">
+          Enquire
         </a>
       );
     }
@@ -93,6 +150,19 @@ export default function PricingSection({
       <BuyButton productId={id} currency={currency} label={LABELS[key]} signedIn={signedIn} />
     );
   };
+
+  /**
+   * What the checkout sends people back here to be told.
+   *
+   * It used to bounce to a separate pricing page to say it, which meant a
+   * refused code or an unfinished course took the reader off the page they were
+   * buying on. The message belongs next to the cards it is about.
+   */
+  const NOTICES = {
+    "coupon-rejected": "That discount code was not recognised, so the prices below are the full ones.",
+    "coming-soon": "The material for that course is still being prepared, so it is not on sale yet.",
+    unavailable: "That package is not on sale at the moment. The rest are below.",
+  } as const;
 
   return (
     <>
@@ -104,6 +174,12 @@ export default function PricingSection({
             <h2 className="h2">Pick your licence track, or take the lot.</h2>
             <p className="lede">Pay once for the track you need. Switching currency does not
               change the course — only which of the two prices set for it you are charged.</p>
+
+            {notice && (
+              <p className="prob-note mt-s" role="status">
+                {NOTICES[notice]}
+              </p>
+            )}
 
             <div className="cur-switch">
               <span className="cur-switch-lbl" id="home-currency-label">Prices shown in</span>
@@ -237,6 +313,43 @@ export default function PricingSection({
               </ul>
               {cta("complete")}
             </div>
+
+            {/*
+              Packages published since the cards above were written.
+
+              This page is the only pricing surface, so it cannot be a fixed
+              list of six: an administrator who publishes a package has to see
+              it offered. The written cards keep their copy; these are described
+              from what the product actually grants.
+            */}
+            {extras.map((extra) => {
+              const price = currency === "INR" ? extra.inr : extra.nzd;
+              return (
+                <div id={extra.slug} data-plan={extra.slug} className="plan r" key={extra.id}>
+                  <div className="pn">Package</div>
+                  <h3>{extra.title}</h3>
+                  {extra.description && <p className="pd">{extra.description}</p>}
+                  <div className="vchip">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7.2V12l3.2 2" /></svg>{" "}
+                    <span>{accessLabel(extra.months)}</span>
+                  </div>
+                  <div className="amt">
+                    <span className="v">{price ?? "Contact us"}</span>
+                    {price && <span className="c">{currency}</span>}
+                  </div>
+                  <p className="pnote">{price ? "one-time" : `Not available in ${currency}`}</p>
+                  <ul>
+                    {extra.contents.map((line, i) => (
+                      <li key={i}>
+                        <svg viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>{" "}
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                  {extraCta(extra)}
+                </div>
+              );
+            })}
           </div>
 
           {/* One subject on its own has its own focused page — the front page

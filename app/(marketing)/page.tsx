@@ -2,9 +2,10 @@ import Image from "next/image";
 
 import CourseTracks from "@/components/site/CourseTracks";
 import PricingSection from "@/components/site/PricingSection";
-import { homePlanPrices } from "@/lib/home-pricing";
+import { homePlanPrices, PLAN_SLUGS } from "@/lib/home-pricing";
 import { preferredCurrency } from "@/lib/currency";
 import { getCurrentUser } from "@/lib/auth";
+import { ownedProductIds } from "@/lib/entitlements";
 import FaqList from "@/components/site/FaqList";
 import ContactForm from "@/components/site/ContactForm";
 
@@ -13,16 +14,54 @@ import ContactForm from "@/components/site/ContactForm";
  * engines every page was a copy of this one. */
 export const metadata = { alternates: { canonical: "/" } };
 
-export default async function HomePage() {
+/** What the checkout bounced back here to say, if anything. */
+function noticeFrom(params: {
+  coupon?: string;
+  soon?: string;
+  error?: string;
+}): "coupon-rejected" | "coming-soon" | "unavailable" | undefined {
+  if (params.coupon === "rejected") return "coupon-rejected";
+  if (params.soon) return "coming-soon";
+  if (params.error === "unavailable") return "unavailable";
+  return undefined;
+}
+
+export default async function HomePage({
+  searchParams,
+}: {
+  // The checkout used to bounce to a separate pricing page to report a refused
+  // code or an unfinished course. It reports them here now, on the page the
+  // cards are on.
+  searchParams: Promise<{ currency?: string; coupon?: string; soon?: string; error?: string }>;
+}) {
+  const params = await searchParams;
+
   // What the front-page pricing section needs to sell the packages right there:
-  // the prices, the currency to show them in, and whether the visitor is signed
-  // in (drives the button copy). A single subject is chosen on its own focused
-  // page, so its list is not needed here.
-  const [plans, currency, user] = await Promise.all([
+  // the prices, the currency to show them in, whether the visitor is signed in
+  // (drives the button copy) and what they already own (a card must not try to
+  // sell somebody the thing they bought last week). A single subject is chosen
+  // on its own focused page, so its list is not needed here.
+  const [{ plans, extras }, currency, user] = await Promise.all([
     homePlanPrices(),
-    preferredCurrency(),
+    preferredCurrency(params.currency),
     getCurrentUser(),
   ]);
+
+  // Owned is asked once, for every product on the page -- the six written
+  // cards and anything published since -- so no card tries to sell somebody
+  // the thing they bought last week.
+  const bySlug = new Map<string, string>();
+  for (const [key, plan] of Object.entries(plans)) {
+    if (plan.id && PLAN_SLUGS[key]) bySlug.set(plan.id, PLAN_SLUGS[key]);
+  }
+  for (const extra of extras) bySlug.set(extra.id, extra.slug);
+
+  const owned = user
+    ? await ownedProductIds(user.id, [...bySlug.keys()])
+    : new Set<string>();
+  const ownedSlugs = [...bySlug]
+    .filter(([id]) => owned.has(id))
+    .map(([, slug]) => slug);
 
   return (
     <>
@@ -430,7 +469,14 @@ export default async function HomePage() {
 
 
 
-            <PricingSection plans={plans} currency={currency} signedIn={Boolean(user)} />
+            <PricingSection
+              plans={plans}
+              extras={extras}
+              currency={currency}
+              signedIn={Boolean(user)}
+              owned={ownedSlugs}
+              notice={noticeFrom(params)}
+            />
 
       {/* ========================= ABOUT ========================= */}
       <section className="sec tint" id="about">

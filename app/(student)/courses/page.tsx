@@ -57,7 +57,7 @@ export default async function MyCoursesPage() {
             >
               {/* Relative, so it lands on the public site of whatever origin
                   the student is already on. */}
-              <Link className="btn btn-p" href="/pricing">
+              <Link className="btn btn-p" href="/#pricing">
                 Explore courses
               </Link>
               <Link className="btn btn-g" href="/trial">
@@ -91,7 +91,7 @@ export default async function MyCoursesPage() {
                 PPL, CPL and IR theory and flight test groundwork are sold separately. See what is
                 included and what each costs on the pricing page.
               </p>
-              <Link className="btn btn-p btn-sm" href="/pricing" style={{ marginTop: "10px" }}>
+              <Link className="btn btn-p btn-sm" href="/#pricing" style={{ marginTop: "10px" }}>
                 Explore &amp; purchase courses
               </Link>
             </div>

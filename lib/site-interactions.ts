@@ -224,27 +224,58 @@ export function initPricing(): Cleanup {
 }
 
 /**
- * Keeps long in-page jumps from feeling like a page that will not load.
+ * Gives a long in-page jump a short animation of its own.
  *
  * The subject menu and the subject cards scroll to a pricing card rather than
- * navigating to a second copy of the prices. On the home page that card can be
- * sixteen thousand pixels away, and `scroll-behavior: smooth` animates the
- * whole distance -- two seconds on a phone, during which nothing the reader can
- * follow is on screen and the site reads as stuck rather than as moving.
+ * navigating to a second copy of the prices. The browser will animate that,
+ * but `scroll-behavior: smooth` sets the duration from the distance, and on a
+ * phone the pricing section is sixteen thousand pixels down the home page --
+ * a measured two seconds of travel through content nobody can read at that
+ * speed, which reads as a page that will not load.
  *
- * Smooth motion is kept where it tells the reader where they went, which is
- * jumps of up to a couple of screens, and dropped beyond that, where it only
- * costs time.
+ * Cutting the animation entirely was worse: arriving with no travel at all
+ * gives the reader nothing to tell them the page moved rather than changed.
+ * So the scroll is run here at a fixed duration regardless of distance --
+ * long enough to see, short enough not to wait through.
  *
- * The jump is performed here rather than by flipping `scroll-behavior` and
- * letting the router do it: a hash link is a client-side navigation, and the
- * scroll happens a render later, by which point any style this handler had
- * restored would be back in force. Preventing the default and scrolling
- * directly is the only version that is actually in control of the scroll.
+ * Short jumps are left to the browser, where its own timing is already
+ * proportionate and there is nothing to improve.
  */
 export function initAnchorJumps(): Cleanup {
-  /** Beyond this many screens, the animation stops orienting and becomes a wait. */
+  /** Beyond this many screens, the browser's own duration becomes a wait. */
   const FAR = 2.5;
+  /** Long enough to read as movement, short enough not to be a delay. */
+  const DURATION_MS = 420;
+
+  const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+
+  /** Where the browser itself would have aligned this target. */
+  function destinationOf(target: Element) {
+    const scroller = document.scrollingElement ?? document.documentElement;
+    const padding = parseFloat(getComputedStyle(scroller).scrollPaddingTop) || 0;
+    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    const top = window.scrollY + target.getBoundingClientRect().top - padding - margin;
+    const limit = document.documentElement.scrollHeight - window.innerHeight;
+    return Math.max(0, Math.min(top, limit));
+  }
+
+  let animation = 0;
+
+  function glide(to: number) {
+    cancelAnimationFrame(animation);
+
+    const from = window.scrollY;
+    const travel = to - from;
+    if (Math.abs(travel) < 2) return;
+
+    const started = performance.now();
+    const step = (now: number) => {
+      const progress = Math.min(1, (now - started) / DURATION_MS);
+      window.scrollTo({ top: from + travel * easeOut(progress), behavior: "instant" });
+      if (progress < 1) animation = requestAnimationFrame(step);
+    };
+    animation = requestAnimationFrame(step);
+  }
 
   function onClick(event: MouseEvent) {
     if (event.defaultPrevented || event.button !== 0) return;
@@ -268,21 +299,12 @@ export function initAnchorJumps(): Cleanup {
 
     event.preventDefault();
 
-    // The destination is computed rather than delegated to scrollIntoView,
-    // and the animation is refused by argument rather than by CSS. Setting
-    // scroll-behavior inline does not reliably win here -- the scrolling box
-    // is not always the element the declaration is on -- whereas an explicit
-    // instant behaviour is not a hint the engine can take or leave.
-    //
-    // The arithmetic is the alignment the browser would have used: the page
-    // scroll-padding that holds content clear of the sticky header, plus any
-    // scroll-margin the card asks for on top of it.
-    const scroller = document.scrollingElement ?? document.documentElement;
-    const padding = parseFloat(getComputedStyle(scroller).scrollPaddingTop) || 0;
-    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
-    const top = window.scrollY + target.getBoundingClientRect().top - padding - margin;
-
-    window.scrollTo({ top: Math.max(0, top), behavior: "instant" });
+    // Somebody who has asked for less motion gets none: the arrival is what
+    // they came for, and the travel is the part they turned off.
+    const stillness = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const to = destinationOf(target);
+    if (stillness) window.scrollTo({ top: to, behavior: "instant" });
+    else glide(to);
 
     // The address bar still has to name where the reader is, so the link can be
     // copied and the back button still works. Replacing rather than pushing
@@ -295,8 +317,11 @@ export function initAnchorJumps(): Cleanup {
   // Capture phase, deliberately. React attaches its listeners to the root it
   // rendered into, which is below the document, so a bubbling listener here
   // runs after the Link has already begun its own smooth scroll -- and that
-  // animation then plays over the jump this made. Capturing puts the decision
-  // first, where preventDefault can still stop the navigation.
+  // animation then plays over this one.  Capturing puts the decision first,
+  // where preventDefault can still stop the navigation.
   document.addEventListener("click", onClick, true);
-  return () => document.removeEventListener("click", onClick, true);
+  return () => {
+    cancelAnimationFrame(animation);
+    document.removeEventListener("click", onClick, true);
+  };
 }

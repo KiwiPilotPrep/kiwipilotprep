@@ -118,7 +118,7 @@ export default async function CheckoutPage({
         />
 
         <p className="xs" style={{ marginTop: "18px", textAlign: "center" }}>
-          <Link href="/pricing">← Back to pricing</Link>
+          <Link href="/#pricing">← Back to pricing</Link>
         </p>
       </div>
     </section>
