@@ -239,12 +239,36 @@ ul{margin:0;padding:0;list-style:none}
 .burger.on span:nth-child(1){transform:translateY(6.2px) rotate(45deg)}
 .burger.on span:nth-child(2){opacity:0}
 .burger.on span:nth-child(3){transform:translateY(-6.2px) rotate(-45deg)}
-.mnav{display:none;position:fixed;inset:74px 0 0;z-index:79;background:var(--paper);padding:10px var(--pad) 40px;overflow-y:auto}
-.mnav.on{display:block;animation:fadeDown .22s ease}
+/* The phone menu. None of this is reachable above the burger breakpoint,
+   where .mnav and .burger are both display:none.
+
+   Two things were wrong with it and both read on a phone as "it does not open
+   properly". The panel was sized against the layout viewport, which does not
+   shrink when the browser shows its address bar, so its last inches sat behind
+   the browser chrome -- hence dvh, with a vh line first for anything that does
+   not know it. And the whole thing was one scrolling stack, so with eleven
+   destinations in it the buttons underneath them were pushed off the bottom:
+   the list scrolls now and the buttons are a fixed row below it. */
+.mnav{display:none;position:fixed;top:74px;left:0;right:0;z-index:79;
+  height:calc(100vh - 74px);height:calc(100dvh - 74px);
+  background:var(--paper);padding:10px var(--pad) 0;overflow:hidden}
+.mnav.on{display:flex;flex-direction:column;animation:fadeDown .22s ease}
+/* min-height:0 so this may actually shrink inside the flex column -- without
+   it a flex item refuses to go below its content height and overflows the
+   panel exactly as before. */
+.mnav-list{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-8px)}}
-.mnav .mitem{display:flex;align-items:center;justify-content:space-between;padding:18px 2px;border-bottom:1px solid var(--line);font-size:22px;font-weight:600;color:var(--ink);letter-spacing:-.025em}
+/* 19px and a tighter row, because 22px wrapped the longer course titles onto
+   a second line -- a 110px row where the design wanted 73 -- which is most of
+   why the list outgrew the screen in the first place. The label may still wrap
+   if it has to; what must not wrap is the count beside it. */
+.mnav .mitem{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 2px;border-bottom:1px solid var(--line);font-size:19px;font-weight:600;color:var(--ink);letter-spacing:-.025em}
+.mnav .mitem em{flex:none}
 .mnav .mitem em{font-style:normal;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
-.mnav .mact{display:grid;gap:10px;margin-top:28px}
+/* The row that does not scroll. padding-bottom clears the home indicator on
+   a phone that has one, and the rule reads as 16px everywhere else. */
+.mnav .mact{flex:none;display:grid;gap:10px;margin-top:0;padding:16px 0 calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);background:var(--paper)}
 body.lock{overflow:hidden}
 
 /* ---------- Hero ---------- */

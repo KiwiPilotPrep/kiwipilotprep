@@ -33,6 +33,10 @@ const MIN_FRAMES = 5;
 const VIEWPORTS = [
   { w: 1440, h: 900, label: "desktop 1440" },
   { w: 375, h: 812, label: "mobile 375" },
+  // What a phone browser actually leaves a page once it has drawn its own
+  // chrome, and the smallest screen the project supports.
+  { w: 375, h: 640, label: "phone 375x640" },
+  { w: 320, h: 480, label: "phone 320x480" },
 ];
 
 const browser = await chromium.launch();
@@ -175,6 +179,81 @@ for (const vp of VIEWPORTS) {
       t(`${vp.label}: the mobile menu closes on the way out`,
         menuOpen === false, "the menu is still covering the page");
     }
+  }
+
+  /* ---------------- the menu panel opens whole ---------------------------- */
+
+  // The complaint this guards against: tapping the burger appeared to open
+  // the menu only partly. It was opening and cutting itself short -- eleven
+  // destinations are taller than a phone, the panel was one scrolling stack,
+  // and the buttons underneath them were pushed off the bottom. The panel was
+  // also sized against the layout viewport, which does not shrink when the
+  // browser shows its address bar, so its last inches sat behind the chrome.
+  if (await page.locator("button.burger").first().isVisible()) {
+    await page.goto(`${BASE}/`, { waitUntil: "networkidle" });
+    await page.waitForTimeout(400);
+    await page.locator("button.burger").first().click();
+    await page.waitForTimeout(500);
+
+    const panel = await page.evaluate(() => {
+      const nav = document.querySelector(".mnav");
+      const list = document.querySelector(".mnav-list");
+      const act = document.querySelector(".mact");
+      if (!nav || !list || !act) return null;
+      const onScreen = (el) => {
+        const b = el.getBoundingClientRect();
+        return b.height > 0 && b.top >= 0 && b.bottom <= window.innerHeight + 1;
+      };
+      return {
+        open: nav.className.includes("on"),
+        rect: nav.getBoundingClientRect().height,
+        fitsViewport: nav.getBoundingClientRect().bottom <= window.innerHeight + 1,
+        panelOverflow: nav.scrollHeight - nav.clientHeight,
+        listScrolls: list.scrollHeight > list.clientHeight,
+        buttons: [...act.querySelectorAll("a, button")].map((el) => ({
+          label: (el.textContent || "").trim().slice(0, 24),
+          onScreen: onScreen(el),
+          height: Math.round(el.getBoundingClientRect().height),
+        })),
+      };
+    });
+
+    t(`${vp.label}: the menu opens`, Boolean(panel?.open), "the panel never got its open class");
+
+    if (panel) {
+      t(`${vp.label}: the panel ends inside the viewport`,
+        panel.fitsViewport,
+        "the bottom of the panel is past the bottom of the screen");
+      t(`${vp.label}: the panel itself does not overflow`,
+        panel.panelOverflow <= 1,
+        `${panel.panelOverflow}px of it is unreachable`);
+      t(`${vp.label}: every button in the menu is on screen`,
+        panel.buttons.length > 0 && panel.buttons.every((b) => b.onScreen),
+        panel.buttons.filter((b) => !b.onScreen).map((b) => b.label).join(", ") || "no buttons found");
+      t(`${vp.label}: and they are real touch targets`,
+        panel.buttons.every((b) => b.height >= 40),
+        panel.buttons.filter((b) => b.height < 40).map((b) => `${b.label} (${b.height}px)`).join(", "));
+      // Where the list is too long for the screen it must scroll, which is the
+      // half of the fix that lets the buttons stay put.
+      t(`${vp.label}: a list too long for the screen scrolls instead of spilling`,
+        !panel.listScrolls || panel.panelOverflow <= 1,
+        "the list overflowed the panel rather than scrolling inside it");
+    }
+
+    // And it closes again.
+    await page.locator("button.burger").first().click();
+    await page.waitForTimeout(400);
+    t(`${vp.label}: the burger closes it again`,
+      (await page.evaluate(() => document.querySelector(".mnav")?.className.includes("on"))) === false,
+      "the panel stayed open");
+  } else {
+    // Above the burger breakpoint the panel must not be in the way at all.
+    t(`${vp.label}: no phone menu on a desktop width`,
+      (await page.evaluate(() => {
+        const nav = document.querySelector(".mnav");
+        return !nav || getComputedStyle(nav).display === "none";
+      })) === true,
+      "the phone menu is rendered at a desktop width");
   }
 
   /* ---------------- placeholders are left alone --------------------------- */

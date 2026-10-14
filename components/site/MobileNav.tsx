@@ -60,32 +60,45 @@ export default function MobileNav({
           if ((e.target as Element).closest("a")) setOpen(false);
         }}
       >
-        {tracks.map((t) =>
-          t.ready ? (
-            <Link className="mitem" key={t.id} href={t.href}>
-              {t.title}{" "}
-              <em>
-                {t.subjectCount} {t.subjectCount === 1 ? "subject" : "subjects"}
-              </em>
-            </Link>
-          ) : (
-            <span className="mitem is-soon" key={t.id} aria-disabled="true">
-              {t.title} <em>Coming soon</em>
-            </span>
-          ),
-        )}
-        <Link className="mitem" href="/#guarantee">
-          Guarantee <em>1st attempt</em>
-        </Link>
-        <Link className="mitem" href="/flight-schools">
-          Flight Schools <em>Enterprise</em>
-        </Link>
-        <Link className="mitem" href="/#pricing">
-          Pricing <em>NZD / INR</em>
-        </Link>
-        <Link className="mitem" href="/contact">
-          Contact
-        </Link>
+        {/*
+          The destinations scroll in a box of their own so the buttons below
+          them stay put.
+
+          Everything used to be one stack in the panel. Eleven destinations are
+          taller than a phone screen, so the panel overflowed, and the two
+          things most people open this menu for — Dashboard when signed in, Log
+          In when not — were the last elements in the document and therefore the
+          first off the bottom of it. The menu looked like it had failed to open
+          properly when in fact it had opened and cut itself short.
+        */}
+        <div className="mnav-list">
+          {tracks.map((t) =>
+            t.ready ? (
+              <Link className="mitem" key={t.id} href={t.href}>
+                {t.title}{" "}
+                <em>
+                  {t.subjectCount} {t.subjectCount === 1 ? "subject" : "subjects"}
+                </em>
+              </Link>
+            ) : (
+              <span className="mitem is-soon" key={t.id} aria-disabled="true">
+                {t.title} <em>Coming soon</em>
+              </span>
+            ),
+          )}
+          <Link className="mitem" href="/#guarantee">
+            Guarantee <em>1st attempt</em>
+          </Link>
+          <Link className="mitem" href="/flight-schools">
+            Flight Schools <em>Enterprise</em>
+          </Link>
+          <Link className="mitem" href="/#pricing">
+            Pricing <em>NZD / INR</em>
+          </Link>
+          <Link className="mitem" href="/contact">
+            Contact
+          </Link>
+        </div>
 
         <div className="mact">
           {user ? (
