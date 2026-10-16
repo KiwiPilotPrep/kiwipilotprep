@@ -15,9 +15,9 @@ import { questionsForCode } from "@/lib/syllabus";
 import StudyContentRenderer from "@/components/study/StudyContent";
 import StudyShell from "@/components/study/StudyShell";
 import LessonNav from "@/components/study/LessonNav";
-import MarkComplete from "@/components/study/MarkComplete";
+import NextLesson from "@/components/study/NextLesson";
 import StudyWatermark from "@/components/study/StudyWatermark";
-import { setLessonComplete } from "../actions";
+import { completeAndAdvance } from "../actions";
 
 export async function generateMetadata({
   params,
@@ -107,10 +107,19 @@ export default async function LessonPage({
       }
       tools={
         <>
-          <MarkComplete
-            action={setLessonComplete.bind(null, lesson.id, !completed, here)}
-            completed={completed}
-          />
+          {/*
+            A state, not a control. Next is what completes a topic now, so a
+            button here would be a second way to do the same thing — and the
+            one the reader was being asked to press before pressing Next.
+            Whether this topic is finished is still worth showing.
+          */}
+          <span className={`tool-state${completed ? " is-done" : ""}`}>
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" strokeWidth="1.9"
+              strokeLinecap="round" strokeLinejoin="round">
+              {completed ? <path d="M5 12.5l4.5 4.5L19 7" /> : <circle cx="12" cy="12" r="8.5" />}
+            </svg>
+            <span>{completed ? "Completed" : "In progress"}</span>
+          </span>
           {practiceCode && (
             <Link
               className="tool-btn"
@@ -171,16 +180,6 @@ export default async function LessonPage({
 
         <StudyContentRenderer blocks={blocks} />
 
-        {completed && next && (
-          <div className="reader-done">
-            <b>✓ Lesson completed</b>
-            <p>Next up: {next.title}</p>
-            <Link className="btn btn-p" href={`${base}/${next.slug}`}>
-              Continue →
-            </Link>
-          </div>
-        )}
-
         <nav className="reader-pager" aria-label="Course navigation">
           {previous ? (
             <Link className="pager-prev" href={`${base}/${previous.slug}`} rel="prev">
@@ -191,14 +190,16 @@ export default async function LessonPage({
             <span />
           )}
 
-          {next ? (
-            <Link className="pager-next" href={`${base}/${next.slug}`} rel="next">
-              <small>Next →</small>
-              <em>{next.title}</em>
-            </Link>
-          ) : (
-            <span />
-          )}
+          {/*
+            Next marks this topic complete and then opens the following one, in
+            one press. On the last topic of the subject there is nowhere to go,
+            so it records the completion and stays — rather than navigating to a
+            lesson that does not exist.
+          */}
+          <NextLesson
+            action={completeAndAdvance.bind(null, lesson.id, next?.slug ?? null, here)}
+            next={next ? { title: next.title } : null}
+          />
         </nav>
 
         <div className="reader-progress">

@@ -467,7 +467,22 @@ async function main() {
   }
 
   t("the lesson offers previous/next navigation", lesson.text.includes("Next →"));
-  t("the lesson offers Mark complete", lesson.text.includes("Mark complete"));
+  // Next is the completion control now: pressing it marks this topic complete
+  // and opens the following one. The separate "Mark complete" button it
+  // replaced is gone on purpose, so its absence is the assertion, and what the
+  // tool rail shows instead is the state rather than a second control. The
+  // behaviour itself — what gets completed, once, and when — is proved in
+  // tests/lesson-progress.mjs against the database.
+  t(
+    "the lesson does not ask for a separate Mark complete press",
+    !lesson.text.includes("Mark complete"),
+    "the old control is still rendered",
+  );
+  t(
+    "the tool rail reports whether the topic is finished",
+    lesson.text.includes("In progress") || lesson.text.includes("Completed"),
+    "no completion state on the page",
+  );
 
   /* ============ 7. the rules the brief set ============ */
 

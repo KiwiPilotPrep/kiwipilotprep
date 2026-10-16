@@ -55,6 +55,17 @@
 .tool-btn.is-on { border-color: var(--blue); color: var(--blue); background: var(--blue-l); }
 .tool-btn.is-done { color: var(--ok); }
 
+/* Whether this topic is finished: a state, not a button. Same metrics as the
+   controls beside it so the rail stays one column, and no hover, because
+   there is nothing to press. */
+.tool-state {
+  display: flex; align-items: center; gap: 9px; width: 100%;
+  padding: 9px 11px; border: 1px solid transparent; border-radius: 9px;
+  color: var(--muted); font-size: 13px;
+}
+.tool-state svg { width: 17px; height: 17px; flex: none; stroke: currentColor; }
+.tool-state.is-done { color: var(--ok); }
+
 /* ---- The reading column -------------------------------------------------- */
 
 .reader { max-width: 780px; position: relative; }
@@ -251,12 +262,25 @@
   display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
   margin-top: 34px; padding-top: 24px; border-top: 1px solid var(--line);
 }
-.reader-pager a {
+/* Next completes the topic as well as opening the following one, so it is a
+   form button rather than a link. It is the same control to a reader, so it
+   gets the same box -- and the form itself is taken out of the layout with
+   display:contents, or it would sit in the grid cell with the button inside
+   it and the two halves of the pager would stop matching. */
+.pager-form { display: contents; }
+.reader-pager a,
+.reader-pager button.pager-next {
   display: flex; flex-direction: column; gap: 3px;
   padding: 14px 16px; border: 1px solid var(--line); border-radius: 11px;
-  text-decoration: none; transition: border-color .15s, background .15s;
+  background: none; color: inherit; font: inherit; text-align: left;
+  text-decoration: none; cursor: pointer; width: 100%;
+  transition: border-color .15s, background .15s;
 }
-.reader-pager a:hover { border-color: var(--blue); background: var(--mist); }
+.reader-pager a:hover,
+.reader-pager button.pager-next:not(:disabled):hover {
+  border-color: var(--blue); background: var(--mist);
+}
+.reader-pager button.pager-next:disabled { cursor: default; opacity: .72; }
 .reader-pager small {
   font-size: 11px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
 }

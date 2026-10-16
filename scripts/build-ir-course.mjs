@@ -26,6 +26,7 @@
  *
  *   node scripts/build-ir-course.mjs [--dry]
  */
+import fs from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 
@@ -34,6 +35,7 @@ import { ensureAsset } from "./media-assets.mjs";
 import { isRejectedImage } from "../content/ir/diagram-decisions.mjs";
 import { repairPage } from "../content/ir/source-repairs.mjs";
 import { SUBJECTS } from "../content/ir/index.mjs";
+import { repairBlocks } from "../content/shared/semantics.mjs";
 
 const db = new PrismaClient();
 const COURSE = "ir-theory";
@@ -151,6 +153,21 @@ async function pageBlocks(deck, page, cache, counts, topicTitle) {
 /** Everything the author wrote, wrapped around everything the manual said. */
 async function topicBlocks(subject, topic, manifest, cache, counts) {
   const blocks = [];
+  // What the extractor called each page, so a paragraph that is word for word
+  // its own page title can be recognised as the heading it was.
+  // The lines the extractor recorded for a page, so the regulatory-list and
+  // un-merge rules have the evidence they require. Without this they do
+  // nothing, which is the safe default rather than a guess.
+  const pageLines = new Map(
+    (manifest.slides ?? []).map((slide) => [
+      slide.n,
+      (slide.blocks ?? []).filter((b) => b.kind === "text").map((b) => b.text ?? ""),
+    ]),
+  );
+  const pageTitles = new Map(
+    (manifest.slides ?? []).map((slide) => [slide.n, slide.title ?? null]),
+  );
+
   const add = (block) => {
     blocks.push({ ...block, origin: "authored" });
     counts.authored += 1;
@@ -239,7 +256,27 @@ async function topicBlocks(subject, topic, manifest, cache, counts) {
   if (topic.misconception) add({ type: "misconception", text: topic.misconception });
   if (topic.takeaway) add({ type: "takeaway", text: topic.takeaway });
 
-  return blocks;
+  // One last pass over the whole topic, putting back the semantic shape the
+  // page-by-page mapping above cannot see.
+  //
+  // That mapping reads one source line at a time, and a line on its own does
+  // not tell you what it is: three consecutive unpunctuated fragments are a
+  // bullet list, and the same three with a measurement among them are a table
+  // that lost its columns. Deciding needs the run, which only exists once the
+  // topic is assembled. Shared with the other three builders and with
+  // scripts/content-repair.mjs, so a defect fixed in one is fixed in all.
+  const shaped = repairBlocks(blocks, {
+    pageTitleOf: (block) =>
+      block.sourcePage != null ? (pageTitles.get(block.sourcePage) ?? null) : null,
+    pageLinesOf: (block) =>
+      block.sourcePage != null ? (pageLines.get(block.sourcePage) ?? null) : null,
+    recordTitle: topic.title,
+  });
+  for (const change of shaped.changes) {
+    counts.shape ??= {};
+    counts.shape[change.category] = (counts.shape[change.category] ?? 0) + 1;
+  }
+  return shaped.blocks;
 }
 
 /**
@@ -281,6 +318,8 @@ function auditCoverage(subject, manifest) {
 
 async function main() {
   const dry = process.argv.includes("--dry");
+  const dumpAt = process.argv.indexOf("--dump");
+  const DUMP = dumpAt > -1 ? process.argv[dumpAt + 1] : null;
   const course = await db.course.findUnique({ where: { slug: COURSE }, select: { id: true } });
   if (!course) throw new Error(`no ${COURSE} course — run the seed first`);
 
@@ -332,6 +371,26 @@ async function main() {
     const slugs = built.flatMap((c) => c.lessons.map((l) => l.slug));
     const dupes = slugs.filter((s, i) => slugs.indexOf(s) !== i);
     if (dupes.length) throw new Error(`${subject.slug}: duplicate topic slugs — ${[...new Set(dupes)].join(", ")}`);
+
+    // What a rebuild would produce, written to a file instead of the database.
+    //
+    // A dry run proves the builder completes and reports how much semantic
+    // shape it restored, which is not the same as showing what the result would
+    // look like. With the blocks on disk the rebuild can be diffed against what
+    // is stored — per lesson, per block type — before anyone decides to run it.
+    if (DUMP) {
+      const path = `${DUMP}/${subject.slug}.json`;
+      fs.mkdirSync(DUMP, { recursive: true });
+      fs.writeFileSync(
+        path,
+        JSON.stringify(
+          { subject: subject.slug, title: subject.title, takenAt: new Date().toISOString(), chapters: built },
+          null,
+          2,
+        ),
+      );
+      console.log(`  dumped ${subject.slug} -> ${path}`);
+    }
 
     if (!dry) {
       // The whole subject is rebuilt in one transaction: a half-written course
@@ -389,6 +448,10 @@ async function main() {
       strayLabels: counts.repairs.orphans,
       tablesRebuilt: counts.repairs.tables,
       repeatedText: counts.textRepeat,
+      // What the shared classifier put back on this subject. Reported so a
+      // rebuild says out loud that the semantic types survived it, rather
+      // than leaving it to be discovered later.
+      shapeRestored: Object.values(counts.shape ?? {}).reduce((n, v) => n + v, 0),
     });
   }
 

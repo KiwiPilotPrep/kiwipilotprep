@@ -52,7 +52,7 @@
     "test:cleanup": "node tests/cleanup.mjs",
     "test:responsive": "node tests/responsive.mjs",
     "test:audit": "node tests/audit-fe.mjs",
-    "test": "vitest run && node tests/dynamic-content.mjs && node tests/admin-cms.mjs && node tests/payments.mjs && node tests/mocks.mjs && node tests/guarantee.mjs && node tests/coupons.mjs && node tests/pricing-flow.mjs && node tests/idor.mjs && node tests/security.mjs && node tests/verification.mjs && node tests/auth.mjs && node tests/study.mjs && node tests/lessons.mjs && node tests/ir.mjs && node tests/razorpay.mjs && node tests/uat.mjs && node tests/admin-student-history.mjs && node tests/claims-attachments.mjs && node tests/health.mjs && node tests/responsive.mjs && node tests/anchors.mjs && node tests/cleanup.mjs",
+    "test": "vitest run && node tests/dynamic-content.mjs && node tests/admin-cms.mjs && node tests/payments.mjs && node tests/mocks.mjs && node tests/guarantee.mjs && node tests/coupons.mjs && node tests/pricing-flow.mjs && node tests/idor.mjs && node tests/security.mjs && node tests/verification.mjs && node tests/auth.mjs && node tests/study.mjs && node tests/lessons.mjs && node tests/ir.mjs && node tests/razorpay.mjs && node tests/uat.mjs && node tests/admin-student-history.mjs && node tests/claims-attachments.mjs && node tests/health.mjs && node tests/responsive.mjs && node tests/anchors.mjs && node tests/lesson-progress.mjs && node tests/study-semantics.mjs && node tests/repair-fidelity.mjs && node tests/cleanup.mjs",
     "test:unit": "vitest run",
     "test:watch": "vitest",
     "test:pay": "node tests/payments.mjs",
@@ -64,9 +64,12 @@
     "seed:subjects": "npx tsx prisma/seed-subjects.ts",
     "trial:build": "node scripts/build-free-trial-questions.mjs",
     "sections:assign": "node scripts/assign-section-codes.mjs",
-    "test:anchors": "node tests/anchors.mjs"
-  },
-  "dependencies": {
+    "test:anchors": "node tests/anchors.mjs",
+    "test:progress": "node tests/lesson-progress.mjs",
+"test:semantics": "node tests/study-semantics.mjs",
+"test:fidelity": "node tests/repair-fidelity.mjs"
+},
+"dependencies": {
     "@aws-sdk/client-s3": "^3.1144.0",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",

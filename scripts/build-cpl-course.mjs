@@ -39,6 +39,7 @@ import { ensureAsset } from "./media-assets.mjs";
 import { isRejectedImage } from "../content/cpl/diagram-decisions.mjs";
 import { repairPage } from "../content/cpl/source-repairs.mjs";
 import { SUBJECTS } from "../content/cpl/index.mjs";
+import { repairBlocks } from "../content/shared/semantics.mjs";
 
 const db = new PrismaClient();
 const COURSE = "cpl-theory";
@@ -169,6 +170,21 @@ async function slideBlocks(deck, slide, cache, counts, topicTitle) {
 /** Everything the author wrote, wrapped around everything the deck said. */
 async function topicBlocks(subject, topic, manifest, cache, counts) {
   const blocks = [];
+  // What the extractor called each page, so a paragraph that is word for word
+  // its own page title can be recognised as the heading it was.
+  // The lines the extractor recorded for a page, so the regulatory-list and
+  // un-merge rules have the evidence they require. Without this they do
+  // nothing, which is the safe default rather than a guess.
+  const pageLines = new Map(
+    (manifest.slides ?? []).map((slide) => [
+      slide.n,
+      (slide.blocks ?? []).filter((b) => b.kind === "text").map((b) => b.text ?? ""),
+    ]),
+  );
+  const pageTitles = new Map(
+    (manifest.slides ?? []).map((slide) => [slide.n, slide.title ?? null]),
+  );
+
   const add = (block) => {
     blocks.push({ ...block, origin: "authored" });
     counts.authored += 1;
@@ -261,7 +277,27 @@ async function topicBlocks(subject, topic, manifest, cache, counts) {
   if (topic.misconception) add({ type: "misconception", text: topic.misconception });
   if (topic.takeaway) add({ type: "takeaway", text: topic.takeaway });
 
-  return blocks;
+  // One last pass over the whole topic, putting back the semantic shape the
+  // page-by-page mapping above cannot see.
+  //
+  // That mapping reads one source line at a time, and a line on its own does
+  // not tell you what it is: three consecutive unpunctuated fragments are a
+  // bullet list, and the same three with a measurement among them are a table
+  // that lost its columns. Deciding needs the run, which only exists once the
+  // topic is assembled. Shared with the other three builders and with
+  // scripts/content-repair.mjs, so a defect fixed in one is fixed in all.
+  const shaped = repairBlocks(blocks, {
+    pageTitleOf: (block) =>
+      block.sourcePage != null ? (pageTitles.get(block.sourcePage) ?? null) : null,
+    pageLinesOf: (block) =>
+      block.sourcePage != null ? (pageLines.get(block.sourcePage) ?? null) : null,
+    recordTitle: topic.title,
+  });
+  for (const change of shaped.changes) {
+    counts.shape ??= {};
+    counts.shape[change.category] = (counts.shape[change.category] ?? 0) + 1;
+  }
+  return shaped.blocks;
 }
 
 /**
@@ -402,6 +438,26 @@ async function main() {
     const hollow = built.flatMap((c) => c.lessons.filter((l) => l.blocks.length === 0).map((l) => l.title));
     if (hollow.length) throw new Error(`${subject.slug}: topic(s) with no content — ${hollow.join(", ")}`);
 
+    // What a rebuild would produce, written to a file instead of the database.
+    //
+    // A dry run proves the builder completes; it does not show what the result
+    // would look like. With the blocks on disk the rebuild can be diffed
+    // against what is stored — per lesson, per block type, word for word —
+    // before anyone decides whether to run it.
+    if (DUMP) {
+      fs.mkdirSync(DUMP, { recursive: true });
+      const at = `${DUMP}/${subject.slug}.json`;
+      fs.writeFileSync(
+        at,
+        JSON.stringify(
+          { subject: subject.slug, title: subject.title, takenAt: new Date().toISOString(), chapters: built },
+          null,
+          2,
+        ),
+      );
+      console.log(`  dumped ${subject.slug} -> ${at}`);
+    }
+
     if (!dry) {
       // The whole subject is rebuilt in one transaction: a half-written course
       // is worse than the old one. Only this subject's chapters and topics are
@@ -481,6 +537,10 @@ async function main() {
       syllabusMappings: mappings,
       termsLabelled: counts.repairs.labelled,
       footersStripped: counts.repairs.footers,
+      // What the shared classifier put back on this subject. Reported so a
+      // rebuild says out loud that the semantic types survived it, rather
+      // than leaving it to be discovered later.
+      shapeRestored: Object.values(counts.shape ?? {}).reduce((n, v) => n + v, 0),
     });
   }
 
