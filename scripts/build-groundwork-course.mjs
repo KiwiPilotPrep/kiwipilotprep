@@ -30,6 +30,7 @@ import { pathToFileURL } from "node:url";
 import { PrismaClient } from "@prisma/client";
 
 import { ensureAsset } from "./media-assets.mjs";
+import { repairBlocks } from "../content/shared/semantics.mjs";
 
 const db = new PrismaClient();
 const MANIFEST = ".cache/groundwork/manifest.json";
@@ -689,6 +690,11 @@ function groupRuns(blocks, counts) {
 /** Everything the author wrote, wrapped around everything the client supplied. */
 async function topicBlocks(topic, docs, deck, cache, counts, tooling) {
   const blocks = [];
+  // The groundwork documents carry no per-page title, so there is nothing for
+  // a paragraph to match. The map is still built, empty, because the shared
+  // classifier takes the same shape from every builder.
+  const pageTitles = new Map();
+
   const add = (b) => {
     blocks.push({ ...b, origin: "authored" });
     counts.authored += 1;
@@ -776,7 +782,25 @@ async function topicBlocks(topic, docs, deck, cache, counts, tooling) {
   if (topic.misconception) add({ type: "misconception", text: topic.misconception });
   if (topic.takeaway) add({ type: "takeaway", text: topic.takeaway });
 
-  return blocks;
+  // One last pass over the whole topic, putting back the semantic shape the
+  // page-by-page mapping above cannot see.
+  //
+  // That mapping reads one source line at a time, and a line on its own does
+  // not tell you what it is: three consecutive unpunctuated fragments are a
+  // bullet list, and the same three with a measurement among them are a table
+  // that lost its columns. Deciding needs the run, which only exists once the
+  // topic is assembled. Shared with the other three builders and with
+  // scripts/content-repair.mjs, so a defect fixed in one is fixed in all.
+  const shaped = repairBlocks(blocks, {
+    pageTitleOf: (block) =>
+      block.sourcePage != null ? (pageTitles.get(block.sourcePage) ?? null) : null,
+    recordTitle: topic.title,
+  });
+  for (const change of shaped.changes) {
+    counts.shape ??= {};
+    counts.shape[change.category] = (counts.shape[change.category] ?? 0) + 1;
+  }
+  return shaped.blocks;
 }
 
 /* ============================================================ the checks */
@@ -977,6 +1001,29 @@ async function main() {
     furnitureTrimmed: (loadSource.removed ?? []).filter((r) => r.kind === "trimmed").length,
     ...counts,
   };
+
+  // What a rebuild would produce, written to a file instead of the database.
+  //
+  // A dry run proves the builder completes; it does not show what the result
+  // would look like. With the blocks on disk the rebuild can be diffed against
+  // what is stored before anyone decides whether to run it.
+  //
+  // Only the course asked for. `--course` defaults to ppl-flight-test, so CPL
+  // Flight Test Groundwork is not reached unless somebody names it — and its
+  // teaching material has not been supplied, so nobody should.
+  if (DUMP) {
+    fs.mkdirSync(DUMP, { recursive: true });
+    const at = `${DUMP}/${courseSlug}.json`;
+    fs.writeFileSync(
+      at,
+      JSON.stringify(
+        { course: courseSlug, takenAt: new Date().toISOString(), modules: built },
+        null,
+        2,
+      ),
+    );
+    console.log(`  dumped ${courseSlug} -> ${at}`);
+  }
 
   if (dry) {
     console.table([summary]);

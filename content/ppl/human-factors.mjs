@@ -57,7 +57,15 @@ const TABLES = {
     176: ["How will these factors affect coping with environmental stressors?"],
   },
 
-  substitutions: {},
+  substitutions: {
+    // The slide's text layer prints the BMI unit as plain "30kg/m2". The
+    // superscript is what the unit is — kilograms per square metre — and it is
+    // what the slide showed a student in the room; the "2" is what survived
+    // being read out of the file. Written down here so the wording check
+    // compares the corrected unit rather than reporting the correction as a
+    // rewrite of the source.
+    141: [["30kg/m2", "30kg/m²"]],
+  },
 
   titles: {
     // The layout cut the title in half: "The Respiratory -". The whole title
